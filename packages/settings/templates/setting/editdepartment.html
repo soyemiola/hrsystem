@@ -1,0 +1,111 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="">
+				<h6><i class="fa fa-edit fa-sm"></i> Edit Department</h6>
+				<ul class="bodymenu">
+					<li>
+						<a href="{{url_for('settings.departmentList')}}" class="active">Department List</a>
+					</li>
+					<li class="alertText">
+						<small id="alert_msg"></small>
+					</li>
+				</ul>
+				<div class="bodycontent">
+					{% if not sop_docx %}
+					<div class="row">
+						<div class="col-xs-12 col-md-12">
+							<div>
+								<small style="color: red"><i class="fa fa-info-circle"></i> No Standard Operating Procedure (SOP) available </small>
+							</div>
+							<br>
+						</div>
+					</div>
+					{% endif %}
+					<div class="row">
+						<div class="col-xs-12 col-md-4">
+							<form method="post" enctype="multipart/form-data">
+								<div class="formBox">
+									<div class="form-group">
+										<label for="department">Department Name</label>
+										<input type="text" name="department" id="department" class="form-control" value="{{dept[0]}}">
+									</div>
+									
+									<div class="form-group">
+										<label for="department">Select Supervisor</label>
+										<select class="form-control" name="supervisor">
+											{% if dept[2] %}
+											<option selected value="{{dept[2]}}">{{ dept[2] }}</option>
+											{% else %}
+											<option selected disabled value="0">--select employee--</option>
+											{% endif %}
+											
+											{% for i in dept_emps %}
+											<option value="{{i[1]}}">{{i[1]}}</option>
+											{% endfor %}
+										</select>
+									</div>
+
+									<div class="form-group">
+											<label for="sopfile">Department SOP</label>
+											<input type="file" name="sop" id="sopfile" accept="application/pdf" class="form-control-file">
+											<input type="hidden" name="current_sop" value="{{dept[3]}}">
+											<small>Only .PDF file is allowed</small>
+										</div>
+									<div class="form-group">
+										<input type="hidden" name="deptid" value="{{dept[1]}}">
+										<button class="btn btn-success btn-flat btn-block" type="submit">
+											<i class="fa fa-save"></i> Update Department
+										</button>
+									</div>
+								</div>
+							</form>
+						</div>
+
+						<div class="col-xs-12 col-md-6">
+							{% if sop_docx %}
+							<h5 class="text-center">{{ dept[0] }} Standard Operating Procedure (SOP) </h5>
+							<iframe src="{{url_for('static', filename='admin/SOPs/'+dept[3])}}" style="width: 100%; min-height: 600px"></iframe>
+							{% endif %}
+						</div>
+					</div>
+				</div>
+			</div>
+
+{% endblock content %}
+
+
+{% block script %}
+<script>
+	$(document).ready(function(){
+		$('.deptbtn').click(function(){
+			var type = document.getElementById('type').value,
+				name = document.getElementById('name').value,
+				id = document.getElementById('id').value,
+				msg = document.getElementById('alert_msg');
+
+			if(type != '' && name != ''){
+				$.ajax({
+					method: 'post',
+					url: '/update',
+					data:{type:type, name:name, id:id},
+
+					beforeSend: function(){
+						document.getElementById('deptbtn').innerHTML = '<i class="spinner-border spinner-border-sm"></i>'
+					},
+					success: function(data){
+						msg.innerHTML = data+ '<i class="fa fa-check"></i>';
+						msg.style.color = 'green';
+					},
+					error: function(xhr){
+
+					},
+					complete: function(){
+						document.getElementById('deptbtn').innerHTML = '<i class="fa fa-save fa-sm"></i> Update Department'
+					}
+				});
+			}
+		});
+	});
+</script>
+{% endblock %}

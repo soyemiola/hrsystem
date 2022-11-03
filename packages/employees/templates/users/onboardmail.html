@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+    </head>
+    <body>
+        <div class="box" style='font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans",
+            sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";'>
+            <div class="innerbox" style="margin: 5%; padding: 20px; border:1px solid #f8f8ff; min-height: 600px;">
+                <div class="innertitle" style="text-align: left; border-bottom:1px solid #f8f8ff; padding: 20px;
+                background-color: #3c8dbc; color: #fff;">
+                    <h4 style="padding: 0px; margin: 4px;">
+                        <p>BUSINESS TRAVEL MANAGEMENT</p>
+                        <p>Staff Onboarding Notification</p>
+                    </h4>
+                    
+                </div>
+
+                <div class="innerinfo" style="padding: 20px; width: 100%;">
+                    <h4>Please kindly Activate access for the staff to all services and devices below .</h4>
+                    <h4>
+                        <p><b>NAME:</b> {{empname}}</p>
+                        <p><b>DEPARTMENT:</b> {{dept}}</p>
+                        <p><b>EMAIL:</b> {{empmail}}</p>
+                    </h4>
+                    
+                    <div class="" style="width: 100%;">
+                        <div class="section" style="width: 32%; margin: 5px; float: left;">
+                            <h5 style="padding: 5px; background: #f8f8ff; ">DEVICE</h5>
+                            <ul style="padding-left: 10px;">
+                                {% for dev in device %}
+                                    <li style="font-size: 14px; margin: 3px">{{dev}}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        <div class="section" style="width: 32%; margin: 5px; float: left;">
+                            <h5 style="padding: 5px; background: #f8f8ff; ">SERVICES</h5>
+                            <ul style="padding-left: 10px;">
+                                {% for sev in services %}
+                                    {% if sev == 'Email' %}
+                                        {% if new %}
+                                            {% set new_email = new %}
+                                        {% endif %}
+
+                                        {% if existing %}
+                                            {% set existing_email = existing %}
+                                        {% endif %}
+
+                                        {% if access %}
+                                            {% set access_email = access %}
+                                        {% endif %}
+                                    {% endif %}
+                                    <li style="font-size: 14px; margin: 3px">{{sev}}
+
+                                        {% if new_email or existing_email or access_email %}
+                                        <ul>
+                                            {% if new_email %}
+                                            <li style="font-size: 14px; ">Kindly create <b>{{ new_email[0] }}</b> as a new email address</li>
+                                            {% endif %}
+
+                                            {% if existing_email %}
+                                            <li style="font-size: 14px;">Kindly assign <b>{{ existing_email[0] }}</b> to the staff</li>
+                                            {% endif %}
+
+                                            {% if access_email %}
+                                            <li style="font-size: 14px;">Kindly give access to <b>{{ access_email[0] }}</b></li>
+                                            {% endif %}
+                                        </ul>
+                                        {% endif %}
+                                    </li>
+
+                                    
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+
+            <div class="" style="text-align: center; border:1px solid #f8f8ff;; padding:10px; margin-top: 20px">
+                <small>HR Management system</small>        
+            </div>
+        </div>
+    </body>
+</html>

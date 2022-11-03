@@ -1,0 +1,215 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="" id="bank_summary" style="display:block">
+			 <h6><i class="fa fa-newspaper-o"></i> Reports</h6>
+			 <ul class="bodymenu">
+				<li>
+					<a href="{{url_for('report.bankreport')}}" class="">Banks Report</a>
+				</li>
+				<li>
+					<a href="{{url_for('report.bankreport', schedule='A')}}" class="active">Schedule A</a>
+				</li>
+				<li>
+					<a href="{{url_for('report.bankreport', schedule='B')}}" class="">Schedule B</a>
+				</li>
+			 </ul>
+			 <div class="bodycontent">
+				 <div class="">
+					 <header>Filter Search:</header>
+					 <form action="{{url_for('report.bankreport', schedule='A')}}" method="post">
+						 <div class="row">
+							 <div class="col-xs-12 col-md-2 col-xl-2">
+								 <div class="form-group">
+									 <select name="bankname" id="bankname" class="form-control">
+										 <option selected disabled>--Select Banks--</option>
+										 <option>All Banks</option>
+										 {% for bank in banks %}
+										 <option>{{bank[0]}}</option>
+										 {% endfor %}
+									 </select>
+								 </div>
+							 </div>
+							 <div class="col-xs-12 col-md-2 col-xl-2">
+								 <div class="form-group">
+									 <select name="month" id="month" class="form-control">
+										 <option selected disabled>--Select Month--</option>
+										 {% for month in months %}
+										 {% if month != '' %}
+										 <option value="{{ month }}">{{month }}</option>
+										 {% endif %}
+										 {% endfor %}
+									 </select>
+								 </div>
+							 </div>
+							 <div class="col-xs-12 col-md-2 col-xl-2">
+								 <div class="form-group">
+									 <select name="year" id="year" class="form-control">
+										 <option selected disabled>--Select Year--</option>
+										 {% for year in years %}
+										 <option>{{year}}</option>
+										 {% endfor %}
+									 </select>
+								 </div>
+							 </div>
+						 </div>
+
+						 <div class="row">
+							 <div class="col-xs-12 col-md-2">
+								 <div class="form-group">
+									 <button type="submit" class="btn btn-primary btn-flat btn-sm" >
+										 Fetch Record
+									 </button>
+								 </div>
+							 </div>
+						 </div>
+					 </form>
+				 </div>
+				 {% if dsp != '' %}
+				 <div class="row mt-2">
+					 <div class="col-12">
+						 <div class="">
+							 <header><b>25% {{Tsummary['month'] }} Bank Report</b> </header>
+							 <div class="boxinfo">
+								 <table class="table">
+									 <thead>
+									 <th>Bank Name</th>
+									 <th>No of Employees</th>
+									 <th>Total Monthly Salary</th>
+									 <th></th>
+									 </thead>
+									 <tbody>
+									 {% if Tsummary != '' %}
+									 	<!-- get % value -->
+									 	{% set value = Tsummary['summary'][1] | schedule(25) %}
+									 <tr>
+										 <td>{{Tsummary['bankname']}} </td>
+										 <td>{{Tsummary['summary'][0]}}</td>
+										 <td>N{{ value | numberFormat}}</td>
+										 <td>
+											<button type="button" title="showlist" class="btn btn-primary btn-sm openlist">
+												<i class="fa fa-bars"></i>
+											</button>
+
+											<a class="btn btn-light btn-sm" target="_blank" href="{{url_for('report.bank_report_pdf', bank=Tsummary['bankname'],
+											 month=Tsummary['month'], year=Tsummary['year'], schedule='A')}}" title="print report">
+											 <i class="fa fa-print"></i> PDF
+											</a>
+
+											<button type="button" id="excelbtn-1" class="btn btn-success btn-sm excelbtn" date-month="Tsummary['month']" 
+												data-year="=Tsummary['year']">
+												<i class="fa fa-file-excel-o"></i>Excel</button>
+										 </td>
+									 </tr>
+									 {% endif %}
+									 </tbody>
+								 </table>
+							 </div>
+						 </div>
+					 </div>
+				 </div>
+				 {% endif %}
+				 {% if alert != '' %}
+				 <div class="actionbox">
+					 <span class="alert alert-danger alert-dismissible btn-block" style="width: 100%">
+						 {{alert}}
+					 </span>
+				 </div>
+				 {% endif %}
+			 </div>
+		 </div>
+
+		<div class="container" id="banklist" style="display: none">
+			<h6><a class="fa fa-arrow-circle-left closelist"></a> Bank Salary Review
+				<span style="float:right; margin-right: 5%">
+					<a target="_blank" href="{{url_for('report.bank_report_pdf', bank=Tsummary['bankname'], month=Tsummary['month'],
+					year=Tsummary['year'], schedule='A')}}" style="text-decoration:none; cursor:pointer; margin-right:10px;"
+					   class="fa fa-print" title="print report"> PDF
+					</a>
+					<a id="excelbtn" class="fa fa-file-excel-o excelbtn" style="cursor: pointer" date-month="Tsummary['month']" 
+						data-year="=Tsummary['year']"> Excel</a>
+				</span>
+			</h6>
+			<div class="bodycontent">
+				<div class="row">
+					<table id="bankreport" class="table" style="width:100%">
+						<thead>
+							<th>Staff ID</th>
+							<th>Employees</th>
+							<th>Month</th>
+							<th>Bank name</th>
+							<th>Currency</th>
+							<th>Salary</th>
+							<th>Account Number</th>
+						</thead>
+						<tbody>
+						{% for report in dsp %}
+							{% set schedule25 = report[3] | schedule(25) %}
+						<tr>
+							<td>{{ report[6] }}</td>
+							<td>{{report[0]}}</td>
+							<td>{{report[1] }}</td>
+							<td>{{report[4] }}</td>
+							<td style="width: 30px; text-align: right">N</td>
+							<th>{{schedule25 | numberFormat}}</th>
+							<td>'{{report[5]}}</td>
+						</tr>
+						{% endfor %}
+						{% if Tsummary != '' %}
+							{% set schedule25Total = Tsummary['summary'][1] | schedule(25) %}
+						<tr>
+							<th colspan="4">Total</th>
+							<th style="width: 30px; text-align: right">N</th>
+							<th colspan="2">N{{ schedule25Total | numberFormat }}</th>
+						</tr>
+						{% endif %}
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+
+{% endblock content %}
+
+
+{% block script %}
+<script>
+    $(document).ready(function(){
+        $('.openlist').click(function(){
+            document.getElementById('bank_summary').style.display = 'none';
+            document.getElementById('banklist').style.display = 'block';
+        });
+
+        $('.closelist').click(function(){
+            document.getElementById('bank_summary').style.display = 'block';
+            document.getElementById('banklist').style.display = 'none';
+        });
+    });
+</script>
+<script>
+	var wb = XLSX.utils.table_to_book(document.getElementById('bankreport'), {sheet:'Sheet Js'});
+
+	var wbout = XLSX.write(wb, {bookType: 'xlsx', bookSST:true, type: 'binary' });
+
+	function s2ab(s){
+		var buf = new ArrayBuffer(s.length);
+		var view = new Uint8Array(buf);
+		for(var i=0; i<s.length; i++) view[i] = s.charCodeAt(i) & 0xFF;
+		return buf;
+	}
+
+	$('.excelbtn').click(function(){
+		var id = $(this).attr('id'),
+			month = document.getElementById(id).dataset.month,
+			year = document.getElementById(id).dataset.year;
+		var name = 'Schedule A report for '+month+' '+year+'.xlsx';
+
+		saveAs(new Blob([s2ab(wbout)], {type: 'application/octet-stream'}), name)
+	});
+
+	/*$('#excelbtn-1').click(function(){
+		saveAs(new Blob([s2ab(wbout)], {type: 'application/octet-stream'}), 'test.xlsx')
+	});*/
+
+</script>
+{% endblock %}

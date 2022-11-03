@@ -1,0 +1,352 @@
+ <div class="sidebar" data-color="{{ current_user.color }}" data-background-color="white" data-image="{{ url_for('static', filename='assets/img/sidebar-1.jpg') }}">
+      <!--
+        Tip 1: You can change the color of the sidebar using: data-color="purple | azure | green | orange | danger"
+
+        Tip 2: you can also add an image using data-image tag
+    -->
+    {% set active = 'active' %}
+    {% if page_title == 'Dashboard' %}
+      {% set da = active %}
+      
+    {% elif page_title == 'Profile' %}
+      {% set pr = active %}
+
+    {% elif page_title == 'Payroll' %}
+      {% set pay = active %}
+
+    {% elif page_title == 'Leave Management System' %}
+      {% set leave = active %}
+
+    {% elif page_title == 'Performance' %}
+      {% set performance = active %}
+
+    {% elif page_title == 'Team Members' %}
+      {% set teamlist = active %}
+
+    {% elif page_title == 'Report' %}
+      {% set report = active %}
+
+    {% elif page_title == 'Loan Management System' %}
+      {% set loan = active %}
+
+    {% elif page_title == 'Documents' %}
+      {% set document = active %}
+
+    {% elif page_title == 'Assessment' %}
+      {% set assessment = active %}
+
+    {% endif %}
+
+
+    {% set role = current_user.role | lower %}
+    {% set post = current_user.post | lower %}
+    
+
+      <div class="logo" style="text-align: center;">
+        <a href="#" class="simple-text logo-normal">
+          HR SYSTEM
+        </a>
+        <small>{{ session.companyname }}</small>
+        <span>
+          <h6>
+            <i class="material-icons">account_circle</i> 
+            <span>{{ current_user.name }}</span>
+          </h6>
+          
+        </span>
+      </div>
+      <div class="sidebar-wrapper">
+        <ul class="nav">
+          <li class="nav-item {{ da }}">
+            <a class="nav-link" href="{{ url_for('user_in.home') }}">
+              <i class="material-icons">dashboard</i>
+              <p>Dashboard</p>
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('user_in.markattendance') }}">
+              <i class="material-icons">alarm</i>
+              <p>Attendance</p>
+            </a>
+          </li>
+          
+          <li class="nav-item {{ document }}">
+            <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
+              <i class="material-icons">content_paste</i>
+              Documents
+            </a>
+            <div class="dropdown-menu menu_menus">
+              <a class="dropdown-item" href="{{url_for('documents.jobDescription')}}">
+                <i class="material-icons">remove</i> 
+                Job Description
+              </a>
+              <a class="dropdown-item" href="{{ url_for('documents.sopDocx') }}">
+                <i class="material-icons">remove</i> 
+                Department SOP
+              </a>
+              <a class="dropdown-item" href="{{url_for('documents.mydocument')}}">
+                <i class="material-icons">remove</i> 
+                Document & Certificate
+              </a>
+              
+            </div>
+          </li>
+          
+          {% if current_user.post == 'Supervisor' or current_user.post == 'supervisor' %}
+          <li class="nav-item {{ teamlist}}">
+            <a class="nav-link" href="{{ url_for('user_in.teamlist') }}">
+              <i class="material-icons">person</i>
+              <p>Team Members</p>
+            </a>
+          </li>
+          {% endif %}
+          
+          <li class="nav-item {{ pay }}">
+            <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
+              <i class="material-icons">content_paste</i>
+              Payroll
+            </a>
+            <div class="dropdown-menu menu_menus">
+              <a class="dropdown-item" href="{{ url_for('empUser.payslip') }}">
+                <i class="material-icons">remove</i> 
+                Monthly payslip
+              </a>
+              <a class="dropdown-item" href="{{ url_for('empUser.payroll') }}">
+                <i class="material-icons">remove</i> 
+                Yearly Report
+              </a>
+              
+            </div>
+          </li>
+          
+          <li class="nav-item {{ loan }}">
+            <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
+              <i class="material-icons">request_quote</i>
+              Loan
+            </a>
+            <div class="dropdown-menu menu_menus">
+              <!-- <a class="dropdown-item" href="{{ url_for('emploan.loan') }}">
+                <i class="material-icons">remove</i> 
+                Request New Loan
+              </a> -->
+              <a class="dropdown-item" href="{{ url_for('emploan.loanRecord') }}">
+                <i class="material-icons">remove</i> 
+                Loan Record
+              </a>
+            </div>
+          </li>
+          
+          <li class="nav-item {{ leave }}">
+            <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
+              <i class="material-icons">hotel</i>
+              Leave
+            </a>
+            <div class="dropdown-menu menu_menus">
+              <a class="dropdown-item" href="{{ url_for('empleave.leave') }}">
+                <i class="material-icons">remove</i> 
+                Process Leave
+              </a>
+              <a class="dropdown-item" href="{{ url_for('empleave.leavelist') }}">
+                <i class="material-icons">remove</i> 
+                My Leave
+              </a>
+              <a class="dropdown-item" href="{{ url_for('empleave.emp_pending') }}">
+                <i class="material-icons">remove</i> 
+                Request
+              </a>
+              <a class="dropdown-item" href="{{ url_for('empleave.dept_calendar') }}">
+                <i class="material-icons">remove</i> 
+                Leave Calendar
+              </a>
+              {% set md = current_user.post | lower %}
+              {% if md == 'managing director' %}
+              <a class="dropdown-item" href="{{ url_for('empleave.pendingrequest') }}">
+                <i class="material-icons">remove</i> 
+                Pending Request
+              </a>
+              {% endif %}
+            </div>
+          </li>
+
+          <li class="nav-item {{ performance }} dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
+              <i class="material-icons">insert_chart</i>
+              Performance
+            </a>
+
+            <div class="dropdown-menu menu_menus">
+              <a class="dropdown-item" href="{{ url_for('perform.overview') }}">
+                <i class="material-icons">remove</i> 
+                Overview
+              </a>
+              <a class="dropdown-item" href="{{ url_for('perform.reviewlist') }}">
+                <i class="material-icons">remove</i> 
+                Target Report
+              </a>
+              <a class="dropdown-item" href="{{ url_for('userQC.QCreport') }}">
+                <i class="material-icons">remove</i> 
+                Query & Commendation
+              </a>
+
+              {% if role == 'supervisor' or role == 'managing director' or role == 'manager' or role == 'general manager' or post == 'manager' or post == 'general manager' or post == 'supervisor' %}
+              
+              <a class="dropdown-item" href="{{ url_for('perform.targets') }}">
+                <i class="material-icons">remove</i> 
+                Target
+              </a>
+              <a class="dropdown-item" href="{{ url_for('perform.reviewer_list') }}">
+                <i class="material-icons">remove</i> 
+                Event
+              </a>
+              <a class="dropdown-item" href="{{ url_for('perform.chartview') }}">
+                <i class="material-icons">remove</i> 
+                Charts
+              </a>
+              <a class="dropdown-item" href="{{ url_for('userQC.userQChome') }}">
+                <i class="material-icons">remove</i> 
+                QC Report
+              </a>
+              {% endif %}
+
+            </div>
+          </li>
+
+          <li class="nav-item {{ assessment }} dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
+              <i class="material-icons">insert_chart</i>
+              Report
+            </a>
+            
+            <div class="dropdown-menu menu_menus">
+              
+              {% if role == 'supervisor' or role == 'manager'  or role == 'general manager' %}
+              <a class="dropdown-item" href="{{ url_for('appraisal.appraisalOverview') }}">
+                <i class="material-icons">remove</i> 
+                Overview
+              </a> 
+              <a class="dropdown-item" href="{{ url_for('appraisal.app_report') }}">
+                <i class="material-icons">remove</i> 
+                Submit Report
+              </a>             
+              <a class="dropdown-item" href="{{ url_for('appraisal.reportlist') }}">
+                <i class="material-icons">remove</i> 
+                Assessment Report-List
+              </a>
+              {% endif %}
+              
+              <a class="dropdown-item" href="{{ url_for('appraisal.weeklyreport') }}">
+                <i class="material-icons">remove</i> 
+                Weekly appraisal report
+              </a>
+            </div>
+          </li>
+          
+
+
+          {% set dept = current_user.department | lower %}
+          {% if dept == 'it' or dept == 'information technology & mis' or dept == 'information technology' %}
+          <li class="nav-item {{ report }}">
+            <a class="nav-link" href="{{ url_for('task.reportlist') }}">
+              <i class="material-icons">summarize</i>
+              <p>IT weekly Report</p>
+            </a>
+          </li>
+          {% endif %}
+          
+          <li class="nav-item {{ pr }}">
+            <a class="nav-link" href="{{url_for('empUser.profile')}}">
+              <i class="material-icons">account_circle</i>
+              <p>My Profile</p>
+            </a>
+          </li>
+          
+          <li class="nav-item menuList">
+            <a class="nav-link" href="{{ url_for('user_in.password', user_id=current_user.id) }}">
+              <i class="material-icons">lock</i>
+              <p>Set Password</p>
+            </a>
+          </li>
+          
+          <li class="nav-item menuList">
+            <a class="nav-link" href="{{ url_for('user_in.userlogout') }}">
+              <i class="material-icons">eject</i>
+              <p>Logout</p>
+            </a>
+          </li>
+
+          <br><br>
+
+        </ul>
+      </div>
+    </div>
+
+
+    <style type="text/css">
+      
+      li.menuList, .logo h6{
+        display: block;
+      }
+      .menu_menus{
+        width: 230px;
+      }
+      a.dropdown-item{
+        margin: 3px 0px 3px 0px !important;
+      }
+      .sidebar[data-color="purple"] a.dropdown-item:hover{
+        background-color: #9c27b0 !important;
+        color: #fff !important
+      }
+      .sidebar[data-color="azure"] a.dropdown-item:hover{
+        background-color: #00bcd4 !important;
+        color: #fff !important
+      }
+      .sidebar[data-color="green"] a.dropdown-item:hover{
+        background-color: #4caf50 !important;
+        color: #fff !important
+      }
+      .sidebar[data-color="orange"] a.dropdown-item:hover{
+        background-color: #ff9800 !important;
+        color: #fff !important
+      }
+      .sidebar[data-color="danger"] a.dropdown-item:hover{
+        background-color: #f44336 !important;
+        color: #fff !important
+      }
+      .sidebar[data-color="rose"] a.dropdown-item:hover{
+        background-color: #e91e63 !important;
+        color: #fff !important
+      }
+      .sidebar[data-color="white"] a.dropdown-item:hover{
+        background-color: #fff !important;
+        color: #fff !important
+      }
+
+      @media only screen and (max-width: 600px) {
+        li.menuList{
+          display: block;
+        }
+        .logo h6{
+          display: block;
+          text-align: center;
+        }
+        .logo h6 span{
+          position: relative;
+          bottom: 7px;
+        }
+      }
+
+      @media only screen and (min-width: 610px) and (max-width: 768px) {
+        li.menuList{
+          display: block;
+        }
+        .logo h6{
+          display: block;
+          text-align: center;
+        }
+        .logo h6 span{
+          position: relative;
+          bottom: 7px;
+        }
+      }
+    </style>

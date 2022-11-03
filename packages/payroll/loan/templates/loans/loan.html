@@ -1,0 +1,564 @@
+{% extends "layout.html" %}
+{% block content %}
+
+{% if loantype %}
+    {% set btn = '' %}
+{% else %}
+    {% set btn = 'disabled' %}
+{% endif %}
+    <div class="">
+        <h4><i class="fa fa-money-bill-alt fa-sm"></i> Loan Application</h4>
+        <ul class="bodymenu">
+            <li>
+                <a href="{{url_for('loans.loan')}}" class="active"><small>New Application</small></a>
+            </li>
+        </ul>
+        
+
+        <br>
+
+        <div class="">
+            <div class="row">
+                <div class="col-xs-12 col-md-1"></div>
+                <div class="col-xs-12 col-md-11">
+                    <form action="/admin/processloan" method="post" id="requestapplication">
+                        <div class="row">
+                            <div class="col-xs-12 col-md-3">
+                                <div class="form-group">
+                                    <label for="department">Department</label>
+                                    <select class="form-control" id="department" required>
+                                        <option selected disabled>--select department--</option>
+                                        {% if department %}
+                                            {% for dept in department %}
+                                            <option data-name="{{ dept[0]}}" value="{{ dept[0] }}">{{ dept[0] }}</option>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </select>
+                                </div> 
+                            </div>
+                            <div class="col-xs-12 col-md-3">
+                                <div class="form-group">
+                                    <label for="employee">Employees</label>
+                                    <select class="form-control" id="employee" name="empid" required>
+                                        <option selected disabled value="none">--select employees--</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-md-3">
+                                <div class="form-group">
+                                    <label for="loantype">Loan Type</label>
+                                    <select class="form-control" id="loantype" name="loantype" required>
+                                        <option selected disabled value="none">--select loan type--</option>
+                                    </select>
+                                    <div id="coop_msg">
+                                        
+                                    </div>
+                                </div> 
+                            </div>
+                        </div>
+                        
+                        <br>
+                        <div class="row">
+                            <div class="col-xs-12 col-md-3">
+                                <div class="form-group">
+                                    <label for="amount">Amount</label>
+                                    <input type="number" name="amount" class="form-control" id="amount" required>
+                                </div> 
+                            </div>
+                            <div class="col-xs-12 col-md-3">
+                                <div class="form-group">
+                                    <label for="requestdate">Requesting Date</label>
+                                    <input type="date" name="requestdate" class="form-control" id="requestdate" required>
+                                </div> 
+                            </div>
+                            <div class="col-xs-12 col-md-3">
+                                <div class="form-group">
+                                    <label for="duration">Duration</label>
+                                    <input type="number" name="duration" class="form-control" id="duration" required>
+                                </div> 
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-xs-12 col-md-3 "></div>
+                            <div class="col-xs-12 col-md-3 text-center">
+                                <div class="form-group">
+                                    <button type="submit" name="" form="requestapplication" value="" class="btn btn-success btn-sm btn-block" id="submitbtn">
+                                    Submit Application </button>
+                                </div> 
+                            </div>
+                        </div>
+                    </form>
+
+                    <br>
+                    <div class="row">
+                        <div class="col-xs-12 col-md-9">
+                            <div id="loanrecord" id="loanrecord" style="display: none;">
+                                <h5>Loan Record of <span id="empname"></span></h5>
+                                <table class="table table-hover">
+                                    <thead>
+                                        <th>Loan ID</th>
+                                        <th>Loan Name</th>
+                                        <th>Amount</th>
+                                        <th>Outstanding</th>
+                                        <th>Duration</th>
+                                        <th>EMI</th>
+                                    </thead>
+                                    <tbody id="emploan">
+                                        
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<style>
+    .Loanbox{
+        max-height: 400px;
+        overflow: hidden;
+    }
+    .Loanbox:hover{
+        overflow-y: scroll;
+    }
+</style>
+{% endblock content %}
+
+
+{% block script %}
+<script>
+	$(document).ready(function() {
+        $('#department').on('change', function() {
+            department = $(this).find('option:selected');
+            deptname = department[0].dataset.name
+            type = 'department'
+
+
+            $.ajax({
+                method: 'post',
+                data:{deptname:deptname, type:type},
+                url:'/admin/loan',
+
+                success: function (data){
+                    if (data != null) {
+                        $('#employee').empty();
+                        $('#employee').append('<option selected disabled value="none">--select employees--</option>');
+                        for (var i = data.length - 1; i >= 0; i--) {
+                            $('#employee').append('<option value="'+data[i][0]+'" data-id="'+data[i][0]+'" data-name="'+data[i][1]+'">'+data[i][1]+'</option>');
+                        }
+                    }else{
+                        $('#employee').empty();
+                        $('#employee').append('<option selected disabled value="none">--select employees--</option>');
+                    }
+                }, 
+                error: function(e){
+                    console.log(e)
+                }
+            })
+        })
+
+        
+        $('#employee').on('change', function() {
+            get_selected = $(this).find('option:selected');
+            empid = get_selected[0].dataset.id;
+            empname = get_selected[0].dataset.name;
+            type = 'employee'
+
+            $.ajax({
+                method: 'post',
+                data:{empid:empid, type:type},
+                url:'/admin/loan',
+
+                beforeSend: function(){
+                    document.getElementById('coop_msg').innerHTML = '';
+                },
+
+                success: function (data){
+                    
+                    if (data != null) {
+                        if (data[1] != null) {
+                            $('#loantype').empty();
+                            $('#loantype').append('<option selected disabled value="none">--select loan type--</option>');
+                            for (var i = data[1].length - 1; i >= 0; i--) {
+                                $('#loantype').append('<option value="'+data[1][i][1]+'">'+data[1][i][1]+'</option>');
+                            }
+                        }
+
+                        if(data[0] != null){
+                            $('#emploan').empty()
+                            document.getElementById('empname').innerHTML = empname
+                            for (var i = data[0].length - 1; i >= 0; i--) {
+                                info = '<tr>\
+                                            <td>'+data[0][i][12]+'</td>\
+                                            <td>'+data[0][i][2]+'</td>\
+                                            <td>'+data[0][i][3]+'</td>\
+                                            <td>'+data[0][i][4]+'</td>\
+                                            <td>'+data[0][i][6]+'</td>\
+                                            <td>'+data[0][i][7]+'</td>\
+                                        </tr>';
+
+                                $('#emploan').append(info);
+                            }
+                            document.getElementById('loanrecord').style.display = 'block';
+                        }else{
+                            $('#emploan').empty();
+                            document.getElementById('loanrecord').style.display = 'none';
+                        }
+                    }
+                }
+            });
+        });
+
+        
+        $('#loantype').on('change', function (){
+            empid = document.getElementById('employee').value
+            loantype = document.getElementById('loantype').value
+
+            if (empid == 'none') {
+                $('#employee').focus();
+            }else{
+                $.ajax({
+                    method: 'post',
+                    url: '/admin/loan',
+                    data: {empid:empid, type:'checkloan', loantype:loantype},
+
+                    success: function (data){
+                        
+                        if (data == 'False') {
+                            msg = '<small style="color:#dd4b39"><i class="fa fa-info-circle"></i> User not a cooperative member</small>';
+                            document.getElementById('coop_msg').innerHTML = msg;
+                            document.getElementById('submitbtn').disabled = true;
+                        }else{
+                            document.getElementById('coop_msg').innerHTML = '';
+                            document.getElementById('submitbtn').disabled = false;
+                        }
+                    }
+                });
+            }
+        });
+
+
+
+
+		$('#example').DataTable();
+        $('#emp_name').chosen();
+	});
+
+
+    function checkLoanType(empid, loantype){
+        
+    }
+</script>
+
+<!-- <script type="text/javascript">
+	$('#emp_name').on('change', function () {
+		var selectedOption = $(this).find('option:selected');
+		$('#emp_id').val(selectedOption[0].dataset.id);
+		var loan_cat = document.getElementById('loan_category').value = '',
+            error_msg = document.getElementById('error_msg').innerHTML = '';
+
+
+		var get_id = document.getElementById('emp_id').value,
+		    dept = document.getElementById('emp_dept'),
+		    post = document.getElementById('emp_post'),
+		    email = document.getElementById('emp_email'),
+		    branch = document.getElementById('emp_branch'),
+		    mobile = document.getElementById('emp_mobile');
+
+		var basic = document.getElementById('basic'),
+		    gross = document.getElementById('gross');
+
+        document.getElementById('amount').disabled = true;
+        document.getElementById('loan_perc').disabled = true;
+        document.getElementById('repayment').disabled = true;
+        document.getElementById('btn-loan').disabled = true;
+
+		$.ajax({
+			method: 'POST',
+			url: '/admin/loan',
+			data: {get_id: get_id},
+
+			success:function( data ){
+				dept.value = data[0][5];
+				post.value = data[0][6];
+				email.value = data[0][7];
+				branch.value = data[0][8];
+				mobile.value = data[0][4];
+
+				if(data[1]){
+                    basic.innerHTML = convert(data[1][1].toFixed(2));
+
+                    gross.innerHTML = convert(data[1][6].toFixed(2));
+                }else{
+                    basic.innerHTML = 0;
+                    gross.innerHTML = 0;
+                }
+
+                /* Cooperative loan details */
+
+                if(!data[2]){
+                    /* clear table record */
+                    $('#coopTable tbody').empty();
+                    var tr = '<tr> \
+                                <td colspan="4">\
+                                <div class="alert alert-info"> No Loan Record ! </div>\
+                                </td>\
+                                </tr>';
+                    $('#coopTable').find('tbody').append(tr);
+                }else{
+                    /* clear table record */
+                    $('#coopTable tbody').empty();
+        
+                    for (var i = 0; i < data[2].length; i++) {
+                        var cloan = convert(data[2][i][3].toFixed(2)),
+                            coop_outstanding = convert(data[2][i][4].toFixed(2)),
+
+                            count = i+1;
+
+                        if(data[2][i][4] > 0){
+                            var bg = '#E74C3C';
+                        }else if(data[2][i][4] <= 0){
+                            var bg = '#229954';
+                        }
+
+                        var tr = '<tr style="background-color: '+bg+'; color: #fff">\
+                                <td id="">'+count+'</td>\
+                                <td>'+data[2][i][2].toUpperCase()+'</td>\
+                                <td id="">N'+cloan+'</td>\
+                                <td id="">N'+coop_outstanding+'</td>\
+                            </tr>';
+
+                        $('#coopTable').find('tbody').append(tr);
+                    }
+                    
+                }
+                /*!-- Cooperative loan details end --*/              
+
+
+                /* Other Loans information */
+
+                if(!data[3]){
+                    /* clear table record */
+                    $('#loanTable tbody').empty();
+                    var tr = '<tr> \
+                                <td colspan="4">\
+                                <div class="alert alert-info"> No Loan Record ! </div>\
+                                </td>\
+                                </tr>';
+                    $('#loanTable').find('tbody').append(tr);
+                }else{
+                    $('#loanTable tbody').empty();
+                    for (var i = 0; i < data[3].length; i++) {
+                        var Oloan = convert(data[3][i][3].toFixed(2)),
+                            Other_outstanding = convert(data[3][i][4].toFixed(2)),
+
+                            count = i+1;
+
+                        if(data[3][i][4] > 0){
+                            var bg = '#E74C3C';
+                        }else if(data[3][i][4] <= 0){
+                            var bg = '#229954';
+                        }
+
+                        var tr = '<tr style="background-color: '+bg+'; color: #fff">\
+                                <td id="">'+count+'</td>\
+                                <td>'+data[3][i][2].toUpperCase()+'</td>\
+                                <td id="">N'+Oloan+'</td>\
+                                <td id="">N'+Other_outstanding+'</td>\
+                            </tr>';
+
+                        $('#loanTable').find('tbody').append(tr);
+                    }
+                }
+
+                
+
+                /*!-- Other loans information ends --*/
+
+				document.getElementById('emp_info').style.display = 'block';
+			}
+		});
+	});
+
+	$('#loan_category').on('change', function () {
+		var selectedOption = $(this).find('option:selected'),
+		    selectedLoan = selectedOption[0].dataset.name.toLowerCase(),
+		    emp_id = document.getElementById('emp_id').value,
+		    amt = document.getElementById('amount'),
+            loanp = document.getElementById('loan_perc'),
+            rpy = document.getElementById('repayment'),
+            btnloan = document.getElementById('btn-loan'),
+            error_msg = document.getElementById('error_msg'),
+
+            coop_name = selectedLoan.search('cooperative');
+           document.getElementById('selectedloantype').value = selectedLoan;
+
+		    if(coop_name > 0){
+		        $.ajax({
+		            method: 'POST',
+		            url: '/admin/chk_emp_loan',
+		            data:{emp_id:emp_id},
+		            success: function(data){
+                        if(data == 'None'){
+                            error_msg.innerHTML = 'Employee not a Cooperative Member!';
+                            error_msg.style.display = 'block';
+
+                            amt.disabled = true;
+                            loanp.disabled = true;
+                            rpy.disabled = true;
+                            btnloan.disabled = true;
+                        }else if(data == 'on loan'){
+                            document.getElementById('error_msg').innerHTML = 'Employee is currently on Active Loan';
+                            amt.disabled = true;
+                            loanp.disabled = true;
+                            rpy.disabled = true;
+                            btnloan.disabled = true;
+                        }else{
+                            document.getElementById('error_msg').innerHTML = '';
+                            amt.disabled = false;
+                            loanp.disabled = false;
+                            rpy.disabled = false;
+                            btnloan.disabled = false;
+                        }
+		            }
+		        });
+		    }else{
+		        /*check if emp is currently on loan*/
+                /*$.ajax({
+                    method: 'post',
+                    url: '/admin/activeloan',
+                    data:{
+                        id:emp_id
+                    },
+                    success:function(data){
+                        if(data != ''){
+                            document.getElementById('error_msg').innerHTML = 'Employee is currently on '+ data[2] +'!';
+                            document.getElementById('error_msg').style.display = 'block';
+                            amt.disabled = true;
+                            loanp.disabled = true;
+                            rpy.disabled = true;
+                            btnloan.disabled = true;
+                        }
+                    }
+                });*/
+            }
+
+
+
+        document.getElementById('error_msg').style.display = 'none';
+        amt.disabled = false;
+        loanp.disabled = false;
+        rpy.disabled = false;
+        btnloan.disabled = false;
+	});
+
+    $('#loan_perc').on('change', function () {
+        var selectedOption = $(this).find('option:selected'),
+        loan_perc = selectedOption[0].dataset.value;
+        document.getElementById('perc').value = loan_perc;
+
+        var getamount = document.getElementById('amount').value,
+            repayment = document.getElementById('repayment'),
+            amount = parseFloat(getamount.replace(/,/g, ''));
+
+        percentage = getpercentage(loan_perc, amount);
+        repayment.value = parseFloat(amount) + parseFloat(percentage)
+    });
+
+    function getpercentage(percentage, amount){
+        stp1 = parseFloat(percentage) / parseInt(100);
+        stp2 = stp1 * parseInt(amount);
+        return stp2;
+    }
+
+   /* $('#btn-loan').click(function(){
+        var emp_id = document.getElementById('emp_id').value,
+            loan = document.getElementById('amount').value,
+            repay = document.getElementById('repayment').value,
+            percrate = document.getElementById('perc').value,
+            repayment_pec = document.getElementById('repayment_perc').value,
+            type = document.getElementById('loan_category').value;
+
+            $.ajax({
+                method: 'post',
+                url: 'processloan',
+                data: {emp_id:emp_id, loan:loan, repay:repay, percrate:percrate, type:type,
+                    repay_perc:repayment_pec},
+
+                beforeSend: function(){
+                    document.getElementById('btn-loan').innerHTML = '<i class="spinner-border spinner-border-sm"></i> Processing';
+                },
+                success: function(data){
+                    if(data == 'Loan Decline'){
+                        var msg = document.getElementById('alert');
+                            msg.innerHTML = data+ '! <small>Check available loan request </small>';
+                            msg.style.color = '#fff';
+                            msg.style.backgroundColor = 'red';
+                            msg.style.borderColor = 'red';
+                            msg.style.display = 'block';
+                            document.getElementById('btn-loan').innerHTML = 'Process Loan';
+
+                        setTimeout(function (){
+                            msg.style.display = 'None';
+                        },3000)
+
+                    }else{
+                        var msg = document.getElementById('alert');
+                            msg.innerHTML = data;
+                            msg.style.color = '#fff';
+                            msg.style.backgroundColor = 'green';
+                            msg.style.borderColor = 'green';
+                            msg.style.display = 'block';
+                            document.getElementById('btn-loan').innerHTML = 'Process Loan';
+
+                        setTimeout(function (){
+                            msg.style.display = 'None';
+                        },3000)
+                    }
+
+                },
+                error: function(xhr){
+                    var msg = document.getElementById('alert');
+                        msg.innerHTML = 'Unable to save records';
+                        msg.style.color = '#fff';
+                        msg.style.backgroundColor = 'red';
+                        msg.style.display = 'block';
+                        document.getElementById('btn-loan').innerHTML = 'Process Loan';
+
+                }
+            });
+    });*/
+
+    function convert(amount){
+        return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+
+    $(document).ready(function(){
+        $('.convert').on( "keyup", function( event ) {
+            // When user select text in the document, also abort.
+            var selection = window.getSelection().toString();
+            if ( selection !== '' ) {
+                return;
+            }
+            // When the arrow keys are pressed, abort.
+            if ( $.inArray( event.keyCode, [38,40,37,39] ) !== -1 ) {
+                return;
+            }
+            var $this = $( this );
+
+            // Get the value.
+            var input = $this.val();
+
+            var input = input.replace(/[\D\s\._\-]+/g, "");
+                    input = input ? parseInt( input, 10 ) : 0;
+
+                    $this.val( function() {
+                        return ( input === 0 ) ? "" : input.toLocaleString( "en-US" );
+                    } );
+        });
+    })
+</script> -->
+{% endblock %}

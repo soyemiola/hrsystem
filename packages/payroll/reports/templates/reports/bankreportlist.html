@@ -1,0 +1,46 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="exceltable">
+			<table class="table table-sm" id="myTable">
+				<thead>
+					<th>Name</th>
+					<th>Address</th>
+					<th>Age</th>
+				</thead>
+				<tbody>
+					<tr>
+						<td>Olanrewaju Samuel</td>
+						<td>52, Olakunle Kasunmu Street</td>
+						<td>27</td>
+					</tr>
+				</tbody>
+			</table>
+			<button id="button-a">Create Excel</button>
+		</div>
+
+{% endblock content %}
+
+
+{% block script %}
+<script src="{{url_for('static', filename='js/xlsx.min.js')}}"></script>
+<script src="{{url_for('static', filename='js/FileSaver.min.js')}}"></script>
+
+
+<script>
+	var wb = XLSX.utils.table_to_book(document.getElementById('myTable'), {sheet:'Sheet Js'});
+
+	var wbout = XLSX.write(wb, {bookType: 'xlsx', bookSST:true, type: 'binary' });
+
+	function s2ab(s){
+		var buf = new ArrayBuffer(s.length);
+		var view = new Uint8Array(buf);
+		for(var i=0; i<s.length; i++) view[i] = s.charCodeAt(i) & 0xFF;
+		return buf;
+	}
+
+	$('#button-a').click(function(){
+		saveAs(new Blob([s2ab(wbout)], {type: 'application/octet-stream'}), 'test.xlsx')
+	});
+</script>
+{% endblock %}

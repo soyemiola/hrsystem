@@ -1,0 +1,75 @@
+{% extends "layout.html" %}
+{% block content %}
+
+	<div class="row">
+		<div class="col-xs-12 col-md-12">
+			<h4>Staff Attendance Profile</h4>
+		</div>
+
+		<div class="col-xs-12 col-md-9">
+			<div class="rg-box" style="margin-top: 20px">
+				<h6>Attendance Report Details</h6>
+
+				<p class="">
+					<span class="fa fa-file-excel-o" title="print excel" style="cursor: pointer;"></span>
+
+				  	<a href="{{ url_for('register.home') }}" class="btn btn-sm btn-primary btn-flat pull-right">
+				  		<i class="fa fa-arrow-circle-left"></i> Back </a>
+				 </p>
+				<div style="background-color: #fff">
+					<table class="table table-striped table-sm table-hover">
+						<thead>
+							<th>Date</th>
+							<th>Login</th>
+							<th>Logout</th>
+							<th>Shift</th>
+							<th>Ip Address</th>
+							<th>Device</th>
+							<th>Status</th>
+						</thead>
+						<tbody>
+							{% if att %}
+								{% for i in att %}
+								<tr>
+									<td>{{i[2]}}</td>
+									<td>{{i[3]}}</td>
+									<td>
+										{% if i[4] %}
+											{{i[4]}}
+										{% endif %}
+									</td>
+									<td>{{i[9]}}</td>
+									<td>{{i[5]}}</td>
+									<td>{{i[6]}}</td>
+									<td><small>{{i[10]}}</small></td>
+								</tr>
+								{% endfor %}
+							{% endif %}
+						</tbody>
+					</table>
+				</div>				
+			</div>
+		</div>
+		<div class="col-xs-12 col-md-3">
+			<div class="rg-box">
+				<div class="rg-box-img text-center" >
+					{% if user_info[20] %}
+						{% set img = user_info[20] %}
+					{% else %}
+						{% set img = '' %}
+					{% endif %}
+					<img src="{{ url_for('static', filename='image/'+img) }}" class="img-thumbnail img-responsive" alt="Profile img" style="height: 200px !important;">
+					<h3>{{ user_info[1] }}</h3>
+					<p>{{ user_info[5] }}</p>
+					<p>{{ user_info[18] }}</p>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+
+{% endblock content %}
+
+{% block script %}
+
+{% endblock script %}

@@ -1,0 +1,73 @@
+{% extends "layout.html" %}
+{% block content %}
+
+	<div class="row">
+		<div class="col-xs-12 col-md-12">
+			<div class="tlabel"><h6><i class="fa fa-th"></i> Training Feedback List</h6></div>
+		</div>
+		<div class="col-xs-12 col-md-12">
+			<div class="tfilter">
+				<a href="{{url_for('users.traininglist')}}" class="btn btn-sm btn-primary pull-right m-1"><small>Staff Training list</small></a>
+				<button class="btn btn-sm btn-primary pull-right m-1" data-toggle="collapse" data-target="#filter">Filter</button>
+				<div class="collapse" id="filter">
+					<form method="post">
+					  	<div class="form-row">
+						    <div class="form-group col-md-2">
+						      	<label for="inputCity">Select Year</label>
+						      	<select class="form-control">
+						      		{% for yr in year %}
+						      		<option>{{ yr }}</option>
+						      		{% endfor %}
+						      	</select>
+						    </div>
+						    <div class="form-group col-md-2">
+						    	<br>
+						      	<input type="submit" name="" class="btn btn-primary btn-sm mt-3">
+						    </div>
+						</div>
+					</form>
+				</div>
+			</div>
+			<div class="tlist mt-5">
+
+				<table class="table table-sm table-hover" id="tflist">
+					<thead>
+						<th>Title</th>
+						<th>Date</th>
+						<th>Department</th>
+						<th>Trainer</th>
+						<th>No. of trainees</th>
+					</thead>
+					<tbody>
+						{% if tflist %}
+							{% for x in tflist %}
+								{% set numofuser = x[5] | nOU %}
+								<tr>
+									<td><a href="{{ url_for('users.displayfb', ulink=x[5]) }}">{{ x[2] }}</a></td>
+									<td>{{ x[3] }}</td>
+									<td>{{ x[6] }}</td>
+									<td>{{ x[1] | get_emp_name }}</td>
+									<td>{% if numofuser > 0 %}{{ numofuser }}{% endif %}</td>
+								</tr>
+							{% endfor %}
+						{% endif %}
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<!-- <ul class="bodymenu">
+			<li>
+				<a href="{{ url_for('users.employees') }}" class="active"><small>Employees List</small></a>
+			</li>
+		</ul> -->
+	</div>	
+
+{% endblock content %}
+
+{% block script %}
+	<script type="text/javascript">
+		$('#tflist').dataTable({
+			"iDisplayLength": 100
+		});
+	</script>
+{% endblock script %}

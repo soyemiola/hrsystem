@@ -1,0 +1,66 @@
+{% include 'update_templates/header.html' %}
+
+
+<body class="">
+  <div class="wrapper ">
+   {% include 'update_templates/usermenu.html' %}
+    {% include 'update_templates/script.html' %}
+    <div class="main-panel">
+      <!-- Navbar -->
+     {% include 'update_templates/usernavbar.html' %}
+      <!-- End Navbar -->
+      
+      <div class="content" style="padding-top: 0px">
+        <div class="container-fluid">
+          {% with messages = get_flashed_messages(with_categories=true)%}
+              {% if messages %}
+                {% for category, message in messages %}
+                  <script>
+                    md = {
+                      showAlert: function(from, align, mode) {
+                        type=[mode],
+                        color=0,
+                        
+
+                      $.notify({
+                        icon: "add_alert",
+                        message: "{{ message }}"
+
+                      }, {
+                        type: type[color],
+                        timer: 300,
+                        placement: {
+                          from: from,
+                          align: align
+                        } 
+                      });
+                      }
+                    }
+                    md.showAlert('top', 'center', '{{category}}');
+
+                  </script>
+                  
+
+                {% endfor %}
+              {% endif %}
+          {% endwith %}
+
+          
+          {% block content %}
+
+          {% endblock %}
+        </div>
+      </div>
+
+      {% include 'update_templates/footer.html' %}
+    </div>
+  </div>
+  
+  <!-- {% include 'update_templates/fixed-plugin.html' %} -->
+  
+  {% block scripts %}
+    
+  {% endblock %}
+</body>
+
+</html>

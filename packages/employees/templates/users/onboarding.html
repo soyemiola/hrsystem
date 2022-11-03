@@ -1,0 +1,161 @@
+{% extends "layout.html" %}
+{% block content %}
+
+	<div class="onboard">
+		{% if offboard %}
+			<h6><i class="fa fa-trash"></i> Onboarding Process</h6>
+			<br>
+			<div class="active_det">
+				<h5>Inactive staff list</h5>
+				<table class="table" id="onboarding">
+					<thead>
+						<th>Name</th>
+						<th>Department</th>
+						<th>Start Date</th>
+						<th>Reason</th>
+						<th></th>
+					</thead>
+					<tbody>
+						{% for i in offboard %}
+						<tr>
+							<td>{{ i[1] }}</td>
+							<td>{{ i[2] }}</td>
+							<td>{{ i[3] }}</td>
+							<td>{{ i[5] }}</td>
+							<td>
+								<form action="{{ url_for('users.onboard') }}" method="post">
+									<input type="hidden" name="emp_id" value="{{ i[0] }}">
+									<input type="hidden" name="offboardId" value="{{i[6]}}">
+									<button type="submit" class="btn btn-primary btn-sm btn-flat">Open Process</button>
+								</form>								
+							</td>
+						</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+
+		{% endif %}
+
+		{% if open_process %}
+			<h6><i class="fa fa-trash"></i> Onboarding Process</h6>
+			<div class="active_det">
+				<div class="fil_det">
+					<br>
+						<div class="fil_det_cont">
+							<h4>Basic Information</h4>
+							<div class="row">
+								<div class="col-xs-12 col-md-3">
+									<div class="fil_field">
+										<label>Name</label>
+										<p>{{ open_process[0][1]}}</p>
+									</div>
+									<div class="fil_field">
+										<label>Previous Department</label>
+										<p>{{ open_process[0][5]}}</p>
+									</div>
+									<div class="fil_field">
+										<label>Previous Position</label>
+										<p>{{ open_process[0][6]}}</p>
+									</div>
+								</div>
+
+								<div class="col-xs-12 col-md-3">
+									<div class="fil_field">
+										<label>Previous Email</label>
+										<p>{{ open_process[0][7]}}</p>
+									</div>
+									<div class="fil_field">
+										<label>Telephone</label>
+										<p>{{ open_process[0][4]}}</p>
+									</div>
+									<div class="fil_field">
+										<label>State</label>
+										<p>{{ open_process[0][13]}} State</p>
+									</div>
+								</div>
+							</div>
+							<br>
+							
+							<div class="row">
+								<div class="col-xs-12 col-md-6">
+									{% if open_process[1] %}
+									<div class="fil_field">
+										<h5>Previous company's services and device usage</h5>
+										<table class="table">
+											<thead>
+												<th></th>
+												<th>Devices</th>
+												<th>Services</th>
+												<th></th>
+											</thead>
+											<tbody>
+												{% for i in open_process[1] %}
+												<tr>
+													<td>{{ i[4] }}</td>
+													<td>
+														{% for dev in i[3] %}
+															{{ dev }},
+														{% endfor %}
+
+													</td>
+													<td>
+														{% for ser in i[2] %}
+															{{ ser }},
+														{% endfor %}
+													</td>
+													<td id="loader{{ i[0] }}">
+														{% if on_list %}
+
+														{% else %}
+														<button data-dept="{{ i[4] }}" data-emp_id="{{ open_process[0][0] }}" data-id="{{i[0]}}" class="btn btn-secondary btn-flat btn-xs action" id="action{{ i[0] }}">Action</button>
+														{% endif %}
+														
+														
+													</td>
+														
+												</tr>
+												{% endfor %}
+											</tbody>
+										</table>
+									</div>
+									{% endif %}
+									<div class="fil_field">
+										<form id="activate" action="{{ url_for('users.onboard') }}" method="post">
+											<input type="hidden" name="emp_id" form="activate" value="{{open_process[0][0]}}">
+											<input type="hidden" name="offboardId" value="{{ open_process[2] }}">
+											<input type="hidden" name="status" value="activate">
+											<button type="submit" class="btn btn-primary btn-sm btn-block">
+												<i class="fa fa-check-circle"></i> Activate Profile</button>
+										</form>
+									</div>
+								</div>
+							</div>
+
+
+						</div>
+					</div>
+			</div>
+		{% endif %}
+	</div>
+
+<style>
+	.fil, .active_det{
+		margin-top: 0px;
+		padding-bottom: 10px;
+		border-bottom: 1px solid #f8f8f8;
+		margin-bottom: 10px;
+	}
+	.fil_field h4{
+		text-align: center;
+		letter-spacing: 1px;
+		border-bottom: 1px solid #f8f8f8;
+		padding-bottom: 5px;
+
+	}
+</style>
+{% endblock content %}
+
+{% block script %}
+
+{% endblock script %}

@@ -1,0 +1,199 @@
+{% extends "layout.html" %}
+{% block content %}
+
+        <div class="payclass">
+			<div class="row">
+                <div class="col-xs-12 col-md-12">
+                    <h4><i class="fa fa-cogs"></i> Process Pay class value</h4>
+                </div>
+                <div class="col-xs-12 col-md-4">
+                    <form action="{{ url_for('payroll.payclass') }}" method="post">
+                        <div class="payBox">
+                            <label for="basic">Basic value:</label>
+                            <input type="number" name="basic" id="basic" class="form-control" required>
+                        </div>
+                        <div class="payBox">
+                            <label for="housing">Housing Allowance value:</label>
+                            <input type="number" name="housing" id="housing" class="form-control" required>
+                        </div>
+                        <div class="payBox">
+                            <label for="transport">Transport Allowance value:</label>
+                            <input type="number" name="transport" id="transport" class="form-control" required>
+                        </div>
+                        <div class="payBox">
+                            <label for="other">Other Allowance value:</label>
+                            <input type="number" name="other" id="other" class="form-control" required>
+                        </div>
+                        <div class="payBox">
+                            <button type="submit" name="process" id="processbtn" class="btn btn-success btn-flat btn-sm">{{ 'generate payclass' | upper }}</button>
+                        </div>
+                    </form>
+
+                </div>
+                <div class="col-xs-12 col-md-8">
+                    {% if report %}
+                    <div class="reponseCont m-3 p-3">
+                        <h5>
+                            Processed Values
+                        </h5>
+                    
+                        <div class="row">
+                            <div class="col-xs-12 col-md-6">
+                                <table class="table table-sm table-stripped table-hover">
+                                    <tbody>
+                                        <tr>
+                                            <td>Gross pay:</td>
+                                            <td>{{ report[0].Gross | numberFormat }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Basic pay:</td>
+                                            <td>{{ report[1] | numberFormat }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>House Allowance:</td>
+                                            <td>{{ report[1] | numberFormat }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Transport Allownace:</td>
+                                            <td>{{ report[3] | numberFormat }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Other Allowance:</td>
+                                            <td>{{ report[4] | numberFormat }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="col-xs-12 col-md-6">
+                                <table class="table table-sm table-stripped table-hover">
+                                    <tbody>
+                                        <tr>
+                                            <td>CRA value:</td>
+                                            <td>{{ report[0].CRA | numberFormat }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Pension:</td>
+                                            <td>{{ report[0].Pension | numberFormat }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Total Relief:</td>
+                                            <td>{{ report[7] | numberFormat }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Taxable value:</td>
+                                            <td>{{ report[5] | numberFormat }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Minimum Tax:</td>
+                                            <td>{{ report[6].Minimum_tax | numberFormat }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Higher Tax:</td>
+                                            <td>{{ report[6].HM_tax | numberFormat }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-xs-12 col-md-6">
+                                <table class="table table-sm table-hover">
+                                    <tbody>
+                                        <tr>
+                                            <th>Monthly Netpay:</th>
+                                            <td>{{ report[8] | numberFormat }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Annual Netpay:</th>
+                                            <td>{{ report[9] | numberFormat }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-xs-12 col-md-12">
+                                <table class="table table-stripped table-hover table-sm">
+                                    <thead>
+                                        <th colspan="6">Tax Band</th>
+                                        <th>Total Tax</th>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>1</td>
+                                            <td>2</td>
+                                            <td>3</td>
+                                            <td>4</td>
+                                            <td>5</td>
+                                            <td>6</td>
+                                        </tr>
+                                        <tr>
+                                            <td>{{ report[6].Firstband }}</td>
+                                            <td>{{ report[6].Secondband }}</td>
+                                            <td>{{ report[6].Thirdband }}</td>
+                                            <td>{{ report[6].Fourthband }}</td>
+                                            <td>{{ report[6].Fifthband }}</td>
+                                            <td>{{ report[6].Sixthband }}</td>
+                                            <td>{{ report[6].Total_tax | numberFormat }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                                <div class="reponseBox">
+                                    <div class="row">
+                                        <div class="col-xs-12 col-md-4">
+                                            <div class="className">
+                                                <form action="{{ url_for('payroll.create_class') }}" method="POST">
+                                                    <div class="form-group">
+                                                        <label>Class Name</label>
+                                                        <input type="text" name="classname" id="classname" class="form-control" required>
+                                                        <input type="hidden" name="basic" id="basic" class="form-control" value="{{  report[1] }}" required >
+                                                        <input type="hidden" name="house_a" id="house_a" class="form-control" value="{{  report[2] }}" required >
+                                                        <input type="hidden" name="transport_a" id="transport_a" class="form-control" value="{{  report[3] }}" required >
+                                                        <input type="hidden" name="other_a" id="other_a" class="form-control" value="{{  report[4] }}" required >
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <button class="btn btn-primary btn-sm">Create Class</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div> 
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+		</div>
+<style type="text/css">
+    .payclass{
+        margin-top: 10px;
+    }
+    .reponseCont{
+        border:1px solid #fff;
+        -webkit-box-shadow:0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+               -moz-box-shadow:0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+                    box-shadow:0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+    }
+    .payBox{
+        margin-top: 20px;
+    }
+    .reponseBox{
+        margin: 20px;
+    }
+    .className{
+        margin-top: 10px;
+    }
+</style>
+{% endblock content %}
+
+
+{% block script %}
+<script>
+    
+</script>
+{% endblock %}

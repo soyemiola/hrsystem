@@ -1,0 +1,153 @@
+{% extends "layout.html" %}
+{% block content %}
+
+			<div class="">
+				<h6>Monthly Submission</h6>
+				<ul class="bodymenu">
+					<li>
+						<a href="{{url_for('payroll.filling')}}">Monthly Submissions</a>
+					</li>
+					<li>
+						<a href="{{url_for('payroll.review',q=month)}}" class="active">Monthly Review</a>
+					</li>
+
+				</ul>
+				<div class="">
+					<form action="{{ url_for('payroll.review') }}" method="post" id="filter">
+						<div class="row" style="padding: 0px 5px 0px 5px">
+							<div class="col-xs-12 col-md-12">
+								<h5>Filter Record</h5>
+							</div>
+							<div class="col-xs-12 col-md-3">
+								<div class="form-group">
+									<select class="form-control" id="month" name="month">
+										<option value="0" selected disabled>--select month--</option>
+										{% for mth in month %}
+											{% if mth != '' %}
+											<option data-month={{mth}}>{{ mth }}</option>
+											{% endif %}
+										{% endfor %}
+									</select>
+								</div>
+							</div>
+							<div class="col-xs-12 col-md-3">
+								<div class="form-group">
+									<select class="form-control" id="year" name="year">
+										<option value="0" selected disabled>--select year--</option>
+										{% for yr in year %}
+											<option data-year={{yr}}>{{ yr }}</option>
+										{% endfor %}
+									</select>
+								</div>
+							</div>
+							<div class="col-xs-12 col-md-3">
+								<button class="btn btn-primary btn-sm" type="submit" form="filter">
+									Search
+								</button>
+							</div>
+						</div>
+					</form>
+					<p class="">
+						<i>showing result for: </i><b>{{filters[0]}} / {{filters[1]}} </b>
+					</p>
+					<hr>
+
+					<div class="row">
+						<div class="col-xs-12 col-md-12">
+							{% if review %}
+							<div class="">
+								<h5 class="text-center"><b>{{filters[0]}} {{filters[1]}} Total Salary Review</b></h5>
+							</div>
+							{% endif %}
+
+							<div class="boxinfo">
+							{% if review %}
+							<table id="" class="table table-sm table-striped">
+								<thead>
+									<th>No of Employees</th>
+									<th>Gross Pay</th>
+									<th>Tax</th>
+									<th>Employee Pension</th>
+									<th>Employer Pension</th>
+									<th></th>
+								</thead>
+								<tbody>
+									{% for rev in review %}
+										<tr>
+											<td>{{ rev[4] }}</td>
+											<td>{{ rev[0] | two_decimal}}</td>
+											<td>{{ rev[2] | two_decimal}}</td>
+											<td>{{ rev[3] | two_decimal}}</td>
+											<td>{{ rev[1] | two_decimal}}</td>
+											<td>
+												<span class="pull-right">
+													<a href="{{url_for('payroll.reviewlist', month=filters[0],	year=filters[1]) }}" 
+														class="btn btn-primary btn-sm" title="showlist">
+														<i class="fa fa-bars"></i>
+													</a>
+
+													<a target="_blank" href="{{url_for('report.pdf_template', month=filters[0],
+														year=filters[1])}}" class="btn btn-light btn-sm" title="print report">
+														<i class="fa fa-print"></i>
+													</a>
+												</span>
+											</td>
+										</tr>
+									{% endfor %}
+								</tbody>
+							</table>
+							{% else %}
+							<div class="alert alert-info">
+								<i class="fa fa-exclamation-circle"></i> No Record found
+							</div>
+							{% endif %}
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+{% endblock content %}
+
+
+{% block script %}
+<script>
+	/*$('#filling_month').chosen();
+	$('#filling_year').chosen();*/
+
+	$(document).ready(function() {
+		$('#example').DataTable();
+	});
+	$('#filling_month').on('change', function () {
+		var selectedOption = $(this).find('option:selected');
+			month = document.getElementById('getmonth').value = selectedOption[0].dataset.month,
+			year = document.getElementById('getyear').value;
+			var btn1, fetch;
+
+		if(year == ''){
+			document.getElementById('filling_year').focus();
+		}else{
+			btn1 = '<a href={{ url_for("payroll.review", month="date", year="fixyear") }} class="btn btn-secondary btn-flat btn-sm">Fetch</a>'.replace("date", month);
+			fetch = btn1.replace("fixyear", year);
+			document.getElementById('fetchbtn').innerHTML = fetch;
+		}
+
+	 });
+	$('#filling_year').on('change', function () {
+		var selectedOption = $(this).find('option:selected'),
+			year = document.getElementById('getyear').value = selectedOption[0].dataset.year,
+			month = document.getElementById('getmonth').value,
+			btn1, fetch;
+		if(month == ''){
+			document.getElementById('filling_month').focus();
+			/*console.log('error');*/
+		}else{
+			btn1 = '<a href={{ url_for("payroll.review", month="date", year="fixyear") }} class="btn btn-secondary btn-flat btn-sm">Fetch</a>'.replace("date", month);
+			fetch = btn1.replace("fixyear", year);
+			document.getElementById('fetchbtn').innerHTML = fetch;
+		}
+
+
+	 });
+</script>
+{% endblock %}

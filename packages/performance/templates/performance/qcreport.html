@@ -1,0 +1,488 @@
+{% extends "layout.html" %}
+{% block content %}
+  
+  <div class="row">
+    <div class="col-xs-12 col-md-12">
+      <h5><b>Credibility Report</b></h5>
+    </div>
+  </div>
+  <form action="{{ url_for('qc.qcreport') }}" method="post" id="filter">
+    <div class="">
+      <div class="row">
+        <div class="col-xs-12 col-md-3">
+          <div class="form-group">
+            <label>select department:</label>
+            <select class="form-control dept" name="department" id="department" required>
+              <option selected disabled>--choose department--</option>
+              {% if department %}
+                {% for dept in department %}
+                  <option value="{{ dept[0] }}" data-dept="{{ dept[0] }}"> {{ dept[0] }} </option>
+                {% endfor %}
+              {% endif %}
+            </select>
+          </div>
+        </div>
+        <div class="col-xs-12 col-md-3">
+          <div class="form-group">
+            <label style="width: 100%; text-align: left">select employees: <span class="pull-right" id="load"></span> </label> 
+            <select class="form-control emp" name="employee" id="employees" required>
+              <option value="employees">--select employees--</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-xs-12 col-md-3">
+          <div class="form-group">
+            <label>start date:</label>
+            <input type="date" name="startdate" class="form-control" required>
+          </div>
+        </div>
+        <div class="col-xs-12 col-md-3">
+          <div class="form-group">
+            <label>end date:</label>
+           <input type="date" name="enddate" class="form-control" required>
+          </div>
+        </div>
+        <div class="col-xs-12 col-md-12">
+          <div class="qcboxbtn">
+            <button type="submit" class="btn btn-flat btn-sm btn-primary" form="filter">Fetch Record</button>
+            {% if reports %}
+            <a href="/admin/performance/QC-report" class="btn btn-flat btn-sm btn-primary">QC list</a>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+  <hr>  
+
+  {% if reports %}
+  <div class="row">
+    <div class="col-xs-12 col-md-12">
+      <div class="empbox">
+        <h5>Employees Details</h5>
+        <div class="empbox-det">
+          <div class="row">
+            <div class="col-xs-12 col-md-3">
+              <div class="emp_profile">
+                <div class="emp_profile_img">
+                  <img src="{{ url_for('static', filename='image/user.png') }}" height="70px" width="70px">
+                </div>
+                <div class="emp_profile_det">
+                  <section>
+                    <p>
+                      <span>Staff ID:</span> {{ emp_det[16] }}
+                    </p>
+                    <p>
+                      <span>Name:</span> {{ emp_det[1] }}
+                    </p>
+                    <p>
+                      <span>Dept:</span> {{ emp_det[5] }}
+                    </p>
+                    <p>
+                      <span>Position:</span> {{ emp_det[6] }}
+                    </p>
+                    <p>
+                      <span>Role:</span> {{ emp_det[18] }}
+                    </p>
+                    <p>
+                      <span>Email:</span> {{ emp_det[7] }}
+                    </p>
+                  </section>
+                </div>
+              </div>
+
+              <br>
+
+              <div class="emp_profile">
+                <p>
+                  Generate Report <br>
+                  <small>
+                    <a href="{{ url_for('qc.qcreportPDF', employees=emp_det[0], startdate=start, enddate=end) }}" target="_blank">
+                      <i class="fa fa-file-pdf-o"></i> PDF</a> &nbsp;
+                    <button class="btn btn-xs btn-primary" id="excelbtn" data-name="{{ emp_det[1] }}">
+                      <i class="fa fa-file-excel-o" ></i> Excel
+                    </button>
+                  </small>
+                </p>
+              </div>
+            </div>
+
+            <div class="col-xs-12 col-md-9">
+              <div class="qc_input">
+                {% if reports %}
+                  <div class="qcreport">
+                    <div class="row">
+                      {% for lst in reports %}
+                      <div class="col-xs-12 col-md-6">
+                        <div class="qcreport_list">
+                          <p>
+                            <small><b>Mode:</b></small> {{ lst[2] }} 
+                          </p>
+                          <p>
+                            <small><b>Date Received:</b></small> {{ lst[3] }} 
+                          </p>
+                          <p>
+                            <small><b>Subject:</b></small><br> {{ lst[5] }}
+                          </p>
+                          <p>
+                            <small><b>Summary:</b></small><br> {{ lst[6] }}
+                          </p>
+                          {% if lst[9] %}
+                          <p>
+                            <small class="pull-left"><i>modify by: {{ lst[9] }}</i></small>
+                          </p>
+                          {% endif %}
+                          <p class="attachment">
+                            <small>
+                              {% if lst[7] != '' %}
+                              <a href="{{ url_for('static', filename='QC/'+lst[7]) }}" target="_blank">attachment <i class="fa fa-file-pdf-o"></i></a> &nbsp;
+                              {% endif %}
+                              <!-- Modal -->
+                              <i class="fa fa-edit editreport" title="edit" id="editreport_{{lst[0]}}" data-id="{{ lst[0] }}"></i>
+                              <!-- Set modal to alert before deleting -->
+                              <i class="fa fa-trash deletereport" id="deletereport_{{lst[0]}}" data-id="{{ lst[0] }}" data-emp_id="{{ lst[1] }}" 
+                                  style="color: red" title="delete"></i>
+                            </small>
+                          </p>
+                        </div>
+                      </div>
+                      {% endfor %}
+                    </div>
+                  </div>
+                {% endif %}
+
+                <!-- excel table print -->
+                <br>
+                <table class="table table-hover" style="display: none;" id="tableqcreport">
+                  <thead>
+                    <tr>
+                      <td><b>Staff No:</b> {{ emp_det[16] }}</td>
+                      <td><b>Dept:</b> {{ emp_det[5] }}</td>
+                      <td><b>Name:</b> {{ emp_det[1] }}</td>
+                      <td><b>Role:</b> {{ emp_det[18] }}</td>
+                    </tr>
+                    <tr>
+                      <th>Mode</th>
+                      <th>Received On</th>
+                      <th>Subject</th>
+                      <th>Summary</th>
+                      <th>Attachment</th>
+                      <th>Save Date</th>
+                    </tr>
+                    {% if reports[0]%}
+                      {% for rp in reports[0] %}
+                      <tr>
+                        <td>{{ rp[2] }}</td>
+                        <td>{{ rp[3] }}</td>
+                        <td>{{ rp[5] }}</td>
+                        <td>{{ rp[6] }}</td>
+                        {% if rp[7] == '' %}
+                          {% set att = 'No' %}
+                        {% else %}
+                          {% set att = 'Yes' %}
+                        {% endif %}
+                        <td>{{ att }}</td>
+                        <td>{{ rp[4] }}</td>
+                      </tr>
+                      {% endfor %}
+                    {% endif %}
+                    {% if reports[1]%}
+                      {% for rp in reports[1] %}
+                      <tr>
+                        <td>{{ rp[2] }}</td>
+                        <td>{{ rp[3] }}</td>
+                        <td>{{ rp[5] }}</td>
+                        <td>{{ rp[6] }}</td>
+                        {% if rp[7] == '' %}
+                          {% set att = 'No' %}
+                        {% else %}
+                          {% set att = 'Yes' %}
+                        {% endif %}
+                        <td>{{ att }}</td>
+                        <td>{{ rp[4] }}</td>
+                      </tr>
+                      {% endfor %}
+                    {% endif %}
+                  </thead>
+                </table>
+
+                <!-- // end of excel table -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- The Modal -->
+  <div class="modal fade" id="modifyreport">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+      
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <h5 class="modal-title"><b><i class="fa fa-edit"></i> Edit Report</b></h5>
+        </div>
+        
+        <!-- Modal body -->
+        <div class="modal-body">
+          <form action="{{ url_for('qc.updateqc') }}" method="post" enctype="multipart/form-data">
+            <input type="hidden" name="emp_name" id="emp_name">
+            <input type="hidden" name="emp_id" id="emp_id">
+            <input type="hidden" name="reportid" id="reportid">
+            <input type="hidden" name="filename" id="filename">
+            <input type="hidden" name="start" value="{{ start }}">
+            <input type="hidden" name="end" value="{{ end }}">
+
+            <div class="row">
+              <div class="col-xs-12 col-md-8">
+                <div class="row">
+                  <div class="col-xs-12 col-md-6">
+                    <div class="form-group">
+                      <label>select mode:</label>
+                      <select class="form-control" name="mode" id="mode" required>
+                        <option selected disabled> --select mode-- </option>
+                        {% if var %}
+                            {% for i in var %}
+                            <option value="{{i[1]}}" data-mode="{{i[4]}}" data-name={{i[1]}}> {{i[1]}} </option>
+                            {% endfor%}
+                        {% endif %}
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-xs-12 col-md-6">
+                    <div class="form-group">
+                      <label>recieve date:</label>
+                      <input type="date" name="receive_date" id="receive_date" required class="form-control">
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-xs-12 col-md-12">
+                    <div class="form-group">
+                      <label>subject:</label>               
+                      <input type="text" name="subject" id="subject" class="form-control" required>
+                    </div>
+                  </div>
+                  <div class="col-xs-12 col-md-12">
+                    <div class="form-group">
+                      <label>summary:</label>
+                      <textarea name="summary" id="summary" style="resize: none; height: 50px;" class="form-control" required></textarea>
+                    </div>
+                  </div>
+                  <div class="col-xs-12 col-md-12">
+                    <div class="form-group">
+                      <input type="file" name="attachment" class="form-control-file">
+                      <small><i><b>attach query or commendation letter if available</b></i></small>
+                    </div>
+                  </div>
+                  <div class="col-xs-12 col-md-12">
+                    <div class="form-group">
+                      <button type="submit" class="btn btn-sm btn-flat btn-success pull-right">Update</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-xs-12 col-md-4">
+                  <div id="attachment">
+                    
+                  </div>
+              </div>
+            </div>
+          </form>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Modal -->
+  <div class="modal fade" id="deletereport">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+      <div class="modal-content">
+      
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <h5 class="modal-title" style="color: red"><b><i class="fa fa-trash"></i> Delete Report</b></h5>
+        </div>
+        
+        <!-- Modal body -->
+        <div class="modal-body">
+          <h5><b>Are you sure you want to delete report?</b></h5>
+        </div>
+
+        <div class="modal-footer">
+          
+          <form action="{{ url_for('qc.deleteqc') }}" method="post">
+            <input type="hidden" name="emp_id" id="delete_emp_id">
+            <input type="hidden" name="reportid" id="deletereportid">
+            <input type="hidden" name="deletestart" value="{{ start }}">
+            <input type="hidden" name="deleteend" value="{{ end }}">
+            <button type="button" class="btn btn-sm btn-primary" data-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-success btn-sm">Delete</button>
+          </form>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+  {% else %}
+  <h6><b> Record List </b> </h6>
+  
+  <table class="table table-hover" id="qcrecord">
+    <thead>
+      <th>Name</th>
+      <th>Staff ID</th>
+      <th>Department</th>
+      <th>Mode</th>
+      <th>Subject</th>
+      <th>Date Recieved</th>
+      <th></th>
+    </thead>
+    <tbody>
+      {% if record_list%}
+        {% for qc in record_list %}
+        <tr>
+          <td>{{ qc[1] }}</td>
+          <td>{{ qc[2] }}</td>
+          <td>{{ qc[3] }}</td>
+          <td>
+            <small class="btn-dark p-1">{{ qc[5] }}</small>
+          </td>
+          <td>{{ qc[8] }}</td>
+          <td>{{ qc[6] }}</td>
+          <td>
+           <!--  <span>
+            <a href="{{url_for('static', filename='QC/'+qc[10])}}" target="_blank" title="attached file"><i class="fa fa-file-pdf-o"></i></a></span>&nbsp; -->           
+
+            <a href="/admin/performance/QC-report?q={{qc[0]}}&&date={{qc[6]}}" class="btn btn-sm btn-primary" title="open"><i class="fa fa-folder-open"></i></a></td>
+        </tr>
+        {% endfor %}
+      {% endif %}
+    </tbody>
+  </table>
+  {% endif %}
+{% endblock content %}
+
+{% block script %}
+<script type="text/javascript">
+    $('#department').on('change', function () {
+      var selectedOption = $(this).find('option:selected');
+      dept = selectedOption[0].dataset.dept;
+
+      loader = '<small style="display: none"><img src="{{ url_for("static", filename="image/load.gif") }}" height="10px;"></small>';
+
+      $.ajax({
+        method: 'post',
+        url: '/admin/fetch-record',
+        data: {dept:dept},
+
+        beforeSend: function(){
+          document.getElementById('load').innerHTML = loader;
+        },
+
+        success:function(data){
+          if (data != 'None'){
+            $('#employees').empty();
+            $('#employees').append('<option selected disabled>--select employee--</option>');
+            for (var i = 0; i<data.length; i++){
+              $('#employees').append('<option value="'+data[i][0]+'">'+ data[i][1] +'</option>');
+            }
+            document.getElementById('load').style.display = 'None';
+            document.getElementById('nolist').remove();
+            
+          }else{
+            $('#employees').append('<option value="" selected disabled id="nolist">No available employee</option>');
+          }
+
+        },
+
+        compelete: function(){
+          document.getElementById('load').innerHTML = '';
+        }
+      })
+    });
+
+    $('.editreport').click(function() {
+      var id = $(this).attr('id');
+      reportID = document.getElementById(id).dataset.id;
+      getReport(reportID)
+
+      $('#modifyreport').modal('show');
+    });
+
+    function getReport(id){
+      $.ajax({
+        method: 'POST',
+        url: '/admin/performance/QC-report-item',
+        data:{id:id},
+
+        success: function(data){
+          document.getElementById('mode').value = data[2];
+          document.getElementById('receive_date').value = data[3];
+          document.getElementById('subject').value = data[5];
+          document.getElementById('summary').value = data[6];
+          document.getElementById('subject').value = data[5];
+          document.getElementById('emp_name').value = data[9];
+          document.getElementById('emp_id').value = data[1];
+          document.getElementById('reportid').value = data[0];
+          document.getElementById('filename').value = data[7];
+          
+          pdf = '<iframe src="{{ url_for("static", filename="QC/pdf") }}" height="300px" width="100%"></iframe>';
+          pdf1 = '<a href="{{ url_for("static", filename="QC/pdf") }}" target="_blank" class="pull-right">view</a>';
+
+          iframe = pdf.replace('pdf', data[7]);
+          view = pdf1.replace('pdf', data[7]);
+
+          attachment = iframe+view;
+
+          if (data[7] != '' ) {
+            document.getElementById('attachment').innerHTML = attachment;
+          }else{
+            document.getElementById('attachment').innerHTML = '<p> <small style="color:red; text-align: center;"><i class="fa fa-exclamation"></i> <i>No attachment</i></small></p>';
+          }
+          
+        }
+      });
+    }
+
+    $('.deletereport').click(function() {
+      var id = $(this).attr('id');
+      reportID = document.getElementById(id).dataset.id;
+      emp_id = document.getElementById(id).dataset.emp_id;
+      document.getElementById('deletereportid').value = reportID;
+      document.getElementById('delete_emp_id').value = emp_id;
+
+      $('#deletereport').modal('show');
+    });
+
+    $('#qcrecord').dataTable({
+      /*"iDisplayLength": 50*/
+    });
+  </script>
+
+  <script>
+    var wb = XLSX.utils.table_to_book(document.getElementById('tableqcreport'), {sheet:'Sheet Js'});
+
+    var wbout = XLSX.write(wb, {bookType: 'xlsx', bookSST:true, type: 'binary' });
+
+    function s2ab(s){
+      var buf = new ArrayBuffer(s.length);
+      var view = new Uint8Array(buf);
+      for(var i=0; i<s.length; i++) view[i] = s.charCodeAt(i) & 0xFF;
+      return buf;
+    }
+
+    $('#excelbtn').click(function(){
+          const id = $(this).attr('id');
+          var name = document.getElementById(id).dataset.name,
+              filename = name+' QC Report.xlsx';
+
+      saveAs(new Blob([s2ab(wbout)], {type: 'application/octet-stream'}), filename)
+    });
+
+
+    
+  </script>
+{% endblock %}

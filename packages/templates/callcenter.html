@@ -1,0 +1,349 @@
+<title>BTM | Call Center / VIP Desk Report</title>
+<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+<link rel="stylesheet" href="{{url_for('static', filename='bootstrap4/css/bootstrap.min.css')}}">
+<link rel="stylesheet" href="{{url_for('static', filename='font-awesome/css/font-awesome.min.css')}}">
+<script src="{{url_for('static', filename='bootstrap4/js/jquery-3.4.1.js')}}"></script>
+
+<div class="loader" id="loader"></div>
+<div class="container">
+	<div class="row">
+		<div class="col-12">
+			<div class="banner">
+				<span><img src="{{url_for('static', filename='image/logo.png')}}"></span>
+				<h4>BUSINESS TRAVEL MANAGEMENT</h4>
+				<div class="tag">
+					<h6>Call Center / VIP Desk Report</h6>
+				</div>
+			</div>
+		</div>
+	</div>
+	<form action="" method="post">
+		<div class="det">
+			<div class="row">
+				<div class="col-xs-12 col-md-12">
+					{% with messages = get_flashed_messages(with_categories=true)%}
+							{% if messages %}
+								{% for category, message in messages %}
+									{% if category == 'success' %}
+										{% set icon = 'fa-check-circle' %}
+									{% elif category == 'danger' %}
+										{% set icon = 'fa-times-circle' %}
+									{% elif category == 'info' %}
+										{% set icon = 'fa-info-circle' %}
+									{% elif category == 'warning' %}
+										{% set icon = 'fa-exclamation-circle' %}
+									{% else %}
+									{% endif %}
+									<div class="alert alert-{{category}}">
+										<i class="fa {{icon}}"></i> {{ message }}
+									</div>
+								{% endfor %}
+							{% endif %}
+						{% endwith %}
+				</div>
+				<div class="col-xs-12 col-md-12">
+					<div class="header">				
+						<h6>Date: {{today}}</h6>
+					</div>
+				</div>
+				<div class="col-xs-12 col-md-3">
+					<div class="fileds">
+						<small>Consultant Name</small>
+						<input type="text" name="name" id="name" class="form-control col-10" required>
+					</div>
+				</div>
+				<div class="col-xs-12 col-md-3">
+					<div class="fileds">
+						<small>Email Address</small>
+						<input type="email" name="email" id="email" class="form-control col-10" required>
+					</div>
+				</div>
+				<div class="col-xs-12 col-md-3">
+					<div class="fileds">
+						<small>Resumption Time</small>
+						<input type="time" name="time" id="time" class="form-control col-10" required>
+					</div>
+				</div>
+				<div class="col-xs-12 col-md-3">
+					<div class="fileds">
+						<small>Working Shift</small>
+						<select class="form-control" required name="shift" id="shift">
+							<option selected disabled>--Select Shift--</option>
+							<option value="Day">Day Shift</option>
+							<option value="Night">Night Shift</option>
+						</select>
+					</div>
+				</div>
+			</div>
+		</div>
+		<br>
+
+		<div class="row">
+			<div class="col-xs-12 col-md-12">
+				
+					<div class="sectionbox effect8">
+						<header>Call Center / VIP Report:</header>
+						<div class="sectioninner" id="sectioninner">
+							<table class="table">
+								<thead>
+									<th>S\N</th>
+									<th>Customer Name</th>
+									<th>Customer Number</th>
+									<th></th>
+									<th></th>
+								</thead>
+								<tbody id="c_element">
+									<tr class="itemlist a_itemlist">
+										<td style="width: 50px"><input type="text" name="c_item" class="form-control" value="1" required></td>
+										<td><input type="text" name="c_cust_name" class="form-control" required></td>
+										<td style="width: 50px"><input type="text" name="c_cust_num" class="form-control" required></td>
+										<td>
+											<label>Is customer number reachable?</label>
+											<select class="form-control c_cust_reachable" name="c_cust_reachable">
+												<option selected value="No" data-value="No" >No</option>
+												<option value="Yes" data-value="Yes">Yes</option>
+											</select>
+											
+											<br>
+											<p>
+												<label>If Yes? Feedback from Client?</label>
+												<textarea class="form-control" name="c_cust_feedback"></textarea>
+											</p>
+										</td>
+										<td></td>
+										
+										<td class="edit"></td>
+									</tr>
+								</tbody>
+								<tfoot>
+									<tr>
+										<td colspan="6">
+											<div class="addbtn">
+												<button type="button" class="btn btn-primary btn-sm c_insertitem"><i class="fa fa-plus"></i> Add Item</button>
+											</div>
+										</td>
+									</tr>
+								</tfoot>
+							</table>						
+						</div>
+					</div>
+
+					<div class="submitbox">
+						<div class="fileds">
+							<small><b>Do you want a copy of your response?</b></small>
+							<select class="form-control col-3" required name="mailcopy">
+								<option selected value="No">No</option>
+								<option value="Yes">Yes</option>
+							</select>
+						</div>
+						<div class="submit">
+							<button type="submit" name="submit" class="btn btn-sm btn-success submit">Submit Report</button>						
+						</div>
+					</div>
+			</div>
+		</div>
+
+	</form>
+
+	<div class="row">
+		<div class="col-xs-12 col-md-12">
+			<footer>
+				<p>
+					<small>BUSINESS TRAVEL MANAGEMENT</small> <br>
+					<small><b>&copy; {{ year }}</b></small>
+
+				</p>
+				<p></p>
+			</footer>
+		</div>
+	</div>
+</div>
+
+
+<style>
+	.container{
+		font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",
+                    Roboto,"Helvetica Neue",Arial,"Noto Sans",
+                    sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+	}
+	.banner{
+		text-align: ;
+		padding: 10px;
+		background: #fff;
+		border:1px solid #f8f8f8;
+	}
+	.banner img{
+		height: 50px;
+		float: left;
+		margin-right: 10px;
+	}
+	.banner h4{
+		padding-top: 10px;
+	}
+	.tag{
+		margin-top: 2%;
+		background: #f8f8f8;
+		padding: 10px;
+		text-align: left;
+	}
+	.header h6{
+		padding-left: 10px;
+	}
+	.det{
+		padding: 5px;
+	}
+	.sectionbox{
+		margin-top: 5px;
+		padding: 10px;
+	}
+	.sectionbox header{
+		font-weight: bold;
+		padding-bottom: 3px;
+		border-bottom: 1px solid grey;
+		margin-bottom: 10px;
+	}
+	.sectioninner-top{
+		margin-top: 20px;
+	}
+	.element{
+		margin:10px;
+	}
+	.inner{
+		padding-left: 0px;
+		margin-left: 0px;
+	}
+	input.form-control{
+		border:none;
+		border-radius: 0px;
+		border-bottom: 1px solid black
+	}
+	input.form-contro::active{
+		box-shadow: none;
+	}
+	textarea{
+		resize: none;
+		height: 60px;
+		width: 100%;
+		padding: 3px;
+		border:none;
+		border-bottom: 1px solid grey
+	}
+	.addbtn{
+		text-align: right;
+		padding: 10px;
+	}
+	table tbody tr td.edit{
+		width: 30px;
+		padding-top: 25px;
+		color: red;
+	}
+
+	.effect8{
+            position:relative;
+            -webkit-box-shadow:0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+               -moz-box-shadow:0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+                    box-shadow:0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+        }
+        .effect8:before, .effect8:after
+        {
+            content:"";
+            position:absolute;
+            z-index:-1;
+            -webkit-box-shadow:0 0 20px rgba(0,0,0,0.4);
+            -moz-box-shadow:0 0 20px rgba(0,0,0,0.4);
+            box-shadow:0 0 20px rgba(0,0,0,0.4);
+            top:10px;
+            bottom:10px;
+            left:0;
+            right:0;
+            -moz-border-radius:10px / 10px;
+            border-radius:10px / 10px;
+        }
+        .effect8:after
+        {
+            right:10px;
+            left:auto;
+            -webkit-transform:skew(8deg) rotate(3deg);
+               -moz-transform:skew(8deg) rotate(3deg);
+                -ms-transform:skew(8deg) rotate(3deg);
+                 -o-transform:skew(8deg) rotate(3deg);
+                    transform:skew(8deg) rotate(3deg);
+        }
+    .submitbox{
+    	margin-top: 30px;
+    	margin-bottom: 20px;
+    }
+    .submit{
+    	margin-top: 30px;
+    	margin-bottom: 20px;
+    	text-align: right;
+    }
+    footer{
+    	border:1px solid #f8f8f8;
+    	padding: 10px;
+    	text-align: center;
+    	background-color: #f8f8f8;
+    }
+
+    .loader{
+	  position: fixed;
+	  left: 0px;
+	  top: 0px;
+	  width: 100%;
+	  height: 100%;
+	  z-index: 9999;
+	  background: url('{{ url_for("static", filename="image/loading2.gif") }}') 
+	              50% 50% no-repeat rgb(249,249,249);
+
+	  display: none;
+	}
+</style>
+
+<script>
+	$(document).ready(function () {
+		$('.c_insertitem').click(function () {
+			value = $('.itemlist').length + 1;
+			name = 500;
+			id = value+name;
+
+			block = '<tr class="itemlist a_itemlist" id="'+id+'">\
+						<td style="width: 50px"><input type="text" name="c_item" class="form-control" value="1" required></td>\
+						<td><input type="text" name="c_cust_name" class="form-control" required></td>\
+						<td style="width: 50px"><input type="text" name="c_cust_num" class="form-control" required ></td>\
+						<td>\
+							<label>Is customer number reachable?</label>\
+							<select class="form-control c_cust_reachable" name="c_cust_reachable" id="c_cust_reachable_'+id+'" data-open="cust_feedback_'+id+'">\
+								<option selected value="No" data-value="No">No</option>\
+								<option value="Yes" data-value="Yes">Yes</option>\
+							</select>\
+							<br>\
+							<p>\
+								<label>If Yes? Feedback from Client?</label>\
+								<textarea class="form-control" name="c_cust_feedback"></textarea>\
+							</p>\
+						</td>\
+						<td class="edit">\
+							<button type="button" class="btn btn-danger btn-sm remove" onclick="remove('+id+')"><i class="fa fa-trash"></i></button>\
+						</td>\
+										\
+						<td class="edit"></td>\
+					</tr>';
+
+			$('#c_element').append(block);
+			
+		});
+
+
+		
+	});
+		
+
+	function value(){
+		return $('.itemlist').length + 1;
+	}
+	
+	function remove(getname){
+		document.getElementById(getname).remove();
+		
+	}
+</script>

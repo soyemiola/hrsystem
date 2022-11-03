@@ -1,0 +1,293 @@
+{% extends "layout.html" %}
+{% block content %}
+
+            <div class="" style="padding: 0px">
+				<h4>{{department}} Report</h4>
+				<div class="bodycontent" style="margin-left: 0px">
+					<form action="" method="POST">
+                        <div class="row">
+                            <div class="col-xs-12 col-md-3">
+                                <div class="filter_search">
+                                    <div class="">
+                                        <label>Select Date:</label>
+                                        <input type="date" name="date" class="form-control">
+                                        {% if department | lower == 'it' %}
+                                        <small><i class="fa fa-info"></i> select monday as start of the week</small>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-md-3">
+                                <div class="filter_search">
+                                    <button type="submit" name="filter_branch" class="btn btn-primary btn-flat btn-sm" style="margin-top: 25px;">Fetch Record</button>
+                                </div>
+                            </div>
+                        </div>  
+                    </form>
+
+                    <div class="row">
+                        {% if department | lower == 'operation' %}
+                        <div class="col-xs-12 col-md-12">
+                            <div class="nav-tabs-navigation">
+                                <div class="nav-tabs-wrapper">
+                                  <ul class="nav nav-tabs" data-tabs="tabs">
+                                    <li class="nav-item">
+                                      <a class="nav-link active" href="#handover" data-toggle="tab">
+                                        Handover Report
+                                        <div class="ripple-container"></div>
+                                      </a>
+                                    </li>
+                                    <li class="nav-item">
+                                      <a class="nav-link" href="#activity" data-toggle="tab">
+                                        Activity Report
+                                        <div class="ripple-container"></div>
+                                      </a>
+                                    </li>
+                                  </ul>
+                                </div>
+                            </div>  
+                            <div class="tab-content">
+                                <div class="tab-pane active" id="handover">
+                                    <p>Date:<b> {{ today }}</b>
+                                        <span style="float: right; padding: 5px ">
+                                            <span style="cursor: pointer; margin-right: 5px">
+                                                <i class="fa fa-file-excel-o excelhandover" data-date="{{ today }}" id="excelhandover"> Excel</i>
+                                            </span>
+                                            <span style="cursor: pointer; margin-right: 5px">
+                                                 <a href="{{ url_for('report.operation_pdf', mode='Handover', date=today) }}" target="_blank">
+                                                    <i class="fa fa-file-pdf-o"> </i> PDF
+                                                </a>
+                                            </span>
+                                        </span>
+                                    </p>
+                                    <table id="handoverreport" class="table table-sm table-hover" >
+                                        <thead>
+                                            <th style="width: 200px">Consultant Name</th>
+                                           <!--  <th>Email</th> -->
+                                            <th>Shift</th>
+                                            <th style="width: 200px">Client Name</th>
+                                            <th>PNR</th>
+                                            <th>Details</th>
+                                        </thead>
+                                        <tbody>
+                                            {% if info %}
+                                                {% for handover in info[0] %}
+                                                <tr>
+                                                    <td>{{ handover[1] }}</td>
+                                                    <!-- <td>{{ handover[2] }}</td> -->
+                                                    <td>{{ handover[4] }}</td>
+
+                                                    <td>
+                                                       <ul class="list">
+                                                           {% for name in handover[9] %}
+                                                            <li>{{ name }}</li>
+                                                            {% endfor %}
+                                                       </ul>
+
+                                                    </td>
+                                                    
+                                                    <td>
+                                                        <ul class="list">
+                                                            {% for pnr in handover[6] %}
+                                                            <li>{{ pnr }}</li>
+                                                            {% endfor %}
+                                                        </ul>
+                                                    </td>
+                                                    <td>
+                                                        <ul class="list">
+                                                            {% for details in handover[7] %}
+                                                            <li>{{ details }}</li>
+                                                            {% endfor %}
+                                                        </ul>
+                                                    </td>
+                                                </tr>
+                                                {% endfor %}
+                                            {% endif %}
+                                        </tbody>
+                                    </table>   
+                                </div>                                
+                                <div class="tab-pane" id="activity">
+                                    <p>Date: <b>{{ today }}</b>
+                                        {% if info %}
+
+                                        <span style="float: right; padding: 5px ">
+                                            <span style="cursor: pointer; margin-right: 5px">
+                                                <i class="fa fa-file-excel-o excelactivity" data-date="{{ today }}" id="excelactivity"> Excel</i>
+                                            </span>
+                                            <span style="cursor: pointer; margin-right: 5px">
+                                                <a href="{{ url_for('report.operation_pdf', mode='Activity', date=today) }}" target="_blank">
+                                                    <i class="fa fa-file-pdf-o"> </i> PDF
+                                                </a>
+                                            </span>
+                                        </span>
+
+                                        {% endif %}
+                                    </p>
+                                    <table id="activityreport" class="table table-sm table-hover" >
+                                        <thead>
+                                            <th style="width: 150px">Consultant Name</th>
+                                            <!-- <th>Email</th> -->
+                                            <th>Shift</th>
+                                            <th style="width: 150px">Client Name</th>
+                                            <th>PNR</th>
+                                            <th style="width: 100px">Ticket / Vouchar No</th>
+                                            <th>Details</th>
+                                        </thead>
+                                        <tbody>
+                                           {% if info %}
+                                                {% for activity in info[1] %}
+                                                <tr>
+                                                    <td>{{ activity[1] }}</td>
+                                                    <!-- <td>{{ activity[2] }}</td> -->
+                                                    <td>{{ activity[4] }}</td>
+
+                                                    <td>
+                                                       <ul class="list">
+                                                           {% for name in activity[9] %}
+                                                            <li>{{ name }}</li>
+                                                            {% endfor %}
+                                                       </ul>
+
+                                                    </td>
+
+                                                    <td>
+                                                        <ul class="list">
+                                                            {% for pnr in activity[6] %}
+                                                            <li>{{ pnr }}</li>
+                                                            {% endfor %}
+                                                        </ul>
+                                                    </td>
+
+                                                    <td>
+                                                        <ul class="list">
+                                                            {% for ticket in activity[8] %}
+                                                            <li>{{ ticket }}</li>
+                                                            {% endfor %}
+                                                        </ul>
+                                                    </td>
+
+                                                    <td>
+                                                        <ul class="list">
+                                                            {% for details in activity[7] %}
+                                                            <li>{{ details }}</li>
+                                                            {% endfor %}
+                                                        </ul>
+                                                    </td>
+                                                </tr>
+                                                {% endfor %}
+                                            {% endif %}
+                                        </tbody>
+                                    </table>  
+                                </div>
+
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        {% if department | lower == 'it' %}
+                        <br>
+                        <div class="col-xs-12 col-md-12">
+                            <table class="table table-bordered" id="itreport">
+                                <thead>
+                                    <th>Name</th>
+                                    <th>Week </th>
+                                    <th>Task</th>
+                                </thead>
+                                <tbody>
+                                    {% if info %}
+                                    {% for i in info %}
+                                    <tr>
+                                        <td>{{i[1] | getName }}</td>
+                                        <td>{{i[3]}} - {{i[4]}}</td>
+                                        <td>
+                                            {% for tsk in i[2] %}
+                                                <div style="margin-bottom: 3px; border-bottom:1px solid lightgrey;">
+                                                    <p>
+                                                        <span class=""><b>Date:</b> {{i[6][loop.index-1]}}</span>
+                                                    </p>
+                                                    <p>{{ tsk }} <small class="pull-right"><b>Status:</b> {{i[7][loop.index-1]}}</small></p>
+                                                </div>
+                                            {% endfor %}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                    {% endif %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+				</div>
+			</div>
+<style>
+    ul.list{
+        padding-left: 3px;
+    }
+    ul.list li{
+        list-style: none;
+        padding: 10px;
+    }
+</style>
+{% endblock content %}
+
+
+{% block script %}
+<script>
+    $(document).ready(function () {
+        $('#handoverreport').DataTable({
+            "iDisplayLength": 50
+        });
+
+        $('#activityreport').DataTable({
+            "iDisplayLength": 50
+        });
+
+        $('#itreport').DataTable({
+            "iDisplayLength": 50
+        });
+        $('#office').chosen();
+    })
+</script>
+<script>
+	var wb = XLSX.utils.table_to_book(document.getElementById('handoverreport'), {sheet:'Sheet Js'});
+
+	var wbout = XLSX.write(wb, {bookType: 'xlsx', bookSST:true, type: 'binary' });
+
+	function s2ab(s){
+		var buf = new ArrayBuffer(s.length);
+		var view = new Uint8Array(buf);
+		for(var i=0; i<s.length; i++) view[i] = s.charCodeAt(i) & 0xFF;
+		return buf;
+	}
+
+	$('#excelhandover').click(function(){
+        const id = $(this).attr('id');
+        var date = document.getElementById(id).dataset.date
+            name = 'Handover Report for '+date+'.xlsx'
+
+		saveAs(new Blob([s2ab(wbout)], {type: 'application/octet-stream'}), name)
+	});
+</script>
+
+<script>
+    var wb = XLSX.utils.table_to_book(document.getElementById('activityreport'), {sheet:'Sheet Js'});
+
+    var wbout_2 = XLSX.write(wb, {bookType: 'xlsx', bookSST:true, type: 'binary' });
+
+    function s2ab(s){
+        var buf = new ArrayBuffer(s.length);
+        var view = new Uint8Array(buf);
+        for(var i=0; i<s.length; i++) view[i] = s.charCodeAt(i) & 0xFF;
+        return buf;
+    }
+
+    $('#excelactivity').click(function(){
+        const id = $(this).attr('id');
+        var date = document.getElementById(id).dataset.date
+            name = 'Acitivy Report for '+date+'.xlsx'
+
+        saveAs(new Blob([s2ab(wbout_2)], {type: 'application/octet-stream'}), name)
+    });
+</script>
+{% endblock %}

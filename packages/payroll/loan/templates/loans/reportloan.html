@@ -1,0 +1,285 @@
+{% extends "layout.html" %}
+{% block content %}
+
+    <div class="">
+
+        {% if rfilter == 'repayment' %}
+            {% set active_repayment = 'active' %}
+            {% set active_loan = '' %}
+            {% set show_repayment = 'block' %}
+            {% set show_loan = 'none' %}
+            {% set btntype = 'Loan Record' %}
+        {% else %}
+            {% set active_loan = 'active' %}
+            {% set active_repayment = '' %}
+            {% set show_loan = 'block' %}
+            {% set show_repayment = 'none' %}
+            {% set btntype = 'Repayment Record' %}
+        {% endif %}
+
+        <h4><i class="fa fa-money-bill-alt fa-sm"></i> Loan Report</h4>
+        <ul class="bodymenu">
+            <li>
+                <a href="#" class="{{ active_loan }} openfilter" id="loanreportlink" data-op="loanrepaymentlink" data-open="loanfilter" data-close="loanrepayment">Loan Report</a>
+            </li>
+            <li>
+                <a href="#" class="{{ active_repayment }} openfilter" id="loanrepaymentlink" data-op="loanreportlink" data-open="loanrepayment" data-close="loanfilter">Repayment Report</a>                
+            </li>
+            {% if openFilter %}
+            <li class="pull-right">
+                <small >Filter result: <b>Loan Type:</b> {{ openFilter[0] }} <b>Status:</b> {{ openFilter[1] }} <b>Year:</b> {{ openFilter[2] }}</small>
+            </li>
+            {% endif %}
+        </ul>
+        {% if filterRecord %}
+        <div class="row">
+            <div class="col-xs-12 col-lg-12">
+                <button type="button" class="btn btn-primary btn-sm pull-right" onclick="printDOC('{{ btntype }}')"><i class="fa fa-download"></i> Download</button>
+            </div>
+        </div>
+        {% endif %}
+        
+        <div class="loanreport">
+            <div class="row">
+                <div class="col-xs-12 col-md-12">
+                    <div class="filterbox">
+                        <div id="loanfilter" style="display: {{ show_loan }}">
+                            <form method="post">
+                                <div class="row loanfilter" id="">
+                                    <div class="col-xs-12 col-lg-3">
+                                        <div class="form-group">
+                                            <label for="type">Select Loan Type</label>
+                                            <input type="hidden" name="mode" value="loanrecord">
+                                            <select class="form-control form-control-sm" name="_type">
+                                                {% if _types %}
+                                                    <option value="all">All</option>
+                                                    {% for typ in _types %}
+                                                    <option value="{{ typ[1] }}">{{ typ[1] }}</option>
+                                                    {% endfor %}
+                                                {% endif %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 col-lg-3">
+                                        <div class="form-group">
+                                            <label for="status">Select status</label>
+                                            <select class="form-control form-control-sm" id="status" name="_status">
+                                                {% if _status %}
+                                                    <option value="all">All</option>
+                                                    {% for st in _status %}
+                                                    <option value="{{ st }}">{{ st }}</option>
+                                                    {% endfor %}
+                                                {% endif %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 col-lg-3">
+                                        <div class="form-group">
+                                            <label for="year">Select Year</label>
+                                            <select class="form-control form-control-sm" id="year" name="_year">
+                                                {% if _years %}
+                                                    <option value="all">All</option>
+                                                    {% for yr in _years %}
+                                                        <option value="{{ yr }}">{{ yr }}</option>
+                                                    {% endfor %}
+                                                {% endif %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 col-lg-3">
+                                        <div class="form-group">
+                                            <label for="" style="visibility: hidden;">Select status</label>
+                                            <button type="submit" name="submit" class="btn btn-primary btn-sm form-control form-control-sm" value="loan">Fetch</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        
+
+                        <!-- Repayment report -->
+                        <div id="loanrepayment" style="display: {{ show_repayment }};">
+                            <form method="post">
+                                <div class="row loanrepayment" id="">
+                                    <div class="col-xs-12 col-lg-3">
+                                        <div class="form-group">
+                                            <label for="type">Select Loan Type</label>
+                                            <input type="hidden" name="mode" value="repaymentrecord">
+                                            <select class="form-control form-control-sm" name="type">
+                                                {% if _types %}
+                                                    <option value="all">All</option>
+                                                    {% for typ in _types %}
+                                                    <option value="{{ typ[1] }}">{{ typ[1] }}</option>
+                                                    {% endfor %}
+                                                {% endif %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 col-lg-3">
+                                        <div class="form-group">
+                                            <label for="year">Select Year</label>
+                                            <select class="form-control form-control-sm" name="year" id="year">
+                                                {% if _years %}
+                                                    <option value="all">All</option>
+                                                    {% for yr in _years %}
+                                                        <option value="{{ yr }}">{{ yr }}</option>
+                                                    {% endfor %}
+                                                {% endif %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 col-lg-2">
+                                        <div class="form-group">
+                                            <label for="" style="visibility: hidden;">Select status</label>
+                                            <button type="submit" name="submit" class="btn btn-primary btn-sm form-control form-control-sm" value="repayment">Fetch</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                       
+                        <!-- // repayment report -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-3" id="_table">
+                <div class="col-xs-12 col-lg-12">
+                    {% if filterRecord %}
+                    <h6>Loan Record List</h6>
+                        {% if rtable == 'loantable' %}
+                        <!-- Active loan -->
+                        <table class="table table-hover table-sm" id="lreport">
+                            <thead>
+                                <th>Staff ID</th>
+                                <th>Name</th>
+                                <th>Department</th>
+                                <th>Type</th>
+                                <th>Loan Amount</th>
+                                <th>Outstanding</th>
+                                <th>%</th>
+                                <th>Deduction</th>
+                                <th>Date</th>
+                            </thead>
+                            <tbody>
+                                {% for ln in filterRecord %}
+                                {% set userDet = ln[1] | FBempDet %}
+                                <tr>
+                                    <td>{{ userDet[16] }}</td>
+                                    <td>{{ userDet[1] }}</td>
+                                    <td>{{ userDet[5] }}</td>
+                                    <td>{{ ln[2] }}</td>
+                                    <td>{{ ln[3] }}</td>
+                                    <td>{{ ln[4] }}</td>
+                                    <td>{{ ln[5] }}</td>
+                                    <td>{{ ln[7] }}</td>
+                                    <td>{{ ln[10] }} / {{ ln[11] }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        {% elif rtable == 'pendingtable' %}
+                        <!-- pending loan -->
+                        <table class="table table-hover table-sm" id="lreport">
+                            <thead>
+                                <th>Staff ID</th>
+                                <th>Name</th>
+                                <th>Department</th>
+                                <th>Type</th>
+                                <th>Amount Requested</th>
+                                <th>Duration</th>
+                                <th>Date</th>
+                            </thead>
+                            <tbody>
+                                {% for ln in filterRecord %}
+                                {% set userDet = ln[1] | FBempDet %}
+                                <tr>
+                                    <td>{{ userDet[16] }}</td>
+                                    <td>{{ userDet[1] }}</td>
+                                    <td>{{ userDet[5] }}</td>
+                                    <td>{{ ln[2] }}</td>
+                                    <td>{{ ln[3] }}</td>
+                                    <td>{{ ln[4] }} Months</td>
+                                    <td>{{ ln[5] }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+
+                        {% elif rtable == 'repaymenttable' %}
+
+                        <table class="table table-hover table-sm" id="lreport">
+                            <thead>
+                                <th>Staff ID</th>
+                                <th>Name</th>
+                                <th>Department</th>
+                                <th>Loan Type</th>
+                                <th>Month / Year</th>
+                                <th>Amount</th>
+                                <th>Repayment</th>
+                                <th>Outstanding</th>
+                                <th></th>
+                            </thead>
+                            <tbody>
+                                {% for i in filterRecord %}
+                                {% set userDet = i[1] | FBempDet %}
+                                <tr>
+                                    <td>{{ userDet[16] }}</td>
+                                    <td>{{ userDet[1] }}</td>
+                                    <td>{{ userDet[5] }}</td>
+                                    <td>{{ i[2] }}</td>
+                                    <td>{{ i[3] }}/{{ i[4] }}</td>
+                                    <td>{{ i[5] }}</td>
+                                    <td>{{ i[6] }}</td>
+                                    <td>{{ i[7] }}</td>
+                                    <td></td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock content %}
+
+
+{% block script %}
+<script>
+    $('.openfilter').click(function () {
+        var id = $(this).attr('id');
+        var op = document.getElementById(id).dataset.op;
+        var opendiv = document.getElementById(id).dataset.open;
+        var closediv = document.getElementById(id).dataset.close;
+
+        document.getElementById(op).classList.remove('active')
+        document.getElementById(id).classList.add('active')
+
+        document.getElementById(opendiv).style.display = 'block';
+        document.getElementById(closediv).style.display = 'none';
+
+        document.getElementById('_table').style.display = 'none';
+    })
+
+    function s2ab(s){
+        var buf = new ArrayBuffer(s.length);
+        var view = new Uint8Array(buf);
+        for(var i=0; i<s.length; i++) view[i] = s.charCodeAt(i) & 0xFF;
+        return buf;
+    }
+
+    function printDOC(name){
+        var wb = XLSX.utils.table_to_book(document.getElementById('lreport'), {sheet:'Sheet Js'});
+        var wbout = XLSX.write(wb, {bookType: 'xlsx', bookSST:true, type: 'binary' });
+        saveAs(new Blob([s2ab(wbout)], {type: 'application/octet-stream'}), name+'.xlsx')        
+    }
+
+
+    $('#lreport').dataTable();
+</script>
+
+{% endblock %}

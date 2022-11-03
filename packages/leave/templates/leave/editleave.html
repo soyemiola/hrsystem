@@ -1,0 +1,82 @@
+{% extends "layout.html" %}
+{% block content %}
+
+            <div class="">
+                <h6><i class="fa fa-edit fa-sm"></i> Edit Leave</h6>
+                
+                <ul class="bodymenu">
+                    <li class="">
+                        <a href="{{url_for('leaves.leavelist')}}"><small>Leave List</small></a>
+                    </li>
+                    <li class="">
+                        <a href="{{url_for('leaves.addleave')}}" class="active">Edit leave</a>
+                    </li>
+                </ul>
+
+                <div class="">
+                    <form action="{{ url_for('leaves.updateleave') }}" method='post'>
+                        <div class="row">
+                            <div class="col-xs-12 col-md-4">
+                                <div class="form-group">
+                                    <label>Leave Name:</label>
+                                    <input type="hidden" id="leave_id" name="id" value="{{leavelist[0]}}">
+                                    <input type="text" name="leavename" id="leavename" value="{{leavelist[1]}}" class="form-control" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Leave Description:</label>
+                                    <textarea name="leavedescription" id="leavedescription" class="form-control" style="resize:none">{{leavelist[2]}}</textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label>Leave Duration:</label>
+                                    <input type="number" name="duration" id="duration" value="{{leavelist[3]}}" class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-primary btn-flat btn-sm" name="submit" id="editleave"><i class="fa fa-save fa-sm"></i>
+                                            Update
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+
+                    <div class="row">
+                        <div class="face" id="alert">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+{% endblock content %}
+
+
+{% block script %}
+<script>
+    $(document).ready(function(){
+        $('.btnleave').click(function(){
+            var name = document.getElementById('leavename').value,
+                desc = document.getElementById('leavedescription').value,
+                duration = document.getElementById('duration').value,
+                alertbox = document.getElementById('alert'),
+                id = document.getElementById('leave_id').value;
+
+            if(!name == '' && !desc == '' && !duration == ''){
+                $.ajax({
+                    method: 'post',
+                    url: '/updateleave',
+                    data:{name:name, desc:desc, duration:duration, id:id},
+
+                    success:function(data){
+                        alertbox.innerHTML = data;
+                        alertbox.style.display = 'block';
+
+                        setTimeout(function(){
+                            alertbox.style.display = 'none';
+                        },2000);
+                    }
+                });
+            }
+        });
+    });
+</script>
+{% endblock %}

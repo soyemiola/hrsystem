@@ -1,0 +1,305 @@
+{% extends "layout.html" %}
+{% block content %}
+
+			<div class="">
+				<h6>
+					<i class="fa fa-edit"></i> Edit Employees
+					<span style="float:right">
+						<a href="{{url_for('users.employees')}}" class="btn btn-primary btn-flat btn-sm">
+							<i class="fa fa-arrow-circle-o-left"></i>
+							Back
+						</a>
+					</span>
+				</h6>
+					<ul class="bodymenu"></ul> 
+					<div class="container">
+						<div class="row">
+							<div class="col-xs-12 col-md-12">
+								<form action="{{url_for('users.updateemployee')}}" method="post">
+									<input type="hidden" name="frmlist" value="{{ frmlist }}">
+									
+									<fieldset>
+										<legend><small>Basic Information</small></legend>
+										<hr>
+										<div class="row">
+											<div class="col-xs-12 col-md-2">
+												<div class="">
+													<label for="staff_id">Staff ID:</label>
+													<input type="text" name="staff_id" class="form-control" id="staff_id" required 
+													value="{{ edit_data[16] }}" >
+												</div>
+											</div>
+											<div class="col-xs-12 col-md-2">
+												<div class="">
+													<label for="title">Title:</label>
+													<input type="text" name="title" class="form-control" id="title" required
+													value="{{edit_data[22] }}">
+												</div>
+											</div>
+											<div class="col-xs-12 col-md-4">
+												<div class="">
+													<label for="name">Name:</label>
+													<input type="hidden" name="emp_id" value="{{edit_data[0]}}">
+													<input type="text" name="name" id="name" class="form-control" required value="{{edit_data[1]}}">
+												</div>
+											</div>
+											<div class="col-xs-12 col-md-3">
+												<div class="">
+													<label for="">Gender:</label>
+													<select name="gender" id="gender" required class="form-control">
+														<option selected value="{{ edit_data[23] }}" readonly>{{ edit_data[23] }}</option>
+														<option value="Male">Male</option>
+														<option value="Female">Female</option>
+													</select>
+												</div>
+											</div>
+										</div>
+										<br>
+										<div class="row">
+											<div class="col-xs-12 col-md-2">
+												<div class="">
+													<label for="dob">Date of Birth:</label>
+													<input type="date" name="dob" id="dob" class="form-control" value="{{edit_data[15]}}">
+												</div>
+											</div>
+											<div class="col-xs-12 col-md-2">
+												<div class="">
+													<label for="state">State of Origin:</label>
+													<select name="state" id="state" required class="form-control">
+														<option selected>{{edit_data[13]}}</option>
+														
+														{% for st in state %}
+														<option>{{ st }}</option>
+														{% endfor%}
+													</select>
+												</div>
+											</div>
+											<div class="col-xs-12 col-md-4">
+												<div class="">
+													<label for="address">Address:</label>
+													<input type="text" name="address" id="address" required value="{{edit_data[2]}}" class="form-control">
+												</div>
+											</div>
+											<div class="col-xs-12 col-md-3">
+												<div class="">
+													<label for="city">City:</label>
+													<input type="text" name="city" id="city" class="form-control" required value="{{edit_data[3]}}">
+												</div>
+											</div>
+											<div class="col-xs-12 col-md-3">
+												<div class="">
+													<label for="mobile">Mobile:</label>
+													<input type="text" name="mobile" id="mobile" class="form-control" required value="{{edit_data[4]}}">
+												</div>
+											</div>
+										</div>
+										
+
+										<legend><small>Next of Kin Information</small></legend>
+										<hr>
+										<div class="row mb-2">
+											<div class="col-xs-12 col-md-3">
+												<div class="form-group">
+													<label for="mobile">Next of Kin's name:</label>
+													<input type="text" name="nokin" id="nokin" class="form-control" required value="{{ emp_nokin[2] }}">
+												</div>
+											</div>
+											<div class="col-xs-12 col-md-3">
+												<div class="form-group">
+													<label for="mobile">Next of Kin's phone number:</label>
+													<input type="text" name="nokinnumber" id="nokinnumber" class="form-control" required value="{{ emp_nokin[3] }}">
+												</div>
+											</div>
+											<div class="col-xs-12 col-md-3">
+												<div class="form-group">
+													<label for="mobile">Next of Kin's email address:</label>
+													<input type="email" name="nokinemail" id="nokinemail" class="form-control" required value="{{ emp_nokin[4] }}">
+												</div>
+											</div>
+											<div class="col-xs-12 col-md-3">
+												<div class="form-group">
+													<label for="mobile">Next of Kin's relationship:</label>
+													<input type="text" name="nokinrel" id="nokinrel" class="form-control" required value="{{ emp_nokin[5] }}">
+												</div>
+											</div>
+										</div>
+
+										<br>
+										<legend><small>Office Information</small></legend>
+										<hr>
+										<div class="row">
+											<div class="col-xs-12 col-md-4">
+												<div class="">
+													<label for="email">Email:</label>
+													<input type="email" name="email" id="email" class="form-control" required value="{{edit_data[7]}}">
+												</div>
+											</div>
+											<div class="col-xs-12 col-md-4">
+												<div class="">
+													<label for="department">Department:</label>
+													<select name="department" id="department" required class="form-control">
+														<option selected>{{edit_data[5]}}</option>
+														{% for dept in dept %}
+														<option>{{ dept[0] }}</option>
+														{% endfor%}
+													</select>
+												</div>
+											</div>
+											<div class="col-xs-12 col-md-3">
+												<div class="">
+													<label for="jobtitle">Post:</label>
+													<select name="jobtitle" id="jobtitle" required class="form-control">
+														<option selected>{{edit_data[18] }}</option>
+														{% for emp_post in post %}
+														<option>{{ emp_post[0] }}</option>
+														{% endfor%}
+													</select>
+												</div>
+											</div>
+										</div>
+
+										<br>
+										<div class="row">
+											<div class="col-xs-12 col-md-4">
+												<div class="">
+													<label for="level">Level:</label>
+													<input type="text" name="level" id="level" class="form-control" value="{{edit_data[6]}}">
+												</div>
+											</div>
+											<div class="col-xs-12 col-md-4">
+												<div class="">
+													<label for="branch">Office Branch:</label>
+													<select name="branch" id="branch" required class="form-control">
+														<option selected>{{edit_data[8]}}</option>
+														{% for emp_branch in branch %}
+														<option>{{ emp_branch[0] }}</option>
+														{% endfor%}
+													</select>
+												</div>
+											</div>
+											<div class="col-xs-12 col-md-3">
+												<div class="">
+													<label for="activedate">Employment Date:</label>
+													<input type="date" name="employment_date" id="activedate" class="form-control" required value="{{edit_data[9]}}">
+												</div>
+											</div>
+										</div>
+										<br>
+
+										<legend><small>Account Information</small></legend>
+										<hr>
+										<div class="row">
+											<div class="col-xs-12 col-md-4">
+												<div class="">
+													<label for="category">Class:</label>
+													<select name="category" id="category" required class="form-control" {{ paycat }}>
+														<option selected>{{edit_data[10]}}</option>
+														{% for class in cat %}
+														<option data-basic="{{ class[2] }}" data-total="{{ class[6] }}"
+																data-house_a="{{ class[3] }}"
+																data-transport_a="{{ class[4] }}" data-other_a="{{ class[5] }}">
+															{{ class[1] }}
+														</option>
+														{% endfor %}
+													</select>
+												</div>
+											</div>
+											<div class="col-xs-12 col-md-3">
+												<div class="">
+													<label for="basic">Basic Pay:</label>
+													<input type="number" name="basic" id="basic" class="form-control" readonly required value="{{emp_acct[1] }}">
+												</div>
+											</div>
+											<div class="col-xs-12 col-md-3">
+												<div class="">
+													<label for="ToA">Allowances:</label>
+													<input type="text" name="ToA" id="ToA" class="form-control" readonly value="{{emp_acct[12] }}">
+													<input type="hidden" name="ha" id="HA" value="{{emp_acct[2] }}" readonly>
+													<input type="hidden" name="ta" id="TA" value="{{emp_acct[3] }}" readonly>
+													<input type="hidden" name="oa" id="OA" value="{{emp_acct[4] }}" readonly>
+												</div>
+											</div>
+										</div>
+										<br>
+										<div class="row">
+											<div class="col-xs-12 col-md-4">
+												<div class="">
+													<label for="account">Bank Account Number:</label>
+													<input type="text" name="bank_acct" id="account" class="form-control" 
+														   maxlength="10" required value="{{emp_acct[11]}}">
+												</div>
+											</div>
+											<div class="col-xs-12 col-md-3">
+												<div class="">
+													<label>Bank Name:</label>
+													<select name="bank_name" required class="form-control" {{ chkbank }}>
+														<option selected>{{emp_acct[10]}}</option>
+														{% for emp_bank in bank %}
+														<option>{{ emp_bank[0] }}</option>
+														{% endfor%}
+													</select>
+												</div>
+											</div>
+											<div class="col-xs-12 col-md-3">
+												<div class="">
+													<label for="taxnumber">Tax Number:</label>
+													<input type="text" name="taxnumber" id="taxnumber" class="form-control" required value="{{emp_acct[17]}}">
+												</div>
+											</div>
+										</div>
+										<br>
+										<div class="row">
+											<div class="col-xs-12 col-md-4">
+												<div class="">
+													<label for="pensioncompany">Pension company:</label>
+													<select name="pensioncompany" id="pensioncompany" required class="form-control" {{ chkpencom }}>
+														<option selected>{{pension[2]}}</option>
+														{% for pen in pensioncomp %}
+															<option>{{pen[1]}}</option>
+														{% endfor %}
+													</select>
+												</div>
+											</div>
+											<div class="col-xs-12 col-md-4">
+												<div class="">
+													<label for="pensionnumber">Pension Number:</label>
+													<input type="text" name="pensionnumber" id="pensionnumber" class="form-control" required value="{{pension[3]}}">
+												</div>
+											</div>
+										</div>
+
+										<div class="row mt-5">
+											<div class="col-xs-12 col-md-12">
+												<button type="submit" class="btn btn-primary btn-flat submit" {{ dsb }}>
+													<i class="fa fa-save"></i> Update Profile
+												</button>
+										</div>
+									</fieldset>
+									
+								</form>
+							</div>
+						</div>						
+					</div>
+			</div>
+
+{% endblock content %}
+
+
+{% block script %}
+
+<script type="text/javascript">
+	/*$('#state').chosen();
+	$('#department').chosen();*/
+
+	$('#category').on('change', function () {
+		var selectedOption = $(this).find('option:selected');
+
+		$('#basic').val(selectedOption[0].dataset.basic);
+		$('#ToA').val(selectedOption[0].dataset.total);
+		$('#HA').val(selectedOption[0].dataset.house_a);
+		$('#TA').val(selectedOption[0].dataset.transport_a);
+		$('#OA').val(selectedOption[0].dataset.other_a);
+	})
+</script>
+
+{% endblock script %}

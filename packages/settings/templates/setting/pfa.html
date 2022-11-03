@@ -1,0 +1,63 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="">
+				
+				<h6><i class="fa fa-bars"></i> PFA List</h6>
+				<ul class="bodymenu">
+					<li>
+						<a href="{{url_for('settings.pfa')}}" class="active">PFA List</a>
+					</li>
+					{% if current_user.role == 'AD' %}
+					<li>
+						<a href="{{url_for('settings.addpfa')}}"><small>Add PFA</small></a>
+					</li>
+					{% endif %}
+				</ul>
+				<div class="bodycontent">
+					<div class="row">
+						<div class="col-xs-12 col-md-12 category_list">
+							<table id="example" class="table table-striped table-bordered table-sm" style="width:100%">
+								<thead>
+									<th>PFA Name</th>
+									{% if current_user.role == 'AD' %}
+									<th>Tools</th>
+									{% endif %}
+								</thead>
+								<tbody>
+								{% for pfa in all_pfa %}
+									<tr>
+										<td>{{pfa[1]}}</td>
+										{% if current_user.role == 'AD' %}
+										<td width="150px">
+											<a href="{{url_for('settings.editpfa', pid=pfa[0])}}"
+                                               class="btn btn-secondary btn-sm btn-flat">
+												<i class="fa fa-edit fa-sm" ></i>
+                                                Edit</a>
+											<a href="{{ url_for('settings.deletepfa', pid=pfa[0]) }}" class="btn btn-danger btn-sm
+											btn-flat">
+												<i class="fa fa-trash fa-sm"></i>
+                                                Delete</a>
+										</td>
+										{% endif %}
+
+									</tr>
+								{% endfor %}
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+
+{% endblock content %}
+
+
+{% block script %}
+<script>
+	$(document).ready(function() {
+		$('#example').DataTable();
+	});
+
+</script>
+{% endblock %}

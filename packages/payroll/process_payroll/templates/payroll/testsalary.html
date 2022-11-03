@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Test Salary</title>
+</head>
+<body>
+
+
+<h3>Salary Informations</h3>
+
+<h5><b>Basic:</b> <span>{{ basic.basic | two_decimal}}</span></h5>
+<h5><b>Total Allowance:</b> <span>{{ basic.allowances | two_decimal }}</span></h5>
+<h5><b>Gross:</b> <span>{{ basic.gross | two_decimal }}</span></h5>
+<h5><b>Pension:</b> <span>{{ basic.pension | two_decimal }}</span></h5>
+<h5><b>Tax:</b> <span>{{ basic.tax | two_decimal }}</span></h5>
+<h5><b>Salary:</b> <span>{{ basic.salary | two_decimal }}</span></h5>
+<h5><b>Employer Savings:</b> <span>{{ basic.employer_savings | two_decimal }}</span></h5>
+<h5><b>Relief:</b> <span>{{ basic.relief | two_decimal }}</span></h5>
+
+<h4>Salary Worked in a month</h4>
+<h5><b>Number of days worked:</b> <span>{{ workedfor.days }}</span></h5>
+<h5><b>Number of days absent:</b> <span>{{ workedfor.absent }}</span></h5>
+<h5><b>Salary:</b> <span>{{ workedfor.workedfor | two_decimal }}</span></h5>
+
+<h4>Loan Deduction</h4>
+<h5><b>Loan:</b> <span>{{ loan | two_decimal }}</span></h5>
+
+<h4>Coop Loan</h4>
+<h5><b>Loan:</b> <span>{{ coop.coop_loan | two_decimal }}</span></h5>
+
+<h4>Cooperative Contribution</h4>
+<h5><b>Contibution:</b> <span>{{ coop.contribution | two_decimal }}</span></h5>
+<h5><b>Social welfare:</b> <span>{{ coop.socialwelfare | two_decimal }}</span></h5>
+
+{% if adjustment %}
+	{% set adjust = adjustment.amount %}
+{% else %}
+	{% set adjust = 0 %}
+{% endif %}
+<h5><b>Salary Adjustment:</b> <span>{{ adjust | two_decimal  }}</span></h5>
+
+<h5><b>Total coop Deduction:</b> <span>{{ coop_deduct | two_decimal }}</span></h5>
+<h5><b>Total Deduction:</b> <span>{{ deductions | two_decimal }}</span></h5>
+
+
+<h4>Net Pay</h4>
+<h5><b>Net Pay:</b> <span>{{ net_pay | two_decimal }}</span></h5>
+</body>
+</html>

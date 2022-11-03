@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Staff Information</title>
+</head>
+<style>
+    body{
+        font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",
+                    Roboto,"Helvetica Neue",Arial,"Noto Sans",
+                    sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+    }
+    .container{
+        padding: 10px 30px;
+    }
+    .brandlogo{
+        width: 150px;
+        padding-left: 10px;
+        float: left;
+    }
+    .brandlogo img{
+        height: 50px;
+    }
+    .brandname{
+        width:auto;
+    }
+    .brandname h2, .brandname h5, .title{
+        margin:5px;
+        text-align: center;
+    }
+    .emp_d{
+        padding: 10px 5px;
+        margin-top: 10px;
+        height:auto;
+        margin-bottom: 5%
+    }
+    .emp_d header, .emp_d span.title_header{
+        padding: 5px 0px;
+        font-size: 13px;
+        border-bottom: 1px solid #444;
+        margin-bottom: 2px;
+        width: 95%;
+    }
+    .emp_d_left{
+        border:1px solid #f2f5f7;
+        width: 100%;
+    }
+    .emp_d_left h5, .emp_net_s h4{
+        margin: 10px;
+        text-transform: uppercase
+    }
+    .emp_d_left h5{
+        border-bottom:1px solid #f2f5f7;
+        padding: 5px;
+    }
+    .emp_d_left span, .emp_net_s span{
+        float: right;
+        font-weight: normal;
+    }
+    .foot p{
+        text-align: center;
+        padding: 5px;
+        margin: 5% 10px 10px;
+    }
+
+</style>
+<body>
+    <div class="container">
+        <div class="brandlogo">
+            <img src="data:image/png;base64, {{ logo }}" alt="logo">
+        </div>
+        <div class="brandname">
+            <h2>BUSINESS TRAVEL MANAGEMENT LIMITED</h2>
+            <h5>45, Oduduway way, Ikeja GRA, Lagos, Nigeria</h5>
+        </div>
+    </div>
+    <div class="title">
+        <h4>Staff Information</h4>
+    </div>
+    <div class="emp_d">
+        <div class="emp_d_left">
+           <table id="staffinfo" class="table table-striped table-bordered table-sm" style="width:100%">
+                <thead>
+                    <th>Staff ID</th>
+                    <th>Name</th>
+                    <th>DOB</th>
+                    <th>Department</th>
+                    <th>Post</th>
+                    <th>Job Title</th>
+                    <th>Class</th>
+                    <th>Bank Name</th>
+                    <th>Account Number</th>
+                    <th>Active Date</th>                            
+                </thead>
+            <!-- </table>
+            <table> -->
+                <tbody>
+                    {% if staff %}
+                        {% for st in staff %}
+                    <tr>
+                        <td>{{ st[0] }}</td>
+                        <td>{{ st[1] }}</td>
+                        <td>{{ st[2] }}</td>
+                        <td>{{ st[3] }}</td>
+                        <td>{{ st[4] }}</td>
+                        <td>{{ st[9] }}</td>
+                        <td>{{ st[5] }}</td>
+                        <td>{{ st[6] }}</td>
+                        <td>{{ st[7] }}</td>
+                        <td>{{ st[8] }}</td>
+                    </tr>
+                        {% endfor %}
+                    {% endif %}
+                </tbody>
+            </table>
+
+        </div>
+
+    </div>
+    <div class="foot">
+        <br><br>
+        <p>HR Management System</p>
+    </div>
+
+</body>
+</html>
+

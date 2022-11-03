@@ -1,0 +1,67 @@
+<header class="main-header">
+      <!-- Logo -->
+      <a href="#" class="logo">
+        <!-- mini logo for sidebar mini 50x50 pixels -->
+        <span class="logo-mini"><b>HRIS</b></span>
+        <!-- logo for regular state and mobile devices -->
+        <span class="logo-lg"><b>HRIS</b> System</span>
+      </a>
+      <!-- Header Navbar: style can be found in header.less -->
+      <nav class="navbar navbar-static-top">
+        <!-- Sidebar toggle button-->
+        <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
+          <span class="sr-only">Toggle navigation</span>
+        </a>
+        <div>
+
+          <span>
+            <b>{{ session.clientname | upper }}</b>
+          </span>
+          {% if session.associate_account %}
+          <span class="pl-3">
+            <button class="btn btn-light btn-sm" id="switch">Switch Account</button>
+          </span>
+          {% endif %}
+        </div>
+
+        <div class="navbar-custom-menu">
+          <ul class="nav navbar-nav">
+            <!-- User Account: style can be found in dropdown.less -->
+            <li class="dropdown user user-menu">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                <img src="{{url_for('static', filename='image/user.png')}}" class="user-image" alt="User Image">
+                <span class="hidden-xs">{{ current_user.firstname }} {{ current_user.lastname }}</span>
+              </a>
+              <ul class="dropdown-menu">
+                <!-- User image -->
+                <li class="user-header">
+                  <img src="{{url_for('static', filename='image/user.png')}}" class="img-circle" alt="User Image">
+
+                  <p>
+                    {{ current_user.firstname}} {{ current_user.lastname }}
+                      {% if current_user.role == 'AD' %}
+                        {% set role = 'Administrator' %}
+                      {% elif current_user.role == 'MD' %}
+                        {% set role = 'Managing Director' %}
+                      {% elif current_user.role == 'OB' %}
+                        {% set role = 'Observer' %}
+                      {% endif %}
+                    <small> {{ role }}</small>
+                    {% set name = session.codename %}
+                  </p>
+                </li>
+                <li class="user-footer">
+                  <div class="pull-left">
+                    <a href="{{url_for('admin.adduser')}}" data-toggle="modal" class="btn btn-default btn-flat" id="admin_profile">Add User</a>
+                  </div>
+                  <div class="pull-right">
+                    <a href="{{ url_for('admin.logout', codename=name) }}" class="btn btn-default btn-flat">Sign out</a>
+                  </div>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </nav>
+    </header>
+

@@ -1,0 +1,137 @@
+{% extends "layout.html" %}
+{% block content %}
+
+        <div class="">
+            <div class="search" id="search">
+                <h6><i class="fa fa-cogs"></i> Payroll Adjustment</h6>
+                <div class="search-result" id="search-result">
+                    <form action="{{url_for('payroll.adjustment_list')}}" method="post">
+                        <div class="row">
+                            <div class="col-xs-12 col-md-12">
+                                <h5>Filter Record</h5>
+                            </div>
+                            <div class="col-xs-12 col-md-3">
+                                <div class="form-group">
+                                    <select class="form-control" name="month" id="month">
+                                        <option value="0" selected disabled>--select month--</option>
+                                        {% for mth in month %}
+                                            {% if mth != '' %}
+                                            <option value="{{ mth }}">{{mth}}</option>
+                                            {% endif %}
+                                        {% endfor%}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-md-3">
+                                <div class="form-group">
+                                    <select class="form-control" name="year" id="year">
+                                        <option value="0" selected disabled>--select year--</option>
+                                        {% for yr in year %}
+                                            <option value="{{ yr }}">{{yr}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-md-3">
+                                <div class="form-group">
+                                    <button class="btn btn-success btn-sm">Fetch record</button>
+                                    <a href="{{ url_for('payroll.adjustment') }}" class="btn btn-primary btn-flat btn-sm btn-search-emp" id="btn-search-emp">
+                                            Create Adjustment 
+                                        </a>
+                                </div>
+                            </div>
+                        </div>
+                    </form>   
+                    <p class="">
+                        <i>showing result for: </i><b>{{ filters[0] }} / {{ filters[1] }}</b>
+                    </p>                
+                </div>
+                <hr>
+
+                <div class="row">
+                    <div class="col-xs-12 col-md-12">
+                        <div class="adjt_list">
+                            <table class="table table-stripped table-hover" id="adjustment">
+                                <thead>
+                                    <th>Employee</th>
+                                    <th>Month</th>
+                                    <th>Year</th>
+                                    <th>Reason</th>
+                                    <th>Action</th>
+                                    <th>Amount</th>
+                                    <th></th>
+                                </thead>
+                                <tbody>
+                                    {% if adjust %}
+                                        {% for adj in adjust %}
+                                        <tr>
+                                            <td>{{ adj[0] }}</td>
+                                            <td>{{ adj[1] }}</td>
+                                            <td>{{ adj[2] }}</td>
+                                            <td>{{ adj[3] }}</td>
+                                            <td>{{ adj[4] }}</td>
+                                            <td>{{ adj[5] }}</td>
+                                            <td class="text-right">
+                                                <a class="btn btn-primary btn-sm" href="{{ url_for('payroll.edit_adjustment', empid=adj[6], month=filters[0], year=filters[1]) }}">
+                                                    <i class="fa fa-edit"></i>
+                                                </a> &nbsp;
+                                                <button class="btn btn-danger btn-sm deleteadj" data-id="{{adj[7]}}" id="deleteadj_{{adj[7]}}">
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
+                                            </td>
+
+                                        </tr>
+                                        {% endfor %}
+                                    {% endif %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="deleteadj" data-backdrop="static" data-keyboard="false">
+            <div class="modal-dialog modal-sm modal-dialog-centered">
+                <div class="modal-content">
+
+                  <!-- Modal Header -->
+                  <div class="modal-header">
+                    <h4 class="modal-title">Delete</h4>
+                  </div>
+
+                  <!-- Modal body -->
+                  <div class="modal-body">
+                    <h6>Are you sure to delete Adjustment? <span id="jhj"></span></h6>
+                    <form id="formAdjustDelete" action="{{ url_for('payroll.deleteAdjustment') }}" method="post">
+                        <input type="hidden" name="adj_id" value="" id="adj_id">                        
+                    </form>
+                  </div>
+
+                  <!-- Modal footer -->
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">No</button>
+                    <button type="submit" class="btn btn-success btn-sm" form="formAdjustDelete">Yes</button>
+                  </div>
+
+                </div>
+            </div>
+        </div>
+{% endblock content %}
+
+
+{% block script %}
+<script>
+    $(document).ready(function(){
+        $('.deleteadj').click(function (e){
+            e.preventDefault();
+            id = $(this).attr('id');
+            adj_id = document.getElementById(id).dataset.id;
+
+            document.getElementById('adj_id').value = adj_id;
+
+            $('#deleteadj').modal('show');
+        })
+    })
+    $('#adjustment').dataTable();
+</script>
+{% endblock %}

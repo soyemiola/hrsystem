@@ -1,0 +1,124 @@
+{% extends 'template.html' %}			
+
+{% block label %}
+			<small><b>Create New User</b></small>			
+{% endblock %}
+					
+{% block form %}
+
+					<div class="login_box formbox">
+						{% with messages = get_flashed_messages(with_categories=true)%}
+							{% if messages %}
+								{% for category, message in messages %}
+									<div class="alert alert-{{category}}">
+										{{ message }}
+									</div>
+								{% endfor %}
+							{% endif %}
+						{% endwith %}
+						<form method="post" action="{{url_for('admin.adduser')}}">
+							{{ form.hidden_tag() }}
+							<div>
+								<i class="fa fa-user"></i> {{ form.firstname.label(class="form-control-label")}}
+
+								{% if form.firstname.errors %}
+									{{ form.firstname(class="form-control is-invalid")}}
+									<div class="invalid-feedback">
+										{% for error in form.firstname.errors %}
+										<small class="badge">{{ error }}</small>
+										{% endfor %}
+									</div>
+								{% else %}
+									{{ form.firstname(class="form-control") }}
+								{% endif %}
+							</div>
+
+							<div>
+								<i class="fa fa-user"></i> {{ form.lastname.label(class="form-control-label") }}
+
+								{% if form.lastname.errors %}
+									{{ form.lastname(class="form-control is-invalid") }}
+									<div class="invlaid-feedback">
+										{% for error in form.lastname.errors %}
+											<small class="badge">{{ error }}</small>
+										{% endfor %}
+									</div>
+								{% else %}
+									{{ form.lastname(class="form-control") }}
+								{% endif %}
+								
+							</div>
+
+							<div>
+								<i class="fa fa-envelope"></i> {{ form.email.label(class="form-control-label") }}
+
+								{% if form.email.errors %}
+									{{ form.email(class="form-control is-invalid") }}
+									<div class="invlaid-feedback">
+										{% for error in form.email.errors %}
+											<small class="badge">{{ error }}</small>
+										{% endfor %}
+									</div>
+								{% else %}
+									{{ form.email(class="form-control") }}
+								{% endif %}
+								
+							</div>
+
+							<div>
+								<i class="fa fa-user-secret"></i> {{ form.role.label(class="form-control-label") }}
+
+								{% if form.role.errors %}
+									{{ form.role(class="form-control is-invalid") }}
+									<div class="invlaid-feedback">
+										{% for error in form.role.errors %}
+											<small class="badge">{{ error }}</small>
+										{% endfor %}
+									</div>
+								{% else %}
+									{{ form.role(class="form-control") }}
+								{% endif %}
+								
+							</div>
+
+							<div>
+								<i class="fa fa-lock"></i> {{ form.password.label(class="form-control-label") }}
+
+								{% if form.password.errors %}
+									{{ form.password(class="form-control is-invalid") }}
+									<div class="invlaid-feedback">
+										{% for error in form.password.errors %}
+											<small class="badge">{{ error }}</small>
+										{% endfor %}
+									</div>
+								{% else %}
+									{{ form.password(class="form-control") }}
+								{% endif %}
+								
+							</div>
+
+							<div>
+								<i class="fa fa-lock"></i> {{ form.confirm_password.label(class="form-control-label") }}
+
+								{% if form.confirm_password.errors %}
+									{{ form.confirm_password(class="form-control is-invalid") }}
+									<div class="invlaid-feedback">
+										{% for error in form.confirm_password.errors %}
+											<small class="badge">{{ error }}</small>
+										{% endfor %}
+									</div>
+								{% else %}
+									{{ form.confirm_password(class="form-control") }}
+								{% endif %}
+								
+							</div>
+
+							<div class="sb_btn">
+								{{ form.submit(class="btn btn-success btn-flat btn-block") }}
+							</div>
+						</form>
+
+						<small><a href="{{url_for('admin.dashboard')}}" style="text-align: center;"> Back to DASHBOARD</a></small>
+					</div>
+{% endblock %}
+				

@@ -1,0 +1,353 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="">
+				<h6><i class="fa fa-bars"></i> Loan Request</h6>
+				<ul class="bodymenu">
+					<li>
+						<a href="/admin/requests"><small><i class="fa fa-arrow-circle-left"></i> Request List</small></a>
+					</li>
+					<li>
+						<a href="{{url_for('loans.requests')}}" class="active">Loan request Process</a>
+					</li>
+				</ul>
+				<div class="bodycontent">
+					<div class="row">
+
+						<div class="col-xs-12 col-md-4">
+							<div class="loandet">
+								<h5><b>Employee</b> <span class="pull-right">{{ user[1] }}</span></h5>
+								<h5><b>Email</b> <span class="pull-right">{{ user[7] }}</span></h5>
+								<h5><b>Job Title</b> <span class="pull-right">{{ user[6] }}</span></h5>
+								<h5><b>Department</b> <span class="pull-right">{{ user[5] }}</span></h5>
+							</div>
+						</div>
+						<div class="col-xs-12 col-md-2"></div>
+						<div class="col-xs-12 col-md-4">
+							<div class="loandet">
+								<h5><b>Loan Type</b> <span class="pull-right">{{loanrecord[2] | upper }}</span></h5>
+								<h5><b>Request Date</b> <span class="pull-right">{{loanrecord[5]}}</span></h5>
+								<h5><b>Submission Date</b> <span class="pull-right">{{loanrecord[6]}}</span></h5>
+								{% if loanrecord[7] == 'processed' %}
+								<h5><b>Processed Date</b> <span class="pull-right">{{loanrecord[12]}}</span></h5>
+								{% endif %}
+							</div>
+						</div>
+					</div>
+					<br>
+					{% if loanrecord[7] == 'accepted' or loanrecord[7] == 'rejected' or loanrecord[7] == 'processed' %}
+						{% set fld = 'readonly' %}
+					{% else %}
+						{% set fld = '' %}
+					{% endif %}
+
+					
+					<form method="post" action="{{ url_for('loans.processLoanRequest', emp_id=user[0], loanid=loanrecord[0]) }}">
+						<div class="container">
+							<div class="row">
+							<div class="loandet">
+								<div class="det">
+			                        <ul class="nav nav-tabs">
+			                          <li class="nav-item">
+			                            <a class="nav-link active" data-toggle="tab" href="#GENERAL" style="">General</a>
+			                          </li>
+			                          <li class="nav-item">
+			                            <a class="nav-link" data-toggle="tab" href="#EMI">Remaining EMI</a>
+			                          </li>
+			                          <!-- <li class="nav-item">
+			                            <a class="nav-link" data-toggle="tab" href="#NOTE">Note</a>
+			                          </li> -->
+			                        </ul>
+
+			                        <!-- Tab panes -->
+			                        <div class="tab-content">
+			                        	<!-- GENERAL -->
+			                        	<div class="tab-pane container active" id="GENERAL">
+					                        <div class="row">
+					                        	<div class="col-xs-12 col-md-8">
+					                        		<div class="row">
+					                        			<div class="col-xs-12 col-md-6">
+					                        				<div class="loandet">
+										                        <table class="table">
+										                        	<tr>
+										                          		<th>Amount</th>
+										                          		<td>
+										                          			<input type="text" name="amount" value="{{loanrecord[3]}}" class="form-control" {{fld}}>
+										                          		</td>
+										                          	</tr>
+										                          	<tr>
+										                          		<th>Rate</th>
+										                          		<td>
+										                          			<select class="form-control" name="rate" {{fld}}>
+										                          			{% if EMI %}
+										                          				<option selected value="{{ EMI[2] }}">{{EMI[2]}}</option>
+										                          				<option value="0">0</option>
+										                          			{% else %}
+										                          				{% if loanrecord[9] %}
+										                          					{% set sel = 'selected' %}
+										                          					{% set _sel = '' %}
+										                          					<option {{ sel }} value="{{loanrecord[9]}}">
+										                          				{% else %}
+										                          					{% set sel = '' %}
+										                          					{% set _sel = 'selected' %}
+										                          				{% endif %}
+										                          					{{loanrecord[9]}}</option>
+										                          				<option {{ _sel }} value="0">0</option>
+										                          			{% endif %}
+										                          						
+										                          				<option value="5">5</option>
+										                          				<option value="10">10</option>
+										                          				<option value="15">15</option>
+										                          				<option value="20">20</option>
+										                          			</select>
+										                          		</td>
+										                          	</tr>
+										                          	<tr>
+										                          		<th>Repayment</th>
+										                          		<td>
+										                          			{% if EMI %}
+										                          				{% set rep = EMI[0] %}
+										                          			{% else %}
+										                          				{% set rep = loanrecord[10]%}
+										                          			{% endif %}
+										                          			<input type="number" name="repayment" class="form-control" readonly value="{{rep}}" {{fld}}>
+										                          					
+										                          		</td>
+										                          	</tr>
+										                        </table>
+										                    </div>
+					                        			</div>
+					                        			<div class="col-xs-12 col-md-6">
+					                        				<div class="loandet">
+						                          				<table class="table">
+						                          					<tr>
+								                          				<th>Duration (Monthly)</th>
+								                          				<td>
+								                          					{% if EMI %}
+								                          						{% set duration = EMI[3] %}
+								                          					{% else %}
+								                          						{% set duration = loanrecord[4] %}
+								                          					{% endif %}
+								                          					<input type="number" name="duration" class="form-control" value="{{duration}}" {{fld}}>
+								                          					
+								                          				</td>
+								                          			</tr>
+								                          			<tr>
+								                          				<th>EMI</th>
+								                          				<td>
+								                          					{% if EMI %}
+								                          						{% set deduct = EMI[1] %}
+								                          					{% else %}
+								                          						{% set deduct = loanrecord[8] %}
+								                          					{% endif %}
+								                          					<input type="number" name="deduction" class="form-control" readonly value="{{ deduct }}" {{fld}}>
+								                          				</td>
+								                          			</tr>
+						                          				</table>
+						                          			</div>
+					                        			</div>
+
+					                        			<!-- Buttons -->
+					                        			<div class="col-xs-12 col-md-12">
+					                        				<!-- <div class="submitbtn pull-right">
+						                        				{% if loanrecord[7] != 'rejected'  %}
+						                          					{% if loanrecord[7] == 'accepted' %}
+						                          					
+						                          						<input type="hidden" name="_empid" value="{{ user[0] }}">
+						                          						<input type="hidden" name="_type" value="{{ loanrecord[2] }}">
+						                          						<input type="hidden" name="_outstanding" value="{{loanrecord[10]}}">
+						                          						<input type="hidden" name="_category" value="{{ category }}">
+						                          						<button type="submit" name="submitbtn" value="processloan" class="btn btn-success btn-md">{{ 'process loan request' | upper }}</button>
+						                          					
+						                          					{% else %}		                          						
+						                          						{% if loanrecord[7] != 'processed' %}
+						                          							{% if EMI or loanrecord[8] %}
+							                          							{% if EMI == 101 %}
+							                          							<div class="alert alert-info text-left">
+											                          				<i class="fa fa-info-circle"></i> Profile Tax has not been computed.
+											                          			</div>
+							                          							{% else %}
+								                          							{% if loanrecord[8] %}
+										                          						{% set label = 'awaiting '+user[1]+' response' %}
+										                          						{% set act = 'disabled' %}
+									                          						{% else %}
+										                          						{% set label = 'submit' | upper %}
+										                          						{% set act = '' %}
+									                          						<button type="submit" name="submitbtn" value="calculate" class="btn btn-sm btn-primary">{{ 'caluclate' | upper }}</button> &nbsp;
+									                          						{% endif %}
+									                          						<button type="submit" name="submitbtn" value="submit" class="btn btn-sm btn-success pull-right" {{ act }}>{{ label }} </button></td>
+							                          							{% endif %}
+									                          				{% else %}
+									                          					<button type="submit" name="submitbtn" value="calculate" class="btn btn-sm btn-primary">{{ 'caluclate' | upper }}</button>
+									                          				{% endif %}
+						                          						{% endif %}
+								                          			
+								                          			{% endif %}
+							                          			{% else %}
+								                          			<div class="alert alert-info text-left">
+								                          				<i class="fa fa-info-circle"></i> Loan review was rejected by {{ user[1] }}
+								                          			</div>
+							                          			{% endif %}
+					                        				</div> -->
+					                        				<div class="submitbtn pull-right">
+					                        					{% if loanrecord[7] != 'processed' %}
+					                        					<button type="submit" name="submitbtn" value="calculate" class="btn btn-sm btn-primary">{{ 'caluclate' | upper }}</button>
+					                        					{% endif %}
+					                        					
+
+					                        					{% if EMI %}
+					                        						{% if EMI == 101 %}
+					                        						<div class="alert alert-info text-left">
+											                        	<i class="fa fa-info-circle"></i> Profile Tax has not been computed.
+											                        </div>
+					                        						{% else %}
+					                        						<input type="hidden" name="_empid" value="{{ user[0] }}">
+							                          				<input type="hidden" name="_type" value="{{ loanrecord[2] }}">
+							                          				<input type="hidden" name="_outstanding" value="{{EMI[0]}}">
+							                          				<input type="hidden" name="_category" value="{{ category }}">
+							                          				<button type="submit" name="submitbtn" value="processloan" class="btn btn-success btn-sm">{{ 'Process loan' }}</button>
+					                        						{% endif %}
+					                        					
+					                        					{% endif %}
+
+					                        					
+					                        				</div>
+					                        			</div>
+					                        		</div>
+					                        		<div class="row">
+					                        			
+					                        		</div>
+					                        	</div>
+
+					                        	<div class="col-xs-12 col-md-4">
+					                        		<div class="loandet">
+				                          				{% if on_loan %}
+				                          				<header class="text-center" style="background-color:#3c8dbc; color: #fff">
+				                          					Active Loan
+				                          				</header>
+				                          				<table class="table table-responsive">
+				                          					<thead>
+				                          						<th>ID</th>
+				                          						<th>Type</th>
+				                          						<th>Amount</th>
+				                          						<th>Oustanding</th>
+				                          						<th>EMI</th>
+				                          					</thead>
+				                          					<tbody>
+				                          						{% for loan_out in on_loan %}
+				                          						<tr>
+				                          							<td>{{ loan_out[12] }}</td>
+					                          						<td>{{ loan_out[2] }}</td>
+					                          						<td>{{ loan_out[3] | numberFormat }}</td>
+					                          						<td>{{ loan_out[4] | numberFormat }}</td>
+					                          						<td>{{ loan_out[7] | numberFormat }}</td>
+					                          					</tr>
+					                          					{% endfor %}
+				                          					</tbody>
+
+				                          				</table>
+				                          				{% endif %}
+				                          			</div>
+					                        	</div>
+					                        </div>
+				                        </div>
+
+				                        <!-- EMI -->
+				                        <div class="tab-pane container fade" id="EMI">
+				                        	<div class="row">
+				                          		<div class="col-xs-12 col-md-10">
+				                          			{% set emi_list = loanrecord[4] | emi_payment(loanID, loanrecord[1], user[1] ) %}
+				                          			{% if loanrecord[7] != 'rejected' %}
+				                          				{% if loanrecord[7] == 'processed' %}
+				                          					
+				                          				<table class="table table-hover" id="paymentDetails">
+				                          					<thead>
+				                          						<th>Loan ID</th>
+				                          						<th>Employee</th>
+				                          						<th>Next Emi</th>
+				                          						<th>Amount</th>
+				                          						<th>State</th>
+				                          					</thead>
+				                          					<tbody>
+				                          					{% if emi_list %}
+				                          						{% for emi in emi_list %}
+				                          							{% if emi[4] == 'Paid' %}
+				                          								{% set color = '#00a65a' %}
+				                          							{% else %}
+				                          								{% set color = '#dd4b39' %}
+				                          							{% endif %}
+				                          							<tr style="color: {{ color }}">
+				                          								<td>{{ emi[0] }}</td>
+				                          								<td>{{ emi[1] }}</td>
+				                          								<td>{{ emi[2] }}</td>
+				                          								<td>{{ emi[3] | numberFormat }}</td>
+				                          								<td>{{ emi[4] }}</td>
+				                          							</tr>
+				                          						{% endfor %}
+				                          					{% endif %}
+				                          					</tbody>
+				                          				</table>
+				                          							
+				                          				{% else %}
+				                          				<div class="alert alert-info">
+						                          			Loan has not been processed yet!
+						                          		</div>
+				                          				{% endif %}
+				                          			{% else %}
+				                          			<div class="alert alert-info">
+						                          		<i class="fa fa-info-circle"></i> Loan review was rejected by {{ user[1] }}
+						                          	</div>
+						                          	{% endif %}
+				                          		</div>
+				                          	</div>
+				                        </div>
+
+				                        <!-- NOTE -->
+				                        <!-- <div class="tab-pane container fade" id="NOTE">
+				                        	<div class="row">
+				                          		<div class="col-xs-12 col-md-4">
+				                          			<div class="loandet">
+				                          				<br>
+				                          				
+				                          					<div class="form-group">
+				                          						<label>Attach note to applicant</label>
+				                          						{% if note %}
+				                          							{% set loan_note = note %}
+				                          							{% set btn = 'Update' %}
+				                          						{% else %}
+				                          							{% set loan_note = '' %}
+				                          							{% set btn = 'Add' %}
+				                          						{% endif %}
+				                          						<textarea class="form-control" name="loan_note" style="resize: none; min-height: 150px; width: 100%;">{{loan_note}}</textarea>
+				                          					</div>
+				                          					<div class="form-group">
+				                          						{% if loanrecord[7] == 'rejected'  %}
+				                          							{% set dsb = 'disabled' %}
+				                          						{% else %}
+				                          							{% set dsb = '' %}
+				                          						{% endif %}
+				                          						<button type="submit" name="submitbtn" value="note" class="btn btn-sm btn-primary btn-block" {{dsb}}>{{ btn }}</button>
+				                          					</div>
+				                          				
+				                          			</div>
+				                          		</div>
+				                          	</div>
+				                        </div> -->
+
+			                        </div>
+			                      </div>
+							</div>
+						</div>
+						</div>
+					</form>
+				</div>
+			</div>
+
+{% endblock content %}
+
+
+{% block script %}
+<script>
+	$('#paymentDetails').dataTable();
+</script>
+{% endblock %}

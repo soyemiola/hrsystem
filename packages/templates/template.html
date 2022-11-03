@@ -1,0 +1,116 @@
+<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+<link rel="stylesheet" href="{{url_for('static', filename='bootstrap/dist/css/bootstrap.min.css')}}">
+<link rel="stylesheet" href="{{url_for('static', filename='font-awesome/css/font-awesome.min.css')}}">
+<div class="container-fluid">
+	<div class="row cover">
+		<div class="col-xs-12 col-md-12 bg_wall">
+			<div class="row cover_login">
+				<div class="col-xs-12 col-md-6 login_cont effect8">
+					<div class="login_box">
+						<img src="{{url_for('static', filename='image/logo.png') }}" alt="Brandlogo" height="50px">
+						<h4>BUSINESS TRAVEL MANAGEMENT</h4>
+						<header><b>HR Management System</b></header>
+						{% block label %}
+						
+						{% endblock %}
+					{% block form %}
+
+
+					{% endblock %}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<style>
+	body, .container-fluid, .cover{
+		height: 100% !important;
+	}
+	.bg_wall{
+		background-image: url('{{url_for("static", filename="image/hr.jpg")}}');
+		background-position: center;
+		background-repeat: no-repeat;
+		background-size: cover;
+		height: inherit;
+	}
+	.cover_login{
+		height: 100%;
+		padding: 0px !important;
+	}
+	.login_cont{
+		margin: 0px;
+		background-color: #fff;
+		height: 100%;
+		padding: 20px 30px;
+	}
+	.login_box{
+		padding: 30px auto 0;
+		margin-top: 10px;
+		text-align: center;
+
+	}
+	.formbox{
+		margin-top: 2%;
+		padding: 5px 15% 30px 15%;
+		text-align: left;
+	}
+	.login_box img{
+		height: 50px
+	}
+	.login_box header{
+		text-transform: uppercase;
+		font-size: 14px;
+		letter-spacing: 2px;
+		text-shadow: 0 0 20px rgba(0,0,0,0.3);
+	}
+	.sb_btn{
+		margin-top: 20px;
+	}
+	.effect8{
+            position:relative;
+            -webkit-box-shadow:0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+               -moz-box-shadow:0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+                    box-shadow:0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+        }
+        .effect8:before, .effect8:after
+        {
+            content:"";
+            position:absolute;
+            z-index:-1;
+            -webkit-box-shadow:0 0 20px rgba(0,0,0,0.8);
+            -moz-box-shadow:0 0 20px rgba(0,0,0,0.8);
+            box-shadow:0 0 20px rgba(0,0,0,0.8);
+            top:10px;
+            bottom:10px;
+            left:0;
+            right:0;
+            -moz-border-radius:100px / 10px;
+            border-radius:100px / 10px;
+        }
+        .effect8:after
+        {
+            right:10px;
+            left:auto;
+            -webkit-transform:skew(8deg) rotate(3deg);
+               -moz-transform:skew(8deg) rotate(3deg);
+                -ms-transform:skew(8deg) rotate(3deg);
+                 -o-transform:skew(8deg) rotate(3deg);
+                    transform:skew(8deg) rotate(3deg);
+        }
+
+	@media only screen and (max-width: 600px){
+		.login_cont{
+			background-color: rgba(0,0,0,0.4);
+		}
+		.formbox{
+			margin-top: 10%;
+			padding: 5px;
+		}
+		.formbox label, .login_box header{
+			color:#fff;
+		}
+	}
+</style>

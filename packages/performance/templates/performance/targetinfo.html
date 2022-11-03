@@ -1,0 +1,259 @@
+{% extends "layout.html" %}
+{% block content %}
+    
+            <div class="overview_table">
+              <h5>PERFORMANCE INFORMATION </h5>
+              <div class="qcbox" style="margin-bottom: 10px;">
+                <div class="row">
+                  <div class="col-xs-12 col-md-4">
+                    <div class="perform_info">
+                        <h5><b>DEPARTMENT:</b> {{ info[5] }}</h5>
+                        <h5><b>HOD / SUPERVISOR:</b> {{ suppy[1] }}</h5>
+                      </div>
+                  </div>
+                  <div class="col-xs-12 col-md-4">
+                    <div class="perform_info">
+                      <h5><b>REVIEW TITLE:</b> {{ info[1] }}</h5>
+                      <h5><b>TARGET STAFF:</b> {{ info[4] }}</h5>                      
+                    </div>
+                  </div>
+                  <div class="col-xs-12 col-md-4">
+                    <div class="perform_info">
+                      <h5><b>PERIODS: </b>{{ info[2] }} - {{ info[3] }}</h5>
+                      <h5><button class="btn btn-primary btn-block btn-sm" id="view_rules" onclick="openRule('targetDetails', 'rulesList')">view set target rules</button></h5>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <br>
+              <div class="row" id="targetDetails">
+                {% if tgt_emp %}
+                <div class="col-xs-12 col-md-4">
+                    <h5><b>Team Members</b></h5>
+                    {% for tgt in tgt_emp %}
+                    <div class="perform_emp">
+                      <p class="emp_perform_list">
+                        <a href="{{ url_for('performance.perform_details', code=info[6], team_member=tgt[2] ) }}">
+                          {{ tgt[2] | get_emp_name }}
+                        </a>
+                        {% if tgt[7] %}
+                          {% if tgt[7] == 'AGREED' %}
+                            {% set stat = 'accepted' %}
+                            {% set color = 'success' %}
+                          {% elif tgt[7] == 'DISAGREE' %}
+                            {% set stat = 'declined' %}
+                            {% set color = 'danger' %}
+                          {% endif %}
+                          <span class="pull-right btn-{{color}} btn-sm">
+                            {{stat|upper}}
+                          </span>
+                        {% endif %}
+                      </p>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="alert alert-info">
+                  <i class="fa fa-info-circle"></i> No Active member for this target
+                </div>
+                {% endif %}
+
+                
+                <div class="col-xs-12 col-md-8">
+                    {% if targetinfo %}
+                      {% set emp_name = targetinfo[1][2] | get_emp_name %}
+                      {% set target_score =  info[6] | get_target_score(targetinfo[1][2]) %}
+
+                      {% if target_score %}
+                        {% set review_score = target_score[5] %}
+                      {% else %}
+                        {% set review_score = 0 %}
+                      {% endif %}
+
+                    <h4><b>Performance Target Response for {{ emp_name }} </b></h4>
+                    <div class="row">
+                      <div class="col-xs-12 col-md-3">
+                        <p>
+                          Review Score: <br><b>{{ review_score }}%</b>
+                        </p>
+                      </div>
+                      <div class="col-xs-12 col-md-3">
+                        <p>
+                          Total Score: <br><b>{{ target_score[4] }}%</b>
+                        </p>
+                      </div>
+                      <div class="col-xs-12 col-md-3">
+                        <p>
+                          Weekly Score: <br><b>2%</b>
+                        </p>
+                      </div>
+                      <div class="col-xs-12 col-md-3">
+                        <p class="pull-right">
+                          <span class="btn btn-sm btn-primary " data-toggle="modal" data-target="#computation">
+                            <small>Key Variance</small>
+                          </span>
+                          {% set status = info[6] | check_signed_status(targetinfo[1][2]) %}
+
+                          {% if status %}
+                            {% if status != 'agreed' | upper %}
+                            <span class="btn btn-danger btn-sm" data-toggle="modal" data-target="#apprasial">
+                              Reset Appraisal
+                            </span>
+                            {% endif %}
+                          {% endif %}
+
+                          <!-- {% if targetinfo[1][10] == 'completed' %}
+                            <span class="btn btn-success btn-sm" data-toggle="modal" data-target="#apprasial">
+                              Add comment
+                            </span>
+                          {% endif %} -->
+                        </p>
+                      </div>
+                    </div>
+                    <div class="truz">
+                      {% if targetinfo[0] %}
+                        {% for i, g in targetinfo[0] %}
+                        <div class="rule_box" style="border: 1px solid #fff">
+                                  <h4>{{ i[2] }}</h4>
+                                  <div class="res">
+                                      <label style="width: 100%">Employee Point of view
+                                      <span class="status" style="float: right">
+                                          <b>Score</b>: {{i[4]}}</span></label>
+                                      <input type="range" min="1" max="10" value="{{i[4]}}" class="form-control-range" disabled>
+                                      <small><b>FEEDBACK: </b>{{i[5]}}</small>
+                                  </div>
+                                  <div class="res">
+                                    <label style="width: 100%">Supervisor's Point of view
+                                    <span class="status" style="float: right">
+                                      <b>Score</b>: {{g[4]}}</span></label>
+                                    <input type="range" min="1" max="10" value="{{g[4]}}" class="form-control-range" disabled>
+                                      <small><b>FEEDBACK: </b>{{g[5]}}</small>
+                                  </div>
+                              </div>
+                        {% endfor %}
+                      {% endif %}
+                    </div>
+
+                    <!-- computation modal -->
+                    <div id="computation" class="modal fade" role="dialog">
+                      <div class="modal-dialog">
+
+                        <!-- Modal content-->
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">{{ 'Key Variance' | upper }}</h4>
+                          </div>
+                          <div class="modal-body">
+                            {% if compute %}
+                              {% for cmp in compute %}
+                              {% if cmp[4] == 0 %}
+                                {% set sign = '-' %}
+                              {% else %}
+                                {% set sign = '+' %}
+                              {% endif %}
+                                <h6 data-toggle="collapse" class="btn btn-primary btn-sm btn-flat btn-block" data-target="#c_{{ cmp[1] | replace_dash }}" style="text-align: left;">
+                                  <b>{{ cmp[1] }}:</b> <small class="pull-right" style="color: #fff">{{sign}}{{cmp[2]}} points</small> </h6>
+
+                                <div class="collapse" id="c_{{ cmp[1] | replace_dash}}">
+                                  {% set keyvalue = cmp[1] | getqcValue(targetinfo[1][2], info[2], info[3]) %}
+                                  
+                                  {% if keyvalue %}
+                                  <table class="table table-sm table-hover">
+                                    <thead>
+                                      <th>Received Date</th>
+                                      <th>Description</th>
+                                      <th>Docx</th>
+                                      <th>Uploaded by</th>
+                                    </thead>
+                                    <tbody>
+                                      {% for ky in keyvalue %}
+                                      <tr>
+                                        <td>{{ky[3]}}</td>
+                                        <td>{{ky[5]}}</td>
+                                        <td>{{ky[7]}}</td>
+                                        <td>{{ky[8]}}</td>
+                                      </tr>
+                                      {% endfor %}
+                                    </tbody>
+                                  </table>
+                                  {% else %}
+                                    <h6>No Record</h6>
+                                  {% endif %}
+                                </div>
+                              {% endfor %}
+                            {% endif %}
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                          </div>
+                        </div>
+
+                      </div>
+                    </div>
+
+                    <!-- Reset apprasial -->
+                    <div id="apprasial" class="modal fade" role="dialog">
+                      <div class="modal-dialog modal-sm">
+
+                        <!-- Modal content-->
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">Reset Apprasial</h4>
+                          </div>
+                          <div class="modal-body">
+                            <h5><b>Are you sure to reset apprasial response?</b></h5>
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                            <a href="{{url_for('performance.reset_apprasial', get_id=targetinfo[1], code=info[6])}}" class="btn btn-success">Yes</a>
+                          </div>
+                        </div>
+
+                      </div>
+                    </div>
+                    {% else %}
+                    <div class="alert alert-info" style="margin-top: 5%;">
+                      <strong><i class="fa fa-info-circle"></i> No Response received.</strong>
+                    </div>
+                    {% endif %}
+                </div>
+              </div>
+
+              <br>
+              <div class="row" id="rulesList"  style="display: none">
+                <div class="col-xs-12 col-md-10">
+                  <h5><b>Target set Rules</b></h5>
+                  <ul class="list-group">
+                    {% for i in rules %}
+                    <li class="list-group-item">{{ i[1] }} <span class="badge">{{ i[3] }}</span></li>
+                    {% endfor %}
+                    <li class="list-group-item"><b>Total</b> <span class="badge">100</span></li>
+                  </ul>
+
+                  <div>
+                    <button class="btn btn-primary btn-sm" id="view_rules" onclick="openRule('rulesList', 'targetDetails')">Close</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+  <style>
+    .emp_perform_list{
+      border: 1px solid #fff;
+      padding:10px;
+      font-weight: bold;
+      background-color: #fff;
+    }
+  </style>
+{% endblock content %}
+
+{% block script %}
+<script>
+  function openRule(tab1, tab2){
+    document.getElementById(tab1).style.display = 'none';
+    document.getElementById(tab2).style.display = 'block';
+  }
+</script>
+{% endblock %}

@@ -1,0 +1,58 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="">
+                <h6><i class="fa fa-bars fa-sm"></i> Leave List </h6>
+                
+                <ul class="bodymenu">
+                    <li class="">
+                        <a href="{{url_for('leaves.leavelist')}}" class="active">Leave List</a>
+                    </li>
+                    <li class="">
+                        <a href="{{url_for('leaves.addleave')}}"><small>Create new leave</small></a>
+                    </li>
+                </ul>
+                <div class="bodycontent container">
+                    <div class="row">
+                        <div class="col-xs-12 col-md-12">
+                            <table id="example" class="table table-stripped table-sm">
+                                <thead>
+                                    <th>Leave Name</th>
+                                    <th>Description</th>
+                                    <th>Duration</th>
+                                    <th>Tools</th>
+                                </thead>
+                                <tbody>
+                                {% for list in leave_list %}
+                                    <tr>
+                                        <td>{{list[1]}}</td>
+                                        <td>{{list[2]}}</td>
+                                        <td>{{list[3]}}</td>
+                                        <td>
+                                            <span>
+                                                <a href="{{url_for('leaves.editleave', get_id=list[0])}}"
+                                               class="btn btn-secondary btn-sm btn-flat">
+                                                <i class="fa fa-edit fa-sm"></i> Edit</a>
+                                            </span>
+                                            <span>
+                                                <a href="{{ url_for('leaves.deleteleave', get_id=list[0]) }}" class="btn btn-danger btn-sm btn-flat">
+                                                <i class="fa fa-trash fa-sm"></i> Delete</a>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+{% endblock content %}
+
+
+{% block script %}
+<script>
+    $('#example').dataTable();
+</script>
+{% endblock %}

@@ -1,0 +1,137 @@
+{% extends "layout.html" %}
+{% block content %}
+	<style type="text/css">
+		.itm{
+			border:1px solid #fff;
+			padding: 5px;
+			margin: 5px;
+			background-color: #fff
+		}
+	</style>
+	<div class="container">
+		<div class="row">
+			<div class="col-xs-12 col-md-12">
+				<div class="tlabel">
+					<h6>
+						<i class="fa fa-th"></i> Training Feedback Response
+					</h6>
+					<a href="{{ url_for('users.feedbacktraining') }}" class="pull-right btn btn-primary btn-sm">
+						Back
+					</a>
+				</div>
+				
+			</div>
+			<div class="container-fluid dspfd mt-4">
+				<div class="row">
+					<div class="col-xs-12 col-md-3">
+						<div class="xs">
+							{% set dbf = fbDet[1] | FBempDet %}
+							
+							<h6>{{fbDet[2]}}</h6>
+							<p><b>Created By:</b> {{ dbf[1] }}</p>
+							<p><b>Created Date:</b> {{ fbDet[3] }}</p>
+							<p><b>Total Response:</b> {{ fbDet[5] | nOU }}</p>
+							{% if reslist %}
+							<p>
+								<a href="#" class="btn btn-sm btn-primary" id="exceldownloadbtn" data-name="{{fbDet[2]}}">Download <i class="fa fa-file-excel-o"></i></a>
+							</p>
+							{% endif %}
+						</div>
+					</div>
+					<div class="col-xs-12 col-md-9">
+						{% if reslist %}
+							{% for x in reslist %}
+								{% set info = x[1] | FBempDet %}
+
+								<div class="itm">
+									<h6><b>Name: </b>{{ info[1] }} <span class="pull-right"><b>Department:</b> {{ info[5] }}</span></h6>
+									<h6><b>Level: </b>{{ info[6] }} <span class="pull-right"><b>Role:</b> {{ info[17] }}</span></h6>
+									<h6><b>Date Submitted: </b>{{ x[3] }} </h6>
+									<hr>
+									<p>Training Feedback Response</p>
+									<div class="row">
+										{% for i in x[5] %}
+										<div class="col-xs-12 col-md-3">
+											<h6 class="mb-1"><b>Q: {{ i }}</b></h6>
+											<p class="mb-3">A: 
+												{{ x[6][loop.index - 1] | upper }}
+											</p>
+										</div>
+										{% endfor %}
+									</div>
+								</div>
+							{% endfor %}
+
+							<table class="table table-sm" id="excel-download-list" style="display: none">
+								<thead>
+									<th></th>
+								</thead>
+								<thead>
+									<th colspan="{{reslist[0][5] | length + 3}}">{{fbDet[2]}}</th>
+								</thead>
+								<thead>
+									<th>Name</th>
+									<th>Department</th>
+									<th>Date</th>
+									<th class="text-center" colspan="{{reslist[0][5] | length}}">Question/Response</th>
+								</thead>
+								<thead>
+									<th colspan="3"></th>
+									{% for th in range(reslist[0][5] | length) %}
+									<th>{{ reslist[0][5][loop.index - 1] }}</th>
+									{% endfor %}
+								</thead>
+
+								<tbody>
+									{% for tlist in reslist %}
+										{% set tb_info = tlist[1] | FBempDet %}
+										<tr>
+											<td>{{tb_info[1]}}</td>
+											<td>{{tb_info[5]}}</td>
+											<td>{{tlist[3]}}</td>
+											{% for resp in tlist[6] %}
+												<td>{{ resp | upper }}</td>
+											{% endfor%}
+										</tr>
+									{% endfor %}
+								</tbody>
+							</table>
+						{% else %}
+						<div class="alert alert-info">
+							<b>No Feedback</b>
+						</div>
+						{% endif %}
+					</div>
+				</div>
+			</div>
+			
+		</div>	
+	</div>
+
+{% endblock content %}
+
+{% block script %}
+	<script>
+		function s2ab(s){
+		    var buf = new ArrayBuffer(s.length);
+		    var view = new Uint8Array(buf);
+		    for(var i=0; i<s.length; i++) view[i] = s.charCodeAt(i) & 0xFF;
+		    return buf;
+		}
+
+		$(document).ready(function () {
+		    $('#exceldownloadbtn').click(function () {
+		      var filename = document.getElementById('exceldownloadbtn').dataset.name;
+		      
+
+		      var wb = XLSX.utils.table_to_book(document.getElementById('excel-download-list'), {sheet:'Sheet Js'});
+
+		      var wbout = XLSX.write(wb, {bookType: 'xlsx', bookSST:true, type: 'binary' });
+		            
+		      saveAs(new Blob([s2ab(wbout)], {type: 'application/octet-stream'}), 'Feedback response for '+filename+'.xlsx')
+		    })
+		  });
+	</script>
+{% endblock script %}
+
+

@@ -1,0 +1,62 @@
+{% extends "layout.html" %}
+{% block content %}
+    
+    
+            <div class="">
+                <h6><i class="fa fa-lock"></i> Update Password </h6>
+                <div class="bodycontent">
+                    <div class="container">
+                        <!--Display record in table-->
+                        <form action="" method="post">
+                            <div class="row">
+                                <div class="col-xs-12 col-xs-12">
+                                    <div class="passbox">
+                                        <div class="passfield">
+                                            <label>Current Password</label>
+                                            <input type="password" name="password" class="form-control">
+                                        </div>
+                                        <div class="passfield">
+                                            <label>New Password</label>
+                                            <input type="password" name="newpassword" class="form-control">
+                                        </div>
+                                        <div class="passfield">
+                                            <label>Confirm Password</label>
+                                            <input type="password" name="cnewpassword" class="form-control">
+                                        </div>
+                                        <div class="passfield">
+                                            <button type="submit" class="btn btn-secondary btn-sm btn-flat">Update password</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                        </form>
+                        
+                    </div>
+                </div>
+            </div>
+
+<style>
+    .passbox{
+        padding: 15px;
+    }
+    .passfield{
+        width: 50%
+    }
+    .passfield  button{
+        margin-top: 10px;
+    }
+
+    @media only screen and (max-width: 600px){
+        .passfield{
+            width: 100%;
+        }
+    }
+</style>
+{% endblock content %}
+
+{% block script %}
+
+{% endblock script %}
+
+

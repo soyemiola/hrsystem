@@ -1,0 +1,79 @@
+{% extends "layout.html" %}
+{% block content %}
+
+ 			<div class="">
+				<h6><i class="fa fa-bars"></i> Department List</h6>
+				<ul class="bodymenu">
+					<li>
+						<a href="{{url_for('settings.departmentList')}}" class="active">List</a>
+					</li>
+					{% if current_user.role == 'AD' %}
+					<li>
+						<a href="{{url_for('settings.createDepartment')}}">Add Department</a>
+					</li>
+					{% endif %}
+				</ul>
+				<div class="bodycontent">
+					<div class="row">
+						<div class="col-xs-12 col-md-12 category_list">
+							<table id="example" class="table table-striped table-bordered table-sm" style="width:100%">
+								<thead>
+									<th>Department Name</th>
+									<th>Supervisor</th>
+									<th>SOP Document</th>
+								</thead>
+								<tbody>
+								{% for dept in deptList %}
+									<tr>
+										<td>{{dept[0]}}</td>
+										<td>
+											{% if dept[2] %}
+												{{ dept[2] }}
+											{% endif %}
+										</td>
+										<td>
+											{% if dept[3] %}
+												<a href="{{url_for('static', filename='admin/SOPs/'+dept[3])}}" target="_blank">{{ dept[3] }}</a></td>
+
+											{% endif %}
+										{% if current_user.role == 'AD' %}
+										<td width="150px">
+											<a href="{{url_for('settings.editDepartment', dept_id=dept[1])}}"
+											   class="btn btn-secondary btn-sm btn-flat">
+												<i class="fa fa-edit fa-sm" ></i>
+                                                Edit</a>
+											<a href="{{ url_for('settings.delete_department', dept_id=dept[1]) }}" 
+												id="{{dept[1]}}" class="btn btn-danger btn-sm btn-flat">
+												<i class="fa fa-trash fa-sm"></i>
+                                                Delete
+                                            </a>
+										</td>
+										{% endif %}
+									</tr>
+								{% endfor %}
+								</tbody>
+							</table>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-12">
+							<div class="face" id="alert">
+								<small>Are you sure to delete <span id="deptname">Account</span> Department?</small><br>
+								<div id="action_btn">
+
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+{% endblock content %}
+
+
+{% block script %}
+<script>
+	$('#example').dataTable();
+
+</script>
+{% endblock %}

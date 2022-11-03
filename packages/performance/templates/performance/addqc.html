@@ -1,0 +1,226 @@
+{% extends "layout.html" %}
+{% block content %}
+  
+  <div class="row">
+    <div class="col-xs-12 col-md-12">
+      <h6>Add Credibility</h6>
+    </div>
+  </div>
+  <form action="{{ url_for('qc.addqc') }}" method="post">
+    <div class="">
+      <div class="row">
+        <div class="col-xs-12 col-md-3">
+          <div class="">
+            <label>select department:</label>
+            <select class="form-control dept" name="department" id="department" required>
+              <option selected disabled>--Choose department--</option>
+              {% if department %}
+                {% for dept in department %}
+                  <option value="{{ dept[0] }}" data-dept="{{ dept[0] }}"> {{ dept[0] }} </option>
+                {% endfor %}
+              {% endif %}
+            </select>
+          </div>
+        </div>
+        <div class="col-xs-12 col-md-3">
+          <div class="">
+            <label style="text-align: left">select employee: <span class="pull-right" id="load"></span> </label> 
+            
+            <select class="form-control emp" name="employee" id="employees" required>
+              <option selected disabled>--select employee--</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-xs-12 col-md-2">
+          <div class="form-group">
+            <label style="visibility: hidden;">filter</label>
+            <button type="submit" class="btn btn-flat btn-sm btn-primary btn-block mt-1">Get Record</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+  <hr>  
+
+  {% if emp_det %}
+  <div class="row">
+    <div class="col-xs-12 col-md-12">
+      <div class="empbox">
+        <h5>Employees Details</h5>
+        <div class="empbox-det">
+          <div class="row">
+            <div class="col-xs-12 col-md-3">
+              <div class="emp_profile">
+                <div class="emp_profile_img">
+                  {% if emp_det[20] %}
+                    {% set img = emp_det[20] %}
+                  {% else %}
+                    {% set img = 'user.png' %}
+                  {% endif %}
+                  <img src="{{ url_for('static', filename='image/'+img) }}">
+                  
+                </div>
+                <div class="emp_profile_det">
+                  <section>
+                    <p>
+                      <span>Staff ID:</span> {{ emp_det[16] }}
+                    </p>
+                    <p>
+                      <span>Name:</span> {{ emp_det[1] }}
+                    </p>
+                    <p>
+                      <span>Dept:</span> {{ emp_det[5] }}
+                    </p>
+                    <p>
+                      <span>Position:</span> {{ emp_det[6] }}
+                    </p>
+                    <p>
+                      <span>Role:</span> {{ emp_det[18] }}
+                    </p>
+                    <p>
+                      <span>Email:</span> {{ emp_det[7] }}
+                    </p>
+                  </section>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xs-12 col-md-9">
+              <div class="qc_input">
+                <small><i class="fa fa-info"></i> submit employee report details.</small>
+                <form action="{{ url_for('qc.saveqc') }}" method="post" enctype="multipart/form-data">
+                  <input type="hidden" name="emp_id" value="{{ emp_det[0] }}">
+                  <input type="hidden" name="emp_name" value="{{ emp_det[1] }}">
+                  <input type="hidden" name="department" value="{{ emp_det[5] }}">
+                  <div class="qc_input_fields">
+                    <div class="row">
+                      <div class="col-xs-12 col-md-4">
+                        <div class="">
+                          <label>Select mode:</label>
+                          <select class="form-control" name="mode" id="mode" required>
+                            <option selected disabled> --select mode-- </option>
+                            {% if var %}
+                              {% for i in var %}
+                                <option value="{{i[1]}}" data-mode="{{i[4]}}" data-name={{i[1]}}> {{i[1]}} </option>
+                              {% endfor%}
+                            {% endif %}
+                          </select>
+                        </div>
+                      </div>
+                      <div class="col-xs-12 col-md-4">
+                        <div class="">
+                          <label>Recieve date:</label>
+                          <input type="date" name="receive_date" required class="form-control">
+                        </div>
+                      </div>
+                      <div class="col-xs-12 col-md-4" id="modeselected">
+                        
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-xs-12 col-md-12">
+                        <div class="">
+                          <label>Subject:</label><span class="pull-right" data-toggle="collapse" data-target="#subject"><i class="fa fa-question-circle"></i></span>
+                          <section class="collapse" id="subject">
+                            <small><b><i>example: commendation received from abc group of company</i></b></small>
+                          </section>
+                          <input type="text" name="subject" class="form-control" required>
+                        </div>
+                      </div>
+                      <div class="col-xs-12 col-md-12">
+                        <div class="">
+                          <label>Summary:</label><span class="pull-right" data-toggle="collapse" data-target="#summary"><i class="fa fa-question-circle"></i></span>
+                          <section class="collapse" id="summary">
+                            <small><b><i>a detailed key point of the commendation received.</i></b></small>
+                          </section>
+                          <textarea name="summary" style="resize: none; height: 50px;" class="form-control" required></textarea>
+                        </div>
+                      </div>
+                      <div class="col-xs-12 col-md-12">
+                        <br>
+                        <div class="">
+                          <input type="file" name="attachment" class="form-control-file" accept="application/pdf">
+                          <small><i><b>attach report letter if available</b></i></small>
+                        </div>
+                      </div>
+                      <div class="col-xs-12 col-md-12">
+                        <div class="">
+                          <button type="submit" class="btn btn-sm btn-flat btn-default pull-right">Save Record</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+{% endblock content %}
+
+{% block script %}
+  <script type="text/javascript">
+    $('#department').on('change', function () {
+      var selectedOption = $(this).find('option:selected');
+      dept = selectedOption[0].dataset.dept;
+
+      loader = '<small style="display: none"><img src="{{ url_for("static", filename="image/load.gif") }}" height="10px;"></small>';
+
+      $.ajax({
+        method: 'post',
+        url: '/admin/fetch-record',
+        data: {dept:dept},
+
+        beforeSend: function(){
+          document.getElementById('load').innerHTML = loader;
+        },
+
+        success:function(data){ 
+          if (data != 'None'){
+            $('#employees').empty();
+            $('#employees').append('<option selected disabled>--select employee--</option>');
+            for (var i = 0; i<data.length; i++){
+              $('#employees').append('<option value="'+data[i][0]+'">'+ data[i][1] +'</option>');
+            }
+            document.getElementById('load').style.display = 'None';
+            document.getElementById('nolist').remove();
+            
+          }else{
+            $('#employees').empty();
+            $('#employees').append('<option value="" selected disabled id="nolist">No available employee</option>');
+          }
+
+        },
+
+        compelete: function(){
+          document.getElementById('load').innerHTML = '';
+        }
+      })
+    });
+
+
+    $('#mode').on('change', function () {
+      var selectedOption = $(this).find('option:selected');
+      mode = selectedOption[0].dataset.mode;
+      name = selectedOption[0].dataset.name;
+
+      if (mode == 1) {
+        bg = '#3c8dbc';
+      }else if(mode == 0){
+        bg = '#f39c12';
+      }
+
+
+      selected = '<div class="mode_select" style="background-color: '+bg+'">\
+                        <h6 class="p-2">'+ name +'</h6>\
+                      </div>';
+
+      document.getElementById('modeselected').innerHTML = selected;
+    });
+  </script>
+{% endblock %}
+

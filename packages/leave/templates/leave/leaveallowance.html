@@ -1,0 +1,56 @@
+{% extends "layout.html" %}
+{% block content %}
+
+				<h4>Leave Allowance</h4>
+				<div class="leaverequest">
+					<table id="list" class="table table-sm" width="100%">
+						<thead>
+							<th>Staff Name</th>
+							<th>Department</th>
+							<th>Year</th>
+							<th>Leave Type</th>
+							<th>Status</th>
+						</thead>
+						<tbody>
+							{% if alist %}
+								{% for aws in alist %}
+								<tr>
+									<td>{{ aws[0] }}</td>
+									<td>{{ aws[11] }}</td>
+									<td>{{ aws[7] }}</td>
+									<td>{{ aws[1] }}</td>
+									<td>
+										{% if aws[23] %}
+											{% if aws[23] == 'Yes' %}
+												{% set status = 'Received' %}
+											{% elif aws[23] == 'No' %}
+												{% set status = 'Pending' %}
+											{% endif %}
+
+											{% if status == 'Received' %}
+												<a class="btn btn-sm btn-success">{{ status }}</a>
+											{% elif status == 'Pending' %}
+												<form method="post" action="{{url_for('leaves.leaveallowance')}}">
+													<input type="text" name="leaveid" value="{{aws[13]}}">
+													<button type="submit" class="btn btn-sm btn-primary">Process</button>
+												</form>
+											{% endif %}
+										{% endif %}
+									</td>
+								</tr>
+								{% endfor %}
+							{% endif %}
+						</tbody>
+					</table>
+				</div>
+
+{% endblock content %}
+
+
+{% block script %}
+<script>
+	$(document).ready(function () {
+		$('#list').DataTable();
+	})
+</script>
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends 'template.html' %}			
+
+{% block label %}
+			<small><b>Admin User</b></small>			
+{% endblock %}
+					
+{% block form %}
+
+					<br>
+					<form action="{{ url_for('domain.adminSelectDomain') }}" method="post">
+						<div class="row">
+							<div class="col-md-12">
+		                    	<div class="card-header card-header-primary">
+				                  <h4 class="card-title">Company</h4>
+				                  <p class="card-category">Select Company Name</p>
+				                </div>
+		                        <select name="domain" class="form-control">
+		                        	{% if company %}
+		                        		{% for client in company %}
+		                        			<option value="{{ client[1] }}">{{ client[1] }}</option>
+		                        		{% endfor %}
+		                        	{% endif %}
+									
+								</select>
+		                    </div>
+						</div>
+						<br>
+						<div class="row">
+	                     	<div class="col-md-12">
+		                    	<button class="btn btn-primary pull-left">Select</button>
+		                        <div class="clearfix"></div>
+		                    </div>
+	                    </div>
+	                </form>
+	                
+{% endblock %} 

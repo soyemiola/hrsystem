@@ -1,0 +1,97 @@
+{% extends "layout.html" %}
+{% block content %}
+  <div class="row">
+    <div class="col-xs-12 col-md-12">
+      <h4>Payroll Graph Report</h4>
+    </div>
+    <div class="col-xs-12 col-md-12">
+      <div class="graphbox">
+        <div class="canvas">
+          <h5 id="geolocation-label" class="title"></h5>
+          <canvas id="canvas" height="100%" ></canvas>
+        </div>
+      </div>
+    </div>
+    
+  </div>
+      <!-- /.row -->
+<style type="text/css">
+  .graphs{    
+    border-top:1px solid lightgrey;
+    padding-bottom: 20px;
+    margin-bottom: 10px;
+  }
+
+  .graphbox{
+    margin-top: 20px;
+    position:relative;
+            -webkit-box-shadow:0 0 10px 5px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1);
+               -moz-box-shadow:0 0 10px 5px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1);
+                    box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    background-color: #fff;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+  }
+  .graphbox-sm{
+    height: 280px;
+  }
+  
+  .canvas{
+    padding: 0px !important;
+  }
+  h5.title{
+    display: inline-block;
+    font-weight: bold;
+    width: 100%
+  }
+  h5.title a{
+    font-size: 13px;
+  }
+  ul.line-legend, ul.bar-legend, ul.pie-legend{
+    text-align: center;
+    padding-left: 0px;
+  }
+  ul.line-legend li, ul.bar-legend li, ul.pie-legend li{
+    list-style-type: none;
+  }
+</style>
+{% endblock content %}
+
+
+{% block script %}
+  <script type="text/javascript">
+    var randomScalingFactor = function(){ return Math.round(Math.random()*100)}; 
+    var lineChartData = {
+      labels : ["January","February","March","April","May","June","July"],
+      datasets : [
+        {
+          label: "My First dataset",
+          fillColor : "rgba(220,220,220,0.2)",
+          strokeColor : "rgba(220,220,220,1)",
+          pointColor : "rgba(220,220,220,1)",
+          pointStrokeColor : "#fff",
+          pointHighlightFill : "#fff",
+          pointHighlightStroke : "rgba(220,220,220,1)",
+          data : [randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor()]
+        },
+        {
+          label: "My Second dataset",
+          fillColor : "rgba(151,187,205,0.2)",
+          strokeColor : "rgba(151,187,205,1)",
+          pointColor : "rgba(151,187,205,1)",
+          pointStrokeColor : "#fff",
+          pointHighlightFill : "#fff",
+          pointHighlightStroke : "rgba(151,187,205,1)",
+          data : [randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor()]
+        }
+      ]
+
+    };
+
+    var ctx = document.getElementById("canvas").getContext("2d");
+        window.myLine = new Chart(ctx).Line(lineChartData, {
+          responsive: true
+        });
+  </script>
+{% endblock %}

@@ -1,0 +1,395 @@
+{% extends "layout.html" %}
+{% block content %}
+					       <h4> <i class="fa fa-cogs"></i> Settings</h4>
+                 <br>
+					        <div class="row">
+                    <div class="col-xs-12 col-md-5">
+                      <h4><b>Report</b></h4>
+                      {% if current_user.role == 'AD' %}
+                        {% set active = '' %}
+                      {% else %}
+                        {% set active = 'disabled' %}
+                      {% endif %}
+                      <div class="settingbox">
+                        {% if setting[1] == 1 %}
+                          {% set yes_selected = 'selected' %}
+                          {% set no_selected = '' %}
+                        {% else %}
+                          {% set yes_selected = '' %}
+                          {% set no_selected = 'selected' %}
+                        {% endif %}
+
+                        <p>
+                          Generate Payroll Report (All Employees)
+                         <span class="pull-right">
+                            <select class="form-control set_toggle" id="payroll_report" data-label="{{setting[1]}}">
+                              <option value="1" {{ yes_selected }}>Yes</option>
+                              <option value="0" {{ no_selected }}>No</option>
+                            </select>
+                          </span>
+                        </p>
+                      </div>
+
+
+                      <header><h4><b>Deduction</b></h4></header>
+                      <div class="settingbox">
+                        {% if setting[2] == 1 %}
+                          {% set yes_selected_2 = 'selected' %}
+                          {% set no_selected_2 = '' %}
+                        {% else %}
+                          {% set yes_selected_2 = '' %}
+                          {% set no_selected_2 = 'selected' %}
+                        {% endif %}
+                        <p>
+                          Monthly Deduction on Salary
+                          
+                          <span class="pull-right">
+                            <select class="form-control set_toggle" id="monthly_deduction" data-label="{{setting[2]}}" {{ active }}>
+                              <option value="1" {{ yes_selected_2 }}>Yes</option>
+                              <option value="0" {{ no_selected_2 }}>No</option>
+                            </select>
+                          </span>
+                        </p>                         
+                      </div>
+
+                      <div class="settingbox">
+                        {% if setting[3] == 1 %}
+                          {% set yes_selected_3 = 'selected' %}
+                          {% set no_selected_3 = '' %}
+                        {% else %}
+                          {% set yes_selected_3 = '' %}
+                          {% set no_selected_3 = 'selected' %}
+                        {% endif %}
+                        <p>
+                          Loan Deduction on Employees
+                          
+                          <span class="pull-right">
+                            <select class="form-control set_toggle" id="loan_deduction" data-label="{{setting[3]}}" {{ active }}>
+                              <option value="1" {{ yes_selected_3 }}>Yes</option>
+                              <option value="0" {{ no_selected_3 }}>No</option>
+                            </select>
+                          </span>
+                        </p>
+                      </div>
+
+                      <div class="settingbox">
+                        {% if setting[4] == 1 %}
+                          {% set yes_selected_4 = 'selected' %}
+                          {% set no_selected_4 = '' %}
+                        {% else %}
+                          {% set yes_selected_4 = '' %}
+                          {% set no_selected_4 = 'selected' %}
+                        {% endif %}
+                        <p>
+                          Cooperative Loan Deduction
+                          
+                          <span class="pull-right">
+                            <select class="form-control set_toggle" id="coop_loan_deduction" data-label="{{setting[4]}}" {{ active }}>
+                              <option value="1" {{ yes_selected_4 }}>Yes</option>
+                              <option value="0" {{ no_selected_4 }}>No</option>
+                            </select>
+                          </span>
+                        </p>
+                      </div>
+
+                      <div class="settingbox">
+                        {% if setting[5] == 1 %}
+                          {% set yes_selected_5 = 'selected' %}
+                          {% set no_selected_5 = '' %}
+                        {% else %}
+                          {% set yes_selected_5 = '' %}
+                          {% set no_selected_5 = 'selected' %}
+                        {% endif %}
+                        <p>
+                          Cooperative Contribution Deduction
+                          
+                          <span class="pull-right">
+                            <select class="form-control set_toggle" id="coop_contribution" data-label="{{setting[5]}}" {{ active }}>
+                              <option value="1" {{ yes_selected_5 }}>Yes</option>
+                              <option value="0" {{ no_selected_5 }}>No</option>
+                            </select>
+                          </span>
+                        </p>
+                      </div>
+
+                      <h4><b>Payroll</b></h4>
+                      <div class="settingbox">
+                        <p>
+                          Salary Percentage                          
+                          <span class="pull-right">
+                            {% if setting[0] %}
+                              {% set perc = setting[0] %}
+                            {% else %}
+                              {% set perc = setting[0] %}
+                            {% endif %}
+                            <input type="text" size="2" value="{{perc}}" readonly>
+                            
+                          </span>
+                        </p>
+                      </div>
+                      <div class="settingbox">
+                        {% if setting[0] == 100 %}
+                          {% set status = 'checked'%}
+                        {% else %}
+                          {% set status = 'unchecked'%}
+                        {% endif %}
+                        <p>
+                          Reset salary percentage for all employee
+                          
+                          <span class="pull-right">
+                            <button type="button" class="btn btn-sm btn-flat btn-secondary resetperc" {{ active }}>
+                              Reset
+                            </button>
+                            <span class="resetalrt" id="resetalrt" style="color: green; display: none">
+                              <i class="fa fa-check-circle-o"></i> Percentage Reset
+                            </span>
+                          </span>
+                        </p>
+                      </div>
+
+                      <h4><b>Loan</b></h4>
+                      <div class="settingbox">
+                        {% if setting[6] == 1 %}
+                          {% set yes_selected_6 = 'selected' %}
+                          {% set no_selected_6 = '' %}
+                        {% else %}
+                          {% set yes_selected_6 = '' %}
+                          {% set no_selected_6 = 'selected' %}
+                        {% endif %}
+
+                        <p>
+                          Employee Loan Request
+                          
+                          <span class="pull-right">
+                            <select class="form-control set_toggle" id="loan_request" data-label="{{setting[6]}}" {{ active }}>
+                              <option value="1" {{ yes_selected_6 }}>Yes</option>
+                              <option value="0" {{ no_selected_6 }}>No</option>
+                            </select>
+                          </span>
+                        </p> 
+
+                      </div>
+                    </div> 
+
+                    <div class="col-xs-12 col-md-6">
+                      <h4><b>Leave settings</b></h4>
+                      <div class="settingbox">
+                        {% if setting[7] == 1 %}
+                          {% set yes_selected_7 = 'selected' %}
+                          {% set no_selected_7 = '' %}
+                        {% else %}
+                          {% set yes_selected_7 = '' %}
+                          {% set no_selected_7 = 'selected' %}
+                        {% endif %}
+
+                        <p>
+                          Enable leave process
+                          
+                          <span class="pull-right">
+                            <select class="form-control set_toggle" id="leave_request" data-label="{{setting[7]}}" {{ active }}>
+                              <option value="1" {{ yes_selected_7 }}>Yes</option>
+                              <option value="0" {{ no_selected_7 }}>No</option>
+                            </select>
+                          </span>
+                        </p>                       
+                      </div>
+
+                      <div class="settingbox">
+                        <p>
+                          HR Approval Email
+                          
+                          <span class="pull-right">
+                            <select class="form-control set_toggle" id="leave_hr_email" data-label="{{setting[8]}}" {{ active }}>
+                              <option value="{{ setting[8] }}" >{{ setting[8] }}</option>
+                              {% for hr in hr_list %}
+                                <option value="{{ hr[0] }}">{{ hr[0] }}</option>
+                              {% endfor %}
+                            </select>
+                          </span>
+                        </p>                        
+                      </div>
+
+                      <div class="settingbox">
+                        <p>
+                          Set Final Approval Email
+                          
+                          <span class="pull-right">
+                            <select name="finalemail" id="leave_final_email" class="form-control set_toggle" data-label="{{setting[9]}}" {{ active }}>
+                              <option value="{{ setting[9] }}" >{{ setting[9] }}</option>
+                              {% for top in toplevel %}
+                              <option value="{{top[0]}}">{{ top[0] }}</option>
+                              {% endfor %}
+                            </select>
+                          </span>
+                        </p> 
+
+                      </div>
+
+                      <div class="settingbox">
+                        <p>
+                          Populate staff leave table
+                          
+                          <span class="pull-right">
+                            <button class="btn btn-success btn-sm btn-flat" id="populate_leave"> Populate All</button>
+                          </span>
+                        </p> 
+                        <small style="color: #00a65a" id="populatemsg">
+                          
+                        </small>                       
+                      </div>
+                      
+                      <h4>Backup </h4>
+                      <div class="settingbox">
+                       <p>
+                          <span id="download_backup">
+                            <small><i class="fa fa-info"></i> Backup process may take awhile, patiently wait for process to complete</small>
+                          </span>
+                        </p>
+                        <p>
+                          <button type="button" class="btn btn-primary btn-sm btn-flat backup" id="backup">
+                              Backup Now 
+                            </button>
+                            <span id="loading"></span>
+                        </p>
+                      </div>
+                    </div>    
+                  </div>
+
+
+    <div class="modal fade" tabindex="-1" role="dialog" id="populatemodal">
+      <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Leave Process</h4>
+          </div>
+          <div class="modal-body" style="margin-left: 0px; text-align: center">
+           <h5><i class="fa fa-exclamation-circle"></i>
+              Activating leave process for all staff. <br>
+              <b>Do you want to process?</b>
+           </h5>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-success btn-sm" id="proceedleave">Proceed</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+<style>
+  h4{
+    padding-left: 20px;
+  }
+  .settingbox{
+    border:1px solid #f8f8ff; 
+    padding: 5px 20px;
+    background-color: #f8f8ff; 
+    margin: 10px
+  }
+
+</style>
+{% endblock content %}
+
+{% block script %}
+<script>
+    $(document).ready(function () {
+      $('.set_toggle').on('change', function () {
+        var opt = $(this).find('option:selected'),
+            name = $(this).attr('id'),
+            value = opt[0].value;
+
+        $.ajax({
+          method: 'POST',
+          url: '/admin/updatesetting',
+          data: {name: name, value:value},
+
+          success:function(data){
+            
+          },
+
+          /*complete: function(){
+            document.getElementById('alertmsg').innerHTML
+          }*/
+        })
+        
+      })
+    });
+
+    $('.resetperc').click(function (){
+        const value = 100;
+
+        $.ajax({
+            method: 'POST',
+            url: '/admin/resetpercentage',
+            data: {value:value},
+
+            success: function (data) {
+                document.getElementById('resetalrt').style.display = 'block';
+
+                setTimeout(function(){
+                    document.getElementById('resetalrt').style.display = 'none';
+                }, 3000);
+            }
+        })
+    })
+
+    $('#populate_leave').click(function (e) {
+      e.preventDefault();
+      $('#populatemodal').modal('show')
+    });
+
+    $('#proceedleave').click(function () {
+      $.ajax({
+        url: '/admin/populate-leave',
+        method: 'POST',
+
+        beforeSend: function(){
+          $('#populatemodal').modal('hide');
+        },
+
+        success: function(data){
+          if (data != '' ) {
+            result = data +' <i class="fa fa-check-circle-o"></i>';
+
+            document.getElementById('populatemsg').innerHTML = result;
+          }
+        },
+
+        complete: function(){
+          setTimeout(function(){
+            document.getElementById('populatemsg').innerHTML = ''
+          }, 2000)
+        }
+      })
+    });
+
+
+    $('#backup').click(function () {
+      in_ = document.getElementById('loading')
+      loader_img = "<img src={{url_for('static', filename='image/load.gif')}} height='30'>";
+
+      $.ajax({
+        method: 'post',
+        url: 'backupnow',
+        data:{value:1},
+
+        beforeSend: function(){
+          in_.innerHTML = loader_img
+        },
+
+        success: function(data){
+          alert(data)
+          in_.innerHTML = '';
+          in_.style.display = 'none';
+        },
+
+        error:function(e){
+          alert(e)
+        }
+      })
+      
+    })
+
+    
+    </script>
+{% endblock %}

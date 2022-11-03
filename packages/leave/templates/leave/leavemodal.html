@@ -1,0 +1,106 @@
+<div class="modal fade" tabindex="-1" role="dialog" id="leavemodal">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title"><span id="emp_name"></span></h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      </div>
+      <div class="modal-body">
+        <div class="container">
+          <div class="row">
+            <div class="col-xs-12 col-md-6">
+              <p><b>Leave Type: </b> <span id="emp_leave_type"></span></p>
+              <p><b>Duration: </b> <span id="emp_leave_days"></span></p>
+              <p><b>Start Date: </b> <span id="emp_leave_start"></span></p>
+              <p><b>End Date: </b> <span id="emp_leave_end"></span></p>
+              <p><b>Resumption Date: </b> <span id="emp_leave_resume_date"></span></p>
+              <p><b>Leave Allowance: </b> <span id="emp_leave_allowance"></span></p>
+              <p id="handovernote"></p>
+            </div>
+
+            <div class="col-xs-12 col-md-6">
+              <p><b>Address during Leave:</b> <br> <span id="emp_leave_address"></span></p>
+              <p><b>Contact Person: </b> <br> <span id="emp_leave_contact"></span></p>
+
+              <div class="relief_staff" id="relief_staff">
+                
+              </div>
+              <p><b>Reporting Supervisor: </b><br> <span id="emp_leave_reporting"></span>
+                <span id="sup_status"></span>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div class="modalbtn" id="modalbtn">
+          <a href="{{url_for('leaves.calendar')}}" class="btn btn-primary btn-sm" id="viewcalendar">
+            <i class="fa fa-calendar"></i> View Calander
+          </a>
+          <span id="printbtn"></span>
+          <button type="button" class="btn btn-success btn-sm" id="approvecommentbtn">
+            <i class="fa fa-check-circle-o"></i> Approve
+          </button>
+          <button type="button" class="btn btn-danger btn-sm" id="declinecommentbtn">
+            <i class="fa fa-times-circle"></i> Decline
+          </button>
+        </div>
+
+        <form action="{{url_for('leaves.leave_request')}}" method="post" class="">
+            <div class="comment" id="approvecomment" style="display: none">
+              <textarea name="comment" id="approvalcomment"
+                      placeholder="Add approve note (optional)" style="width: 100%; height: 100px; margin: 3px 2px;
+                      resize: none"></textarea>
+              <input type="hidden" id="inputid" name="inputid">
+              <input type="hidden" id="leaveid" name="leaveid">
+              <input type="hidden" id="leavemail" name="email">
+              <input type="hidden" id="mode" name="mode" value="1">
+              <div class="formbtn" style="text-align: right">
+                <button type="button" id="approvecommentclose" class="btn btn-danger btn-sm">Cancel</button>
+                <button type="submit" class="btn btn-success btn-sm" id="submit_approve">Approve</button>
+              </div>
+            </div>
+        </form>
+          
+        <form action="{{url_for('leaves.leave_request')}}" method="post" style="display: inline">
+          <div class="declinecomment" id="declinecomment" style="display: none">
+            <textarea name="comment" id=""
+                      placeholder="Add decline note (optional)" style="width: 100%; height: 100px; margin: 3px 2px;
+                      resize: none"></textarea>
+              <input type="hidden" id="declineid" name="inputid">
+            <input type="hidden" id="declineleaveid" name="leaveid">
+              <input type="hidden" id="declineleavemail" name="email">
+              <input type="hidden" name="mode" value="0">
+              <div class="formbtn" style="text-align: right">
+                <button type="button" id="declinecommentclose" class="btn btn-success btn-sm">Cancel</button>
+                <button type="submit" class="btn btn-danger btn-sm">Decline</button>
+              </div>
+          </div>
+         </form>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+<div class="modal fade" tabindex="-1" role="dialog" id="allowance">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Leave Allowance</h4>
+      </div>
+      <div class="modal-body">
+        <h5>Are you sure you want to <b><span id="allowanceStatus"></span></b> leave allowance for employees?</h5>
+      </div>
+      <div class="modal-footer">
+        <form method="post" action="{{url_for('leaves.allowance_update')}}">
+          <button class="btn btn-danger btn-sm" data-dismiss="modal">Cancel</button>
+          <input type="hidden" name="Aleaveid" id="Aleaveid">
+          <input type="hidden" name="allowanceStat" id="allowanceStat">
+          <button type="submit" class="btn btn-success btn-sm">Yes</button>
+        </form>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

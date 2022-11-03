@@ -1,0 +1,207 @@
+{% extends "layout.html" %}
+{% block content %}
+
+		<div class="" id="bank_summary" style="display:block">
+			 <h6><i class="fa fa-newspaper-o"></i> PAYE Reports</h6>
+			 <ul class="bodymenu">
+				 <li>
+					 <a href="#" class="active">PAYE Report</a>
+				 </li>
+			 </ul>
+			 <div class="bodycontent">
+				 <div class="">
+					 <header>Filter Search:</header>
+					 <form action="{{url_for('report.paye')}}" method="post">
+						 <div class="row">
+							 <div class="col-xs-12 col-md-2">
+								 <div class="form-group">
+									 <select name="state" id="state" class="form-control">
+										 <option selected disabled>--Select State--</option>
+										 <option>All state</option>
+										 {% for st in state %}
+										 <option>{{st}}</option>
+										 {% endfor %}
+									 </select>
+								 </div>
+							 </div>
+							 <div class="col-xs-12 col-md-2">
+								 <div class="form-group">
+									 <select name="month" id="month" class="form-control">
+										 <option selected disabled>--Select Month--</option>
+										 {% for month in months %}
+										 {% if month != '' %}
+										 <option>{{month }}</option>
+										 {% endif %}
+										 {% endfor %}
+									 </select>
+								 </div>
+							 </div>
+							 <div class="col-xs-12 col-md-2">
+								 <div class="form-group">
+									 <select name="year" id="year" class="form-control">
+										 <option selected disabled>--Select Year--</option>
+										 {% for year in years %}
+										 <option>{{year}}</option>
+										 {% endfor %}
+									 </select>
+								 </div>
+							 </div>
+						 </div>
+
+						 <div class="row">
+							 <div class="col-xs-12 col-md-2">
+								 <div class="form-group">
+									 <button type="submit" class="btn btn-primary btn-flat btn-sm">
+										 Fetch Record
+									 </button>
+									
+								 </div>
+							 </div>
+						 </div>
+					 </form>
+					 <hr>
+				 </div>
+				 {% if payeinfo %}
+				 
+				 <div class="row">
+					 <div class="col-12">
+						 <div class="">
+							 <header> <b>PAYE Report </b></header>
+							 <div class="boxinfo">
+								 <table class="table">
+									<thead>
+										<th>State</th>
+										<th>No of Employees</th>
+										<th>Total PAYE</th>
+									</thead>
+									<tbody>
+										<tr>
+											<td>{{payeinfo['state']}}</td>
+											<td>{{payeinfo['sum'][0]}}</td>
+	                                        <td>N{{payeinfo['sum'][1] | numberFormat}}</td>
+											<td>
+												<button type="button" class="btn btn-primary btn-sm openlist" title="showlist">
+													<i class="fa fa-bars"></i>
+												</button>
+												<a class="btn btn-light btn-sm" target="_blank" href="{{url_for('report.paye_pdf', state=payeinfo['state'], month=payeinfo['month'], year=payeinfo['year'])}}" 
+												title="print report"> 
+												<i class="fa fa-print"></i> PDF
+												</a>
+												<button type="button" id="excelbtn_{{payeinfo['state']}}" class="btn btn-sm btn-success excelbtn" 
+												 data-month="{{payeinfo['month']}}" data-year="{{payeinfo['year']}}">
+													<i class="fa fa-file-excel-o"></i> Excel</button>
+											</td>
+										 </tr>
+									</tbody>
+								 </table>
+							 </div>
+						 </div>
+					 </div>
+				 </div>
+				 {% endif %}
+			 </div>
+		</div>
+
+		<div class="container-fluid" id="banklist" style="display: none">
+			<div class="row">
+				<div class="col-xs-12 col-md-12">
+					<button type="button" class="btn btn-primary btn-sm closelist">
+						<i class="fa fa-arrow-circle-left"></i> Close
+					</button>
+			<p class="pull-right">
+				<a target="_blank" href="{{url_for('report.paye_pdf', state=payeinfo['state'], month=payeinfo['month'], year=payeinfo['year'])}}"
+					   style="text-decoration:none; cursor:pointer; margin-right:10px;"	class="fa fa-print"
+					   title="print report"> PDF
+				</a>
+				<a id="excelbtn" class="fa fa-file-excel-o excelbtn" style="cursor: pointer" data-month="{{payeinfo['month']}}" 
+					data-year="{{payeinfo['year']}}"> Excel</a>
+			</p>
+			<p>
+				State Tax Review
+			</p>
+			<div class="bodycontent">
+				<div class="row">
+					<table id="bankreport" class="table" style="width:100%">
+						<thead>
+							<th>Staff ID</th>
+							<th>Employees Name</th>
+							<th>State</th>
+							<th>Month</th>
+							<th>PAYE</th>
+							<th>Tax Number</th>
+						</thead>
+						<tbody>
+						{% for paye in payeinfo['eachrecord'] %}
+						<tr>
+							<td>{{ paye[6] }}</td>
+							<td>{{paye[0]}}</td>
+							<td>{{paye[1]}}</td>
+							<td>{{paye[3] }}</td>
+							<td>{{paye[5] | numberFormat}}</td>
+							<td>{{paye[2]}}</td>
+
+						</tr>
+						{% endfor %}
+						{% if payeinfo %}
+						<tr>
+							<th colspan="4">Total</th>
+							<th colspan="2">{{payeinfo['sum'][1] | numberFormat}}</th>
+						</tr>
+						{% endif %}
+						</tbody>
+					</table>
+				</div>
+			</div>
+				</div>
+			</div>
+		</div>
+
+{% endblock content %}
+
+
+{% block script %}
+<script>
+	var wb = XLSX.utils.table_to_book(document.getElementById('bankreport'), {sheet:'Sheet Js'});
+
+	var wbout = XLSX.write(wb, {bookType: 'xlsx', bookSST:true, type: 'binary' });
+
+	function s2ab(s){
+		var buf = new ArrayBuffer(s.length);
+		var view = new Uint8Array(buf);
+		for(var i=0; i<s.length; i++) view[i] = s.charCodeAt(i) & 0xFF;
+		return buf;
+	}
+
+	$('.excelbtn').click(function(){
+		var id = $(this).attr('id'),
+			month = document.getElementById(id).dataset.month,
+			year = document.getElementById(id).dataset.year;
+		var name = 'PAYE for '+month+' '+year+'.xlsx';
+
+		saveAs(new Blob([s2ab(wbout)], {type: 'application/octet-stream'}), name)
+	});
+
+	/*$('#excelbtn-1').click(function(){
+		saveAs(new Blob([s2ab(wbout)], {type: 'application/octet-stream'}), 'test.xlsx')
+	});*/
+
+</script>
+<script>
+    $(document).ready(function(){
+        
+        $('.openlist').click(function(){
+            document.getElementById('bank_summary').style.display = 'none';
+            document.getElementById('banklist').style.display = 'block';
+        });
+
+        $('.closelist').click(function(){
+            document.getElementById('bank_summary').style.display = 'block';
+            document.getElementById('banklist').style.display = 'none';
+        });
+
+        /*$('#state').chosen();
+        $('#month').chosen();
+        $('#year').chosen();*/
+    });
+</script>
+{% endblock %}

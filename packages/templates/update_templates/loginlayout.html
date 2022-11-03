@@ -1,0 +1,69 @@
+{% include 'update_templates/header.html' %}
+{% include 'update_templates/script.html' %}
+
+<body class="" style="height: 100%; overflow-y: hidden; ">
+  <div class="wrapper">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-xs-12 col-md-12">
+          <div class="card-header card-header-primary" style="text-align: center; border-bottom-right-radius: 50px; border-bottom-left-radius: 50px">
+            {% if session.clientlogo %}
+            <img src="{{ url_for('static', filename='image/clientlogo/'+session.clientlogo) }}" style="margin: 0px; padding: 0px;" height="100">
+            {% else %}
+            <br><br>
+            {% endif %}
+            <!-- <h3 style="margin-top: 0px; position: relative; bottom: 10px">{{ session.companyname }}</h3> -->
+            <h6 style="position: relative; bottom: 10px">HR Application System</h6>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="main-panel">
+      <div class="content"  style="margin-top: 0px;">
+        <div class="container-fluid">
+          {% with messages = get_flashed_messages(with_categories=true)%}
+              {% if messages %}
+                {% for category, message in messages %}
+                  <script>
+                    md = {
+                      showAlert: function(from, align, mode) {
+                        type=[mode],
+                        color=0,
+                        
+
+                      $.notify({
+                        icon: "add_alert",
+                        message: "{{ message }}"
+
+                      }, {
+                        type: type[color],
+                        timer: 300,
+                        placement: {
+                          from: from,
+                          align: align
+                        }
+                      });
+                      }
+                    }
+                    md.showAlert('top', 'center', '{{category}}');
+
+                  </script>
+                  
+
+                {% endfor %}
+              {% endif %}
+            {% endwith %}
+          {% block content %}
+
+          {% endblock %}
+        </div>
+      </div>
+    </div>
+  </div>
+  {% block scripts %}
+
+  {% endblock %}
+</body>
+
+
+</html>

@@ -1,0 +1,171 @@
+{% extends "layout.html" %}
+{% block content %}
+
+			<div class="search" id="search">
+				<h6>
+					<i class="fa fa-cogs"></i> Pay Run
+					<span class="pull-right">
+						
+						{% if process_all_btn == 1  %}
+							{% set status = '' %}
+						{% else %}
+							{% set status = 'Disabled' %}
+						{% endif %}
+
+						{% if revrtbtn == 1  %}
+							{% set rstatus = '' %}
+						{% else %}
+							{% set rstatus = 'Disabled' %}
+						{% endif %}
+
+							<button class="btn btn-primary btn-sm process_all" id="process_" {{ status }}>
+								<span class="fa fa-refresh" id="loader_icon" role="status"></span>
+								Process All
+							</button>
+							{% if emp_tax %}
+							<button class="btn btn-sm btn-danger" id="revertallbtn" {{ rstatus }}>Revert all</button>
+							{% endif %}
+					</span>
+				</h6>
+				
+				<div class="search-result" id="search-result">
+					
+					<table id="example" class="table table-striped table-bordered table-sm">
+						<thead>
+							<th>Staff ID</th>
+							<th>Name</th>
+							<th>Basic</th>
+							<th>Allowances</th>
+							<th>Taxable</th>
+							<th></th>
+						</thead>
+						<tbody>
+						{% if emp_tax != '' %}
+							{% for tax in emp_tax %}
+							<tr>
+								<td>{{ tax[20] }}</td>
+								<td>{{ tax[1] }}</td>
+								<td>{{ tax[2] | numberFormat }}</td>
+								<td>{{ tax[3] | numberFormat }}</td>
+								<td>{{ tax[8] | numberFormat }}</td>
+								<td>
+									{% if tax[8] == None %}
+									<small>
+										<a href="{{url_for('payroll.processTax', page='payrun',
+											get_id=tax[0])}}" class="btn btn-warning btn-sm btn-block">
+											Please process profile tax value
+										</a>
+									</small>
+									{% else %}
+										{% set process = tax[0] | check_process_salary %}
+										{% set flz = tax[0] | check_finalized_salary %}
+										
+										{% if flz %}
+											<span class="pull-right ml-1">
+												<span class="badge">{{ flz }}</span>
+											</span>
+										{% endif %}
+										
+										{% set isfinalized = tax[0] | check_finalized_salary %}
+										
+										{% if process  %}
+											<span class="pull-right">
+												<a href="{{url_for('payroll.viewpayroll', getid=tax[0])}}"
+													class="btn btn-primary btn-sm viewpayslip">
+															View PaySlip
+												</a>
+
+												{% if isfinalized != 'Finalized' %}
+												<button class="btn btn-sm btn-danger revert" id="{{tax[0]}}" 
+												data-month="{{process[1]}}" data-year="{{ process[2] }}">Revert</button>
+												{% endif %}
+											</span>
+												
+										{% else %}
+											<button type="button" class="btn btn-primary btn-sm pull-right
+													btn-process-salary" id="{{tax[0]}}" data-name="{{tax[1]}}" 
+													data-percent="{{tax[19]}}">
+													<span class="fa fa-refresh" id="loader_icon" role="status"></span>
+												Process
+											</button>
+										{% endif %}
+									{% endif %}
+								</td>
+								
+							</tr>
+							{% endfor %}
+						{% endif %}
+						</tbody>
+					</table>
+				</div>
+			</div>
+{% include 'payroll/payrunmodal.html' %}
+{% endblock content %}
+
+
+{% block script %}
+<script>
+	$(document).ready(function() {
+		$('#example').DataTable({
+			"iDisplayLength": 50
+		});
+
+		$('#loader').click(function(){
+			var btn = document.getElementById('process_');
+			/*var btn_salary = document.getElementsByClassName('btn-process-salary');*/
+			btn.innerHTML = '<span class="spinner-border spinner-border-sm" id="loader_icon" role="status"></span> processing...';
+			$.ajax({
+				url: '/processall',
+				beforeSend: function(){
+					$('#process_all').modal('hide');
+				},
+				success: function(data){
+					btn.innerHTML = '<span class="fa fa-refresh" id="loader-icon" role="status"></span> Success';
+					setTimeout(function(){
+						window.location.reload();
+					}, 2000)
+				}
+			});
+		});
+
+		$('.btn-process-salary').click(function(e){
+			e.preventDefault();
+			const id = $(this).attr('id');
+			var name = document.getElementById(id).dataset.name;
+			var perc = document.getElementById(id).dataset.percent;
+			document.getElementById('empname').innerHTML = name;
+			document.getElementById('perc').innerHTML = perc;
+			document.getElementById('percentage').value = perc;
+			$('#parun_id').val(id);
+
+			$('#payrunmodal').modal('show');
+		});
+
+		$('.process_all').click(function(e){
+			e.preventDefault();
+			$('#process_all').modal('show');
+		});
+
+		$('.revert').click(function(e){
+			e.preventDefault();
+			var btn = '<a href="{{ url_for("payroll.revert_payroll", get_id="id", month="_month", year="_year") }}" class="btn btn-success btn-sm" id="loader">Proceed</a>';
+			const id = $(this).attr('id');
+			var month = document.getElementById(id).dataset.month;
+			var year = document.getElementById(id).dataset.year;
+
+			revert_btn = btn.replace('id', id);
+			revert_btn = revert_btn.replace('_month', month);
+			revert_btn = revert_btn.replace('_year', year);
+			document.getElementById('btn_revert').innerHTML = revert_btn ;
+			$('#revert').modal('show');
+		});
+
+		$('#revertallbtn').click(function (e) {
+			/*e.preventDefault();*/
+			$('#revertall').modal('show');
+		})
+
+	});
+
+</script>
+{% endblock %}

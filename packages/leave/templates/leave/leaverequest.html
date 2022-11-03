@@ -1,0 +1,212 @@
+{% extends "layout.html" %}
+{% block content %}
+
+				<div class="leaverequest">
+					<h4>Requisition List</h4>
+					<table id="list" class="table table-sm table-stripped" width="100%">
+						<thead>
+							<th>Employee Name</th>
+							<th>Department</th>
+							<th>Leave Type</th>
+							<th>Leave Duration</th>
+							{% if current_user.role == 'AD' %}
+							<th>Tools</th>
+							{% endif %}
+						</thead>
+						<tbody>
+						{% for leave in leave_list %}
+							{% set status = leave[5] | check %}
+							<tr> 
+								<td>{{leave[1]}}</td>
+								<td>{{leave[2]}}</td>
+								<td>{{leave[3]}}</td>
+								<td>{{leave[4]}}</td>
+								{% if current_user.role == 'AD' %}
+								<td>
+									
+									{% if status == 1 %}
+										<button class="btn btn-secondary btn-sm details" data-id="{{leave[5]}}"
+											data-name="{{leave[1]}}">
+										View Details</button> 
+									{% elif status == 2 %}
+										<span class="btn btn-secondary btn-sm" disabled>
+										processed</span>
+									{% else %} 
+										<span class="btn btn-primary btn-sm" disabled>
+											In process
+										</span>
+									{% endif %}
+								</td>
+								{% endif %}
+							</tr>
+						{% endfor %}
+						</tbody>
+					</table>
+				</div>
+
+				
+{% include 'leave/leavemodal.html' %}
+{% endblock content %}
+
+
+{% block script %}
+<script>
+	
+	$(function(){
+		$('.details').click(function(e){
+			e.preventDefault();
+			var id = $(this).data('id');
+			var name = $(this).data('name');
+			$('#relief_staff').empty();
+			getRow(id);
+			$('#leavemodal').modal('show');
+		});
+	});
+
+	function insert(value, index, array){
+		if(value[1] == 'accept'){
+			var btn = 'btn-success',
+				name = 'Accept';
+				icon = 'fa-check-circle';
+		}
+		if(value[1] == 'decline'){
+			var btn = 'btn-danger',
+				name = 'Declined';
+				icon = 'fa-times';
+		}
+		if(value[1] == 'pending'){
+			var btn = 'btn-primary',
+				name = 'Pending';
+				icon = 'fa-cog';
+		}
+		record = '<p><b>Relief staff: </b><br> <span id="">'+value[0]+'</span>\
+                	<span id="" class="btn '+btn+' btn-flat btn-sm"> <i class="fa '+icon+'"></i> '+name+'</span>';
+					
+		$('#relief_staff').append(record);					
+	}
+
+
+	function getRow(id){
+		const approvebtn = document.getElementById('approvecommentbtn'),
+				declinebtn = document.getElementById('declinecommentbtn');
+		$.ajax({
+			url: '/admin/requestlist',
+			method: 'post',
+			data: {id:id},
+			success: function(data)
+			{
+				
+				document.getElementById('emp_name').innerHTML = data[0];
+				document.getElementById('emp_leave_type').innerHTML = data[1];
+				document.getElementById('emp_leave_days').innerHTML = data[2];
+				document.getElementById('emp_leave_start').innerHTML = data[3];
+				document.getElementById('emp_leave_end').innerHTML = data[4];
+				document.getElementById('emp_leave_address').innerHTML = data[5];
+				document.getElementById('emp_leave_contact').innerHTML = data[6];
+
+				
+				var relief = [[data[7], data[17]], [data[18], data[19]], [data[20], data[21]]];
+				
+				var new_r = [];
+				for(i=0; i<relief.length; i++){
+					if(relief[i][0] != null){
+						new_r.push(relief[i]);
+					}
+				}
+				
+				
+				new_r.forEach(insert);
+				
+				document.getElementById('emp_leave_reporting').innerHTML = data[8];
+				
+					if(data[16] == 'accept'){
+						var btn = 'btn-success',
+							name = 'Accept';
+							icon = 'fa-check-circle';
+					}
+					if(data[16] == 'decline'){
+						var btn = 'btn-danger',
+							name = 'Decline';
+							icon = 'fa-times';
+					}
+					if(data[16] == 'pending'){
+						var btn = 'btn-primary',
+							name = 'Pending';
+							icon = 'fa-cog';
+					}
+				super_status = '<span id="sup_status" class="btn '+btn+' btn-flat btn-sm"> <i class="fa '+icon+'"></i> '+name+'</span>';
+				document.getElementById('sup_status').innerHTML = super_status;
+
+				document.getElementById('leaveid').value = data[13];
+				document.getElementById('leavemail').value = data[14];
+				document.getElementById('emp_leave_resume_date').innerHTML = data[15];
+				document.getElementById('inputid').value = data[10];
+				var printid = data[13];
+				var printbtn = '<a href={{url_for("leaves.leaverequestpdf", leaveid="2")}} class="btn btn-primary btn-sm" target="_blank"><i class="fa fa-file-pdf-o"></i> Print Information</a>'.replace("2", printid) ;
+				document.getElementById('printbtn').innerHTML = printbtn;
+				document.getElementById('declineid').value = data[11];
+				document.getElementById('declineleaveid').value = data[13];
+				document.getElementById('declineleavemail').value = data[14];
+
+				if (data[17] == 'decline' || data[19] == 'decline' || data[21] == 'decline' || data[16]== 'decline'){
+					document.getElementById('approvecommentbtn').disabled = true;
+					document.getElementById('declinecommentbtn').disabled = true;
+				}
+
+				if (data[17] == 'pending' || data[19] == 'pending' || data[21] == 'pending' || data[16]== 'pending'){
+					document.getElementById('approvecommentbtn').disabled = true;
+					document.getElementById('declinecommentbtn').disabled = true;
+				}
+
+				if(data[24]){
+					handover = '<a href={{url_for("static", filename="handover/docx")}} target="_blank">View Handover Note</a>';
+					handover = handover.replace('docx', data[24]);
+					document.getElementById('handovernote').innerHTML = handover;
+				}else{
+					document.getElementById('handovernote').innerHTML = '<i class="fa fa-info-circle"></i> No Handover submitted';
+				}
+
+				document.getElementById('emp_leave_allowance').innerHTML = '<span class="badge">'+data[22]+'</span>';
+
+				
+			}
+		});
+	}
+
+	$(document).ready(function(){
+	    var modalbtn = document.getElementById('modalbtn'),
+	        approvecomment = document.getElementById('approvecomment'),
+	        declinecomment = document.getElementById('declinecomment');
+
+	    $('#approvecommentbtn').click(function (){
+	      modalbtn.style.display = 'none';
+	      approvecomment.style.display = 'block';
+	    });
+
+	    $('#approvecommentclose').click(function () {
+	      approvecomment.style.display = 'none';
+	      modalbtn.style.display = 'block';
+	    });
+
+	    $('#declinecommentbtn').click(function (){
+	      modalbtn.style.display = 'none';
+	      declinecomment.style.display = 'block';
+	    });
+
+	    $('#declinecommentclose').click(function () {
+	      declinecomment.style.display = 'none';
+	      modalbtn.style.display = 'block';
+	    });
+
+	    $('#viewcalendar').click(function (){
+	      window.location.href = '/calendar';
+	    });
+	});
+
+	$(document).ready(function(){
+		$('#list').DataTable({
+			'ordering': false
+		});
+	});
+</script>
+{% endblock %}

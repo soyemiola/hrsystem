@@ -1,0 +1,59 @@
+{% extends 'template.html' %}			
+
+{% block label %}
+			<small><b>User Login</b></small>			
+{% endblock %}
+								
+{% block form %}
+	<div class="login_box formbox">
+						{% with messages = get_flashed_messages(with_categories=true)%}
+							{% if messages %}
+								{% for category, message in messages %}
+									<div class="alert alert-{{category}}">
+										{{ message }}
+									</div>
+								{% endfor %}
+							{% endif %}
+						{% endwith %}
+						<form method="post" action="">
+							{{ form.hidden_tag() }}
+							<div>
+								{{ form.email.label(class="form-control-label")}}
+
+								{% if form.email.errors %}
+									{{ form.email(class="form-control is-invalid")}}
+									<div class="invalid-feedback">
+										{% for error in form.email.errors %}
+										<span>{{ error }}</span>
+										{% endfor %}
+									</div>
+								{% else %}
+									{{ form.email(class="form-control") }}
+								{% endif %}
+							</div>
+
+							<div>
+								{{ form.password.label(class="form-control-label") }}
+
+								{% if form.password.errors %}
+									{{ form.password(class="form-control is-invalid") }}
+									<div class="invlaid-feedback">
+										{% for error in form.password.errors %}
+											<span>{{ error }}</span>
+										{% endfor %}
+									</div>
+								{% else %}
+									{{ form.password(class="form-control") }}
+								{% endif %}
+								
+							</div>
+							<div class="form-check">
+								{{ form.remember(class="form-check-input") }}
+								{{ form.remember.label(class="form-check-label") }}
+							</div>
+							<div>
+								{{ form.submit(class="btn btn-success btn-flat btn-block") }}
+							</div>
+						</form>
+					</div>
+{% endblock %}

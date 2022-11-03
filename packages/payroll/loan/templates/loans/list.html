@@ -1,0 +1,113 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="">
+				<h6><i class="fa fa-bars"></i> Loan List</h6>
+				<ul class="bodymenu">
+					<li>
+						<a href="{{url_for('loans.list')}}" class="active">Loan List</a>
+					</li>
+					<li>
+						<a href="{{url_for('loans.coop_loan_list')}}">Cooperative Loan List</a>
+					</li>
+				</ul>
+				<div class="bodycontent">
+					<div class="row">
+						<div class="col-xs-12 col-md-12 category_list">
+							<table id="example" class="table table-striped table-bordered" style="width:100%">
+								<thead>
+									<th>Employee Name</th>
+									<th>Loan Type</th>
+									<th>Loan Amount</th>
+                                    <th>Loan %</th>
+									<th>Outstanding</th>
+									<th>Installment</th>
+									<th>Deduction</th>
+									<th>Status</th>
+									{% if current_user.role == 'AD' %}
+									<th>Tools</th>
+									{% endif %}
+								</thead>
+								<tbody>
+								{% if list %}
+									{% for emp in list %}
+									<tr>
+										<td>{{emp[0]}}</td>
+										<td>{{emp[1] | upper}}</td>
+										<td>{{emp[2] | numberFormat}}</td>
+										<td>{{emp[4]}}</td>
+										<td>{{emp[3] | numberFormat}}</td>
+										<td>{{emp[5]}}</td>
+										<td>{{emp[6] | numberFormat}}</td>
+										<td>
+											{% if emp[3] > 0 %}
+												<small>
+													<i>In-progress</i>
+												</small>
+											{% else %}
+												<button class="btn btn-success btn-sm btn-flat">
+													Completed
+												</button>
+											{% endif %}
+										</td>
+										{% if current_user.role == 'AD' %}
+										<td>
+											{% if emp[3] != 0 %}
+											<button type="button" data-emp_id="{{emp[7]}}" data-loantype="{{emp[1]}}" class="btn btn-secondary btn-sm btn-flat fa-sm clearloan" id="loan_{{ emp[8] }}">
+												<i class="fa fa-edit"></i>
+												 Clear Loan 
+											</button>
+											{% endif %}
+											<a href="{{ url_for('loans.loanDetails', emp_id=emp[7], loanID=emp[8], category=emp[9]) }}" class="btn btn-sm btn-primary"><i class="fa fa-folder-open"></i></a>
+										</td>
+										{% endif %}
+									</tr>
+									{% endfor %}
+								{% endif %}
+								</tbody>
+							</table>
+							
+						</div>
+					</div>
+				</div>
+			</div>
+{% include 'loans/loanmodal.html' %}
+{% endblock content %}
+
+
+{% block script %}
+<script>
+	$(document).ready(function() {
+		$('#example').DataTable();
+	});
+
+	$('.clearloan').click(function(e) {
+		e.preventDefault();
+		var id = $(this).attr('id'),
+		emp_id =  document.getElementById(id).dataset.emp_id,
+		loan_type =  document.getElementById(id).dataset.loantype;
+		
+		getloan(emp_id, loan_type);
+		$('#loanmodal').modal('show');
+	});
+
+	function getloan(id, loan_type){
+		console.log(loan_type);
+		$.ajax({
+			method: 'post',
+			url: '/admin/list',
+			data:{id:id, loan_type:loan_type},
+
+			success:function(data){
+				document.getElementById('loanname').value = data[0];
+				document.getElementById('loantype').value = data[1].toUpperCase();
+				document.getElementById('loanamount').value = data[2];
+				document.getElementById('outstanding').value = data[3];
+				document.getElementById('id').value = data[7];
+				document.getElementById('loan_id').value = data[8];
+				document.getElementById('url').value ='loans.list';
+			}
+		})
+	}
+</script>
+{% endblock %}

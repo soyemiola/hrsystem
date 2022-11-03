@@ -1,0 +1,62 @@
+ <nav class="navbar navbar-expand-lg navbar-transparent navbar-absolute fixed-top">
+        <div class="container-fluid">
+          <div class="navbar-wrapper">
+            <a class="navbar-brand" href=""><b>{{ page_title }}</b> </a>
+          </div>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="navbar-toggler-icon icon-bar"></span>
+            <span class="navbar-toggler-icon icon-bar"></span>
+            <span class="navbar-toggler-icon icon-bar"></span>
+          </button>
+          <div class="collapse navbar-collapse justify-content-end">
+            <ul class="navbar-nav">
+              <!-- Notification -->
+              {% if trainingFB %}
+              <li class="nav-item"><a href="{{ url_for('documents.trainingfed') }}" class="btn btn-sm btn-primary"><small>Training feedback</small></a></li>
+              {% endif %}
+
+              <li class="nav-item dropdown">
+                <a class="nav-link" href="http://example.com" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <i class="material-icons">notifications</i>
+                  {% if session.Notification %}
+                  <span class="notification">{{ session.Notification | length }}</span>
+                  {% endif %}
+                  <p class="d-lg-none d-md-block">
+                    Some Actions
+                  </p>
+                </a>
+                
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
+                  {% if session.Notification %}
+                    {% set notify = session.Notification %}
+                    {% for msg in notify %}
+                    <a id="notify_{{ msg[0] }}" class="dropdown-item" href="{{ url_for('user_in.notification', nid=msg[0], url=msg[3], ref=msg[6] )}}">{{ msg[2] }}</a>
+                    {% endfor %}
+                  {% else %}
+                    <a class="dropdown-item">You have no active Notification</a>
+                  {% endif %}
+                </div>
+              </li>
+             
+              <!-- // Notification -->
+              <li class="nav-item dropdown">
+                <a class="nav-link" href="javascript:;" id="navbarDropdownProfile" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <i class="material-icons">account_circle</i> {{ current_user.name }}
+                  <p class="d-lg-none d-md-block">
+                    Account
+                  </p>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownProfile">
+                  <a class="dropdown-item" href="{{ url_for('empUser.profile', get_id=current_user.id) }}">Profile</a>
+                  <a class="dropdown-item" href="{{ url_for('user_in.password', user_id=current_user.id) }}">Set Password</a>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" href="{{ url_for('user_in.userlogout') }}">Log out</a>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+
+

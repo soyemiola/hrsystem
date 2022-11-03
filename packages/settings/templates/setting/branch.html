@@ -1,0 +1,122 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="">
+				<h6><i class="fa fa-bars"></i> Branch List</h6>
+				<ul class="bodymenu">
+					<li>
+						<a href="{{url_for('settings.officebranch')}}" class="active">Branch List</a>
+					</li>
+					{% if current_user.role == 'AD' %}
+					<li>
+						<a href="{{url_for('settings.addbranch')}}"><small>Add Branch</small></a>
+					</li>
+					{% endif %}
+				</ul>
+				<div class="bodycontent">
+					<div class="row">
+						<div class="col-xs-12 col-md-12 category_list">
+							<table id="example" class="table table-striped table-bordered table-sm" style="width:100%">
+								<thead>
+									<th>Branch</th>
+									<th>Staff Strength</th>
+									<th></th>
+								</thead>
+						 		<tbody>
+								{% for branch in all_branch %}
+									<tr>
+										<td>{{branch[0]}}</td>
+										<td>
+											{% set num = branch[0] | branchNum %}
+											{% if num != 0 %}
+											<span id="staff" class="badge" style="cursor: pointer;" data-name="{{branch[0]}}">
+												{{num}}
+											</span>
+											{% else %}
+											<span class="badge">{{num}}</span>
+											{% endif %}
+											
+										</td>
+										{% if current_user.role == 'AD' %}
+										<td width="150px">
+											<a href="{{url_for('settings.editbranch', pid=branch[1])}}"
+											   class="btn btn-secondary btn-sm btn-flat">
+												<i class="fa fa-edit fa-sm" ></i>
+                                                Edit</a>
+											
+                                            <a href="{{ url_for('settings.deletebranch', pid=branch[1]) }}" class="btn btn-danger btn-sm btn-flat" data-id="{{branch[0]}}">	<i class="fa fa-trash fa-sm"></i>
+                                                Delete</a>
+										</td>
+										{% endif %}
+									</tr>
+								{% endfor %}
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+<!-- The Modal -->
+<div class="modal fade" id="branchstaff">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">Branch Staff List</h4>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body">
+      	<div class="list-group" id="stafflistname">
+		  
+		</div>
+      </div>
+
+      <!-- Modal footer -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock content %}
+
+
+{% block script %}
+<script>
+	$(document).ready(function() {
+		$('#staff').click(function () {
+			id = $(this).attr('id')
+			name = document.getElementById(id).dataset.name;
+
+			$.ajax({
+				method: 'post',
+				url: '/admin/setting/officebranch',
+				data:{name:name},
+
+				beforeSend: function(){
+					$('#stafflistname').empty();
+				},
+
+				success:function(data){
+					$('#stafflistname').append('<a class="list-group-item list-group-item-action"><b>Name</b> <span class="pull-right"><b>Role</b></span></a>');
+
+					for (var i = data.length - 1; i >= 0; i--) {
+						info = '<a href="{{url_for("users.emp_profile", get_id="id")}}" class="list-group-item list-group-item-action">'+data[i][1]+' <span class="pull-right">'+data[i][2]+'</span></a>';
+
+						details = info.replace('id', data[i][0]);
+						
+						$('#stafflistname').append(details);
+					}
+					
+					$('#branchstaff').modal('show');
+				}
+			})
+		})
+		$('#example').DataTable();
+	});
+
+</script>
+{% endblock %}

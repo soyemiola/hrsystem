@@ -1,0 +1,189 @@
+{% extends "layout.html" %}
+{% block content %}
+<style>
+  h4{
+    padding-left: 20px;
+  }
+  .settingbox{
+    border:1px solid #f8f8ff; 
+    padding: 5px 20px;
+    background-color: #f8f8ff; 
+    margin: 10px
+  }
+
+</style>
+
+
+<div class="row">
+	<div class="col-xs-12 col-md-12">
+		<header>
+			<i class="fa fa-cogs"></i> Attendance Settings
+		</header>
+		<br>
+	</div>
+	<div class="col-xs-12 col-md-6">
+		<div class="time_schedule" id="time_schedule">
+			{% if att_list %}
+			<h5>
+				Time schedule list 
+				<span class="pull-right">
+					<button class="btn btn-sm btn-primary" onclick="openBox('create_time_schedule', 'time_schedule')">Create Schedule </button>
+				</span>
+			</h5>
+			<br>
+			<table class="table table-sm table-border table-hover">
+				<thead>
+	            	<th>Name</th>
+	            	<th>Shift</th>
+	                <th>Clock In / Out</th>
+	                <th></th>
+	            </thead>
+	            <tbody>
+	            {% for i in att_list %}
+	            	<tr>
+	                	<td>{{ i[1] }}</td>
+	                	<td>{{ i[4] }}</td>
+	                	<td>{{ i[2] }} / {{ i[3] }}</td>
+	                	
+	                	<td class="pull-right">
+		                	<a href="{{url_for('register.att_settings', timeId=i[0], status='edit')}}" class="btn btn-primary btn-sm">
+		                		<i class="fa fa-edit"></i>
+		                	</a>&nbsp; 
+		                	<a href="{{url_for('register.att_settings', timeId=i[0], status='delete')}}" class="btn btn-danger btn-sm">
+		                		<i class="fa fa-trash"></i>
+		                	</a>
+	                	</td>
+	                </tr>
+	            {% endfor %}
+	            </tbody>
+	        </table>
+			{% endif %}
+		</div>
+
+		{% if not att_list %}
+			{% set dsp = 'block' %}
+		{% else %}
+			{% set dsp = 'none' %}
+		{% endif %}
+		
+		<div class="create_time_schedule" id="create_time_schedule" style="display: {{dsp}};">
+			<form method="post">
+	            <div class="settingbox">
+			        <p>
+			            <label>Name</label>
+			            <span class="">
+			                <input type="text" name="name" class="form-control" required>
+			            </span>
+			        </p>
+			    </div>
+			     <div class="settingbox">
+			        <p>
+			            Select Shift
+			            <span class="pull-right">
+			               	<select class="form-control" name="shift">
+			               		<option selected disabled>--select shift--</option>
+			               		<option value="day">Day</option>
+			               		<option value="night">Night</option>
+			               	</select>
+			            </span>
+			        </p>
+			                        
+			    </div>
+		        <div class="settingbox">
+			        <p>
+			            Set Resumption Time
+			            <span class="pull-right">
+			               	<input type="time" name="resume" class="form-control" value="">
+			            </span>
+			        </p>
+			                        
+			    </div>
+			    <div class="settingbox">
+			        <p>
+			            Set Closing Time
+			            <span class="pull-right">
+			                <input type="time" name="close" class="form-control" value="">
+			            </span>
+			        </p>
+			    </div>
+			                   	
+
+			    <div class="settingbox">
+			        <p>
+			        	<button type="submit" class="btn btn-primary btn-sm">Create Time Record</button>
+			        	<button type="button" class="btn btn-danger btn-sm" onclick="openBox('time_schedule', 'create_time_schedule')">Cancel</button>
+			        </p>
+			    </div>
+	        </form>
+		</div>
+	</div>
+
+	<div class="col-xs-12 col-md-6">
+		<div class="edit_time_schedule">
+			{% if edit %}
+			<form method="post">
+				<input type="hidden" name="editid" class="form-control" value="{{edit[0]}}">
+	            <div class="settingbox">
+			        <p>
+			            <label>Name</label>
+			            <span class="">
+			                <input type="text" name="name" class="form-control" value="{{edit[1]}}" required>
+			            </span>
+			        </p>
+			    </div>
+			     <div class="settingbox">
+			        <p>
+			            Select Shift
+			            <span class="pull-right">
+			               	<select class="form-control" name="shift">
+			               		{% if edit[4] | lower == 'day' %}
+			               			{% set dysh = 'selected' %}
+			               		{% elif edit[4] | lower == 'night' %}
+			               			{% set ntsh = 'selected' %}
+			               		{% endif %}
+			               		<option value="day" {{ dysh }}>Day</option>
+			               		<option value="night" {{ ntsh }}>Night</option>
+			               	</select>
+			            </span>
+			        </p>
+			                        
+			    </div>
+		        <div class="settingbox">
+			        <p>
+			            Set Resumption Time
+			            <span class="pull-right">
+			               	<input type="time" name="resume" class="form-control" value="{{ edit[2] }}">
+			            </span>
+			        </p>
+			                        
+			    </div>
+			    <div class="settingbox">
+			        <p>
+			            Set Closing Time
+			            <span class="pull-right">
+			                <input type="time" name="close" class="form-control" value="{{ edit[3] }}">
+			            </span>
+			        </p>
+			    </div>
+			                   	
+
+			    <div class="settingbox">
+			        <p>
+			        	<button type="submit" class="btn btn-success btn-sm">Update Time Record</button>
+			        </p>
+			    </div>
+	        </form>
+			{% endif %}
+		</div>
+	</div>
+</div>
+{% endblock content %}
+
+{% block script %}
+<script>
+	function openBox(div1, div2){
+		document.getElementById(div1).style.display = 'block';
+		document.getElementById(div2).style.display = 'none';
+	}
+</script>
+{% endblock %}

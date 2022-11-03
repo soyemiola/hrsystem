@@ -1,0 +1,82 @@
+{% extends "layout.html" %}
+{% block content %}
+
+	<div class="body">
+				<h6><i class="fa fa-edit"></i> Edit Department</h6>
+				<ul class="bodymenu">
+					<li>
+						<a href="{{url_for('dept.department')}}" class="active">List</a>
+					</li>
+					<li class="alertText">
+						<small id="alert_msg"></small>
+					</li>
+				</ul>
+				<div class="bodycontent">
+
+					<div class="row">
+						<div class="col-xs-12 col-md-6 offset-2 category_list">
+							<div class="cat_list">
+									<label>Department Name:</label>
+                                    <input type="hidden" name="type" class="col-5" id="type" value="department"
+                                           required>
+                                    <input type="hidden" name="type" class="col-5" id="dept_id" value="{{edit[1]}}"
+                                           required>
+									<input type="text" name="name" id="name" value="{{edit[0]}}" class="col-5"
+                                           required>
+								</div>
+								<div class="cat_list">
+									<button type="button" class="btn btn-secondary btn-flat col-8 deptbtn"
+										style="margin-left: 45px" name="submit" id="deptbtn"><i class="fa fa-save fa-sm"></i>
+										Update
+									</button>
+								</div>
+						</div>
+					</div>
+
+					<div class="row">
+
+							<div class="face" id="alertBox">
+								New Department Created
+							</div>
+
+					</div>
+				</div>
+			</div>
+
+{% endblock content %}
+
+
+{% block script %}
+<script>
+	$(document).ready(function(){
+		$('.deptbtn').click(function(){
+			var name = document.getElementById('name').value,
+				id = document.getElementById('dept_id').value,
+				alertBox = document.getElementById('alertBox');
+
+			if(name != '' && id != ''){
+				$.ajax({
+					method: 'post',
+					url: '/updatedepartment',
+					data:{name:name, id:id},
+
+					beforeSend: function(){
+						document.getElementById('deptbtn').innerHTML = '<i class="spinner-border spinner-border-sm"></i>'
+					},
+					success: function(data){
+						alertBox.innerHTML = data+ '<i class="fa fa-check"></i>';
+						alertBox.style.display = 'Block';
+
+						setTimeout(function(){
+							alertBox.style.display = 'None';
+						}, 2000);
+					},
+					complete: function(){
+						document.getElementById('deptbtn').innerHTML = '<i class="fa fa-save fa-sm"></i> Update';
+					}
+				});
+			}
+		});
+	});
+</script>
+{% endblock %}

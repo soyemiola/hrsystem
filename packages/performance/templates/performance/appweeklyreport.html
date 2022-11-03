@@ -1,0 +1,108 @@
+{% extends "layout.html" %}
+{% block content %}
+	<div class="row">
+		<div class="col-xs-12 col-md-4">
+			<h6>Weekly Report score</h6>
+		</div>
+		<div class="col-xs-12 col-md-8">
+			<span class="pull-right">
+				<a href="{{ url_for('performance.assessment') }}" class="btn btn-sm btn-primary">Back</a>
+				<small class="btn btn-sm btn-primary wkrpt">Download <i class="fa fa-file-excel-o"></i></small>
+		    </span>
+		</div>
+	</div>
+	<br>
+	<div class="row">
+		<div class="col-xs-12 col-md-12">
+			<table class="table" id="tb_show">
+		        <thead>
+		            <th>Staff ID</th>
+		            <th>Name</th>
+		            <th>Department</th>
+		            <th>Period</th>
+		            {% for apt in pmt %}
+		            <th>{{ apt[1] }}</th>
+		            {% endfor %}
+		        </thead>
+		        <tbody>
+		        	{% set glob = {'score': 0 } %}
+		        	{% for i in wkly %}
+			        	{% set empdet = i[2] | empdet %}
+			        	<tr>
+			        		<td>{{empdet[0]}}</td>
+			        		<td>{{empdet[1]}}</td>
+			        		<td>{{empdet[2]}}</td>
+			        		<td>{{ i[3] }} / {{ i[4] }}</td>
+
+			        		{% for x in pmt %}
+			        			{% set total_score = x[1] | get_total_wk_score(i[1]) %}
+
+			        			<td>{{ total_score }}</td>
+
+			        		{% endfor %}
+			        	</tr>
+		        	{% endfor %}
+		        </tbody>
+		    </table>
+		</div>
+
+		<div class="col-xs-12 col-md-12" style="display: none;">
+			<table class="table" id="tb">
+		        <thead>
+		            <th>Staff ID</th>
+		            <th>Name</th>
+		            <th>Department</th>
+		            <th>Period</th>
+		            {% for apt in pmt %}
+		            <th>{{ apt[1] }}</th>
+		            {% endfor %}
+		        </thead>
+		        <tbody>
+		        	{% set glob = {'score': 0 } %}
+		        	{% for i in wkly %}
+			        	{% set empdet = i[2] | empdet %}
+			        	<tr>
+			        		<td>{{empdet[0]}}</td>
+			        		<td>{{empdet[1]}}</td>
+			        		<td>{{empdet[2]}}</td>
+			        		<td>{{ i[3] }} / {{ i[4] }}</td>
+
+			        		{% for x in pmt %}
+			        			{% set total_score = x[1] | get_total_wk_score(i[1]) %}
+
+			        			<td>{{ total_score }}</td>
+
+			        		{% endfor %}
+			        	</tr>
+		        	{% endfor %}
+		        </tbody>
+		    </table>
+		</div>
+	</div>
+
+{% endblock content %}
+
+{% block script %}
+    <script>
+    	function s2ab(s){
+		    var buf = new ArrayBuffer(s.length);
+		    var view = new Uint8Array(buf);
+		    for(var i=0; i<s.length; i++) view[i] = s.charCodeAt(i) & 0xFF;
+		    return buf;
+		}
+
+        $('.wkrpt').click(function () {
+      
+		    var wb = XLSX.utils.table_to_book(document.getElementById('tb'), {sheet:'Sheet Js'});
+
+		    var wbout = XLSX.write(wb, {bookType: 'xlsx', bookSST:true, type: 'binary' });
+		            
+		    saveAs(new Blob([s2ab(wbout)], {type: 'application/octet-stream'}), 'Weekly Report Scores.xlsx')
+		});
+
+
+        $('#tb_show').dataTable({
+            "bLengthChange": false
+        });
+    </script>
+{% endblock %}

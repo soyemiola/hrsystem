@@ -1,0 +1,144 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="">
+			<h6><i class="fa fa-plus fa-sm"></i> Add Class</h6>
+			<ul class="bodymenu">
+				<li>
+					<a href="{{url_for('empclass.classlist')}}" class="active">Class List</a>
+				</li>
+			</ul>
+			<div class="bodycontent">
+					<div class="row">
+						<div class="col-xs-12 col-md-1"></div>
+						<div class="col-xs-12 col-md-4">
+							<form action="" method="post">
+								<div class="form-group">
+									<label>Class Name:</label>
+									<input type="text" name="name" class="form-control">
+								</div>
+								<div class="form-group">
+									<label>Basic Pay:</label>
+									<input type="text" name="basic" id="basic" class="form-control">
+								</div>
+								<div class="form-group">
+									<label>Housing Allowance:</label>
+									<input type="text" name="house_allow" id="ha" class="form-control">
+								</div>
+								<div class="form-group">
+									<label>Transport Allowance:</label>
+									<input type="text" name="transport_allow" id="ta" class="form-control">
+								</div>
+								
+								<div class="form-group" id="meal" data-name="Meal Subsidy Allowance" style="display: none">
+									<label>Meal Subsidy Allowance:</label> 
+									<span class="btn btn-sm btn-secondary cls" onclick="showallowance('meal', 'meal_v', 'meal_l')">&times;</span>
+									<input type="text" name="" id="meal_v" class="form-control">
+									<input type="hidden" name="" value="" id="meal_l">
+								</div>
+								<div class="form-group" id="furniture" data-name="Furniture Allowance" style="display: none">
+									<label>Furniture Allowance:</label> 
+									<span class="btn btn-sm btn-secondary cls" onclick="showallowance('furniture', 'furniture_v', 'furniture_l')">&times;</span>
+									<input type="text" name="" id="furniture_v" class="form-control">
+									<input type="hidden" name="" value="" id="furniture_l">
+								</div>
+								<div class="form-group" id="communication" data-name="Communication Allowance" style="display: none">
+									<label>Communication Allowance:</label> 
+									<span class="btn btn-sm btn-secondary cls" onclick="showallowance('communication', 'communication_v', 'communication_l')">&times;</span>
+									<input type="text" name="" id="communication_v" class="form-control">
+									<input type="hidden" name="" value="" id="communication_l">
+								</div>
+								
+								<div class="form-group">
+									<small class="btn btn-secondary btn-flat btn-sm" data-toggle="collapse" data-target="#others">
+										<i class="fa fa-plus"></i> Add allowances 
+									</small>
+									<button type="submit" class="btn btn-primary btn-flat btn-sm"style="margin-left: 0px"
+										name="submit" id=""><i class="fa fa-save"></i> Create class</button>
+								</div>
+								<div class="form-group">
+									<div class="collapse" id="others">
+										<ul style="padding: 0px;">
+											<button type="button" class="btn btn-sm btn-flat btn-block btn-secondary others" 
+											id="LASG_Lunch" onclick="showallowance('meal', 'meal_v', 'meal_l')">Meal Subsidy Allowance</button>
+
+											<button type="button" class="btn btn-sm btn-flat btn-block btn-secondary others" 
+											id="24hrs" onclick="showallowance('furniture', 'furniture_v', 'furniture_l')">Furniture Allowance</button>
+
+											<button type="button" class="btn btn-sm btn-flat btn-block btn-secondary others" 
+											id="Health" onclick="showallowance('communication', 'communication_v', 'communication_l')">Communication Allowance</button>
+										</ul>
+									</div>
+								</div>
+								<div class="form-group">
+									
+								</div>
+							</form>
+						</div>
+						<div class="col-xs-12 col-md-6">
+							<!--<h5>Add image</h5>-->
+						</div>
+					</div>
+			</div>
+		</div>
+<style>
+	button.others{
+		text-align: left; margin-left: 0px
+	}
+	span.cls{
+		float: right;
+	}
+</style>
+{% endblock content %}
+
+
+{% block script %}
+<script>
+	$(document).ready(function(){
+        $('.convert').on( "keyup", function( event ) {
+            // When user select text in the document, also abort.
+            var selection = window.getSelection().toString();
+            if ( selection !== '' ) {
+                return;
+            }
+            // When the arrow keys are pressed, abort.
+            if ( $.inArray( event.keyCode, [38,40,37,39] ) !== -1 ) {
+                return;
+            }
+            var $this = $( this );
+
+            // Get the value.
+            var input = $this.val();
+
+            var input = input.replace(/[\D\s\\-]+/g, "");
+                input = input ? parseInt( input, 10 ) : 0;
+
+            $this.val( function() {
+                return ( input === 0 ) ? "" : input.toLocaleString( "en-US" );
+            } );
+        });
+    });
+
+    function showallowance(getid, input_value, label){
+    	var name = document.getElementById(getid),
+    		_value = document.getElementById(input_value),
+    		_label = document.getElementById(label);
+
+    	if (name.style.display == 'block'){
+    		name.style.display = 'none';
+    		_label.value = null;
+    		$('#'+input_value).attr('name', '')
+    		$('#'+label).attr('name', '')
+    	}else{
+    		name.style.display = 'block';
+    		_label.value = name.dataset.name;
+    		$('#'+input_value).attr('name', 'other_allowance');
+    		$('#'+label).attr('name', 'label')
+    		
+    	}
+    }
+
+    
+
+</script>
+{% endblock %}

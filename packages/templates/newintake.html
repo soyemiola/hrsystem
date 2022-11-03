@@ -1,0 +1,211 @@
+{% extends 'template.html' %}			
+
+{% block label %}
+			<small><b>Staff pre-registration form</b></small>			
+{% endblock %}
+					
+{% block form %}
+
+					<div class="login_box formbox">
+						<div class="row">
+							<div class="col-xs-12 col-md-12">
+								{% with messages = get_flashed_messages(with_categories=true)%}
+									{% if messages %}
+										{% for category, message in messages %}
+											<div class="alert alert-{{category}}">
+												<i class="fa fa-check-circle"></i> {{ message }}
+											</div>
+										{% endfor %}
+									{% endif %}
+								{% endwith %}
+							</div>
+						</div>
+						{% if is_complete == False %}				
+
+						<form method="post" action="{{url_for('admin.newstaff')}}">
+							{{ form.hidden_tag() }}
+							<div class="row">
+								<div class="col-xs-12 col-md-6">
+									<div>
+										 {{ form.name.label(class="form-control-label")}}
+
+										{% if form.name.errors %}
+											{{ form.name(class="form-control is-invalid")}}
+											<div class="invalid-feedback">
+												{% for error in form.name.errors %}
+												<small class="badge">{{ error }}</small>
+												{% endfor %}
+											</div>
+										{% else %}
+											{{ form.name(class="form-control") }}
+										{% endif %}
+									</div>
+								</div>
+								<div class="col-xs-12 col-md-6">
+									<div>
+										 {{ form.state.label(class="form-control-label") }}
+
+										{% if form.state.errors %}
+											{{ form.state(class="form-control is-invalid") }}
+											<div class="invlaid-feedback">
+												{% for error in form.state.errors %}
+													<small class="badge">{{ error }}</small>
+												{% endfor %}
+											</div>
+										{% else %}
+											{{ form.state(class="form-control") }}
+										{% endif %}
+										
+									</div>
+								</div>
+								<div class="col-xs-12 col-md-6">
+									<div>
+										 {{ form.address.label(class="form-control-label") }}
+
+										{% if form.address.errors %}
+											{{ form.address(class="form-control is-invalid") }}
+											<div class="invlaid-feedback">
+												{% for error in form.address.errors %}
+													<small class="badge">{{ error }}</small>
+												{% endfor %}
+											</div>
+										{% else %}
+											{{ form.address(class="form-control") }}
+										{% endif %}
+										
+									</div>
+								</div>
+								<div class="col-xs-12 col-md-6">
+									<div>
+										 {{ form.city.label(class="form-control-label") }}
+
+										{% if form.city.errors %}
+											{{ form.city(class="form-control is-invalid") }}
+											<div class="invlaid-feedback">
+												{% for error in form.city.errors %}
+													<small class="badge">{{ error }}</small>
+												{% endfor %}
+											</div>
+										{% else %}
+											{{ form.city(class="form-control") }}
+										{% endif %}
+										
+									</div>
+								</div>
+								<div class="col-xs-12 col-md-6">
+									<div>
+										 {{ form.mobile.label(class="form-control-label") }}
+
+										{% if form.mobile.errors %}
+											{{ form.mobile(class="form-control is-invalid") }}
+											<div class="invlaid-feedback">
+												{% for error in form.mobile.errors %}
+													<small class="badge">{{ error }}</small>
+												{% endfor %}
+											</div>
+										{% else %}
+											{{ form.mobile(class="form-control") }}
+										{% endif %}
+										
+									</div>
+								</div>
+								<div class="col-xs-12 col-md-6">
+									<div>
+										 {{ form.bank_name.label(class="form-control-label") }}
+
+										{% if form.bank_name.errors %}
+											{{ form.bank_name(class="form-control is-invalid") }}
+											<div class="invlaid-feedback">
+												{% for error in form.bank_name.errors %}
+													<small class="badge">{{ error }}</small>
+												{% endfor %}
+											</div>
+										{% else %}
+											{{ form.bank_name(class="form-control") }}
+										{% endif %}
+										
+									</div>
+								</div>
+								<div class="col-xs-12 col-md-6">
+									<div>
+										 {{ form.acct_num.label(class="form-control-label") }}
+
+										{% if form.acct_num.errors %}
+											{{ form.acct_num(class="form-control is-invalid") }}
+											<div class="invlaid-feedback">
+												{% for error in form.acct_num.errors %}
+													<small class="badge">{{ error }}</small>
+												{% endfor %}
+											</div>
+										{% else %}
+											{{ form.acct_num(class="form-control") }}
+										{% endif %}
+										
+									</div>
+								</div>
+								<div class="col-xs-12 col-md-6">
+									<div>
+										 {{ form.tax.label(class="form-control-label") }}
+
+										{% if form.tax.errors %}
+											{{ form.tax(class="form-control is-invalid") }}
+											<div class="invlaid-feedback">
+												{% for error in form.tax.errors %}
+													<small class="badge">{{ error }}</small>
+												{% endfor %}
+											</div>
+										{% else %}
+											{{ form.tax(class="form-control") }}
+										{% endif %}
+										
+									</div>
+								</div>
+								<div class="col-xs-12 col-md-6">
+									<div>
+										 {{ form.pension.label(class="form-control-label") }}
+
+										{% if form.pension.errors %}
+											{{ form.pension(class="form-control is-invalid") }}
+											<div class="invlaid-feedback">
+												{% for error in form.pension.errors %}
+													<small class="badge">{{ error }}</small>
+												{% endfor %}
+											</div>
+										{% else %}
+											{{ form.pension(class="form-control") }}
+										{% endif %}
+										
+									</div>
+								</div>
+								<div class="col-xs-12 col-md-6">
+									<div>
+										 {{ form.pension_num.label(class="form-control-label") }}
+
+										{% if form.pension_num.errors %}
+											{{ form.pension_num(class="form-control is-invalid") }}
+											<div class="invlaid-feedback">
+												{% for error in form.pension_num.errors %}
+													<small class="badge">{{ error }}</small>
+												{% endfor %}
+											</div>
+										{% else %}
+											{{ form.pension_num(class="form-control") }}
+										{% endif %}
+										
+									</div>
+								</div>
+							</div>
+
+							<div class="row">
+								<div class="col-xs-12 col-md-12">
+									<div class="sb_btn">
+										{{ form.submit(class="btn btn-success btn-flat btn-block") }}
+									</div>
+								</div>
+							</div>
+						</form>		
+						{% endif %}
+					</div>
+
+{% endblock %}
+				

@@ -1,0 +1,450 @@
+{% extends "layout.html" %}
+	{% block content %}
+
+	<div id="tooltable">
+		<div class="row">
+			<div class="col-xs-12 col-md-2">
+				<div class="fil">
+					<form id="pmtfil" method="post">
+						<div class="form-group">
+							<label>Filter</label>
+							<select class="form-control" name="year">
+								<option value="0" selected disabled>--select year--</option>
+								{% if year %}
+									{% for i in year %}
+										<option value="{{i}}">{{i}}</option>
+									{% endfor %}
+								{% endif %}								
+							</select>
+						</div>
+					</form>
+				</div>
+			</div>
+			<div class="col-xs-12 col-md-1">
+				<div class="fil">
+					<div class="form-group">
+						<label style="visibility: hidden;">ds</label>
+						<button type="submit" class="btn btn-primary btn-sm btn-block mt-1" form="pmtfil" name="rulesubmit" value="filter">Search</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row" id="">
+			<div class="col-12">
+				<p class="text-right">
+					<button data-target="#pmtadd" data-toggle="modal" class="btn btn-primary btn-sm">
+						<i class="fa fa-plus"></i> Add PMT</button>
+				</p>
+				
+				<div class="tooltable" id="">
+
+					<table class="table table-sm table-hover table-stripped" id="pmttable">
+						<thead>
+							<th>Appraisal Point</th>
+							<th>Total % Score</th>
+							<th>Phase</th>
+							<th>Year</th>
+							<th></th>
+						</thead>
+						<tbody>
+							{% if pmt %}
+								{% for i in pmt %}
+									{% if i[4] == 'FQ' %}
+										{% set phase = 'First phase' %}
+									{% elif i[4] == 'SQ' %}
+										{% set phase = 'Second phase' %}
+									{% endif %}
+									<tr>
+										<td>{{ i[1] }}</td>
+										<td>{{ i[2] }}</td>
+										<td>
+											{{ phase }}
+										</td>
+										<td>{{ i[3] }}</td>
+										<td class="text-right">
+											{% set rule = i[0] | get_getTragetrule(i[3]) %}
+											{% if rule %}
+												<span class="viewitem" id="viewitem_{{rule[0]}}" data-code="{{ rule[1] }}" data-name="{{ rule[2] }}" style="cursor: pointer;"><small><i>view created item</i></small></span>
+											{% else %}
+												<button class="btn btn-success btn-sm" id="item_{{i[0]}}" data-codeid="{{i[0]}}" data-name="{{i[1]}}" data-score="{{i[2]}}" data-phase="{{i[4]}}" onclick="openClose('item_{{i[0]}}', 'toolitem', 'tooltable')"><small>add item</small></button>
+
+											{% endif %}
+											<button class="btn btn-sm btn-primary editpmtbtn" id="editpmt_{{i[0]}}" data-id="{{i[0]}}" data-name="{{ i[1] }}" data-score="{{i[2]}}">
+												<i class="fa fa-edit"></i>
+											</button>
+											<button class="btn btn-danger btn-sm deletepmtbtn" id="deletepmt_{{i[0]}}" data-id="{{i[0]}}" data-year="{{i[3] }}">
+												<i class="fa fa-trash"></i>
+											</button>
+										</td>
+									</tr>
+								{% endfor %}
+							{% endif %}
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="toolitem" id="toolitem" style="display: none">
+		<h5>Add PMR Item</h5>
+		<br><br>
+				<form action="" method="post" id="rulesubmit">
+	              	<div class="set_rule_box" id="set_rule_box">
+		                <div class="row">
+		                  	<div class="col-xs-12 col-md-5">
+			                    <div class="form-group">
+			                    	<label class=""> Category </label>
+			                    	<input type="hidden" name="codeid" id="codeid">
+			                    	<input type="hidden" name="cphase" id="cphase">
+			                      	<input type="text" class="form-control" name="pmr" id="pmr" readonly>
+			                    </div>
+			                    <div class="form-group">
+			                      	<label class=""> Enter PMR Question </label>
+			                      	<input type="text" name="title" id="title" class="form-control mb-3"  autocomplete="off">
+			                    </div>
+
+			                    <div class="form-group">
+			                      	<label class=""> Description </label>
+			                      	<textarea name="desc" id="desc" class="form-control mb-3"></textarea>
+			                    </div>
+			                    <div class="form-group">
+			                      	<label class="">PMR Score</label>
+			                      	<input type="number" name="score" id="scores" class="form-control">                      
+			                    </div>
+
+			                    <div class="form-group">
+			                      	<span class="btn btn-success btn-sm" id="createbtn">Add PMR</span>
+			                      	<span class="btn btn-sm btn-danger" onclick="openClose('x','tooltable', 'toolitem')">Close</span>             
+			                    </div>
+			                </div>
+
+			                <div class="col-xs-12 col-md-3">
+				                <div class="set_rule_fd">
+				                	<div class="card card-stats">
+				                        <div class="card-header card-header-primary card-header-icon">
+				                          <p class="card-category">PMR Percentage Score</p>
+				                          <h3 class="card-title text-center">
+				                          	<span id="perc">0</span> %
+				                          </h3>
+				                          <input type="hidden" name="" id="sectionscore">
+				                        </div>
+				                    </div>
+				                </div>
+			                </div>
+
+			                <div class="col-xs-12 col-md-4">
+				                <div class="card card-stats">
+				                    <div class="card-header-success card-header-icon card-category">
+					                    <form>
+					                        <table class="table table-sm table-hover text" id="__table">
+					                          <thead>
+					                            <th>Question</th>
+					                            <th>Score</th>
+					                          </thead>
+					                          <tbody id="newrule">
+					                                
+					                          </tbody>
+					                        </table>
+
+					                        <div class="form-group" id="btn__">
+					                              
+					                        </div>
+					                    </form>
+				                    </div>
+				                </div>
+			                </div>
+		                </div>
+	                
+	            	</div>
+	            </form>	
+	</div>	
+
+
+	<div class="modal fade" tabindex="-1" role="dialog" id="pmtadd" data-backdrop="static" data-keyboard="false" >
+		<div class="modal-dialog" role="document">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <h4 class="modal-title">PERFORMANCE MANAGEMENT TOOL(PMT)</h4>
+		      </div>
+		      <div class="modal-body">
+		      	<form method="post" id="newpmt" action="{{url_for('performance.addtool') }}">
+		      		<div class="form-group">
+		      			<label>Phase</label>
+		      			<select class="form-control" name="phase">
+		      				<option value="FQ">First Phase</option>
+		      				<option value="SQ">Second Phase</option>
+		      			</select>
+		      		</div>
+		      		<div class="form-group">
+		      			<label>Name</label>
+		      			<input type="text" name="pmt-name" class="form-control" required autocomplete="off">
+		      		</div>
+		      		<div class="form-group">
+		      			<label>Score</label>
+		      			<input type="number" name="pmt-score" class="form-control" required autocomplete="off">
+		      		</div>
+		      	</form>
+		      </div>
+		      <div class="modal-footer">
+		      	<button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Cancel</button>
+		        <button type="submit" form="newpmt" class="btn btn-primary btn-sm">Add</button>
+		      </div>
+		    </div><!-- /.modal-content -->
+		</div>
+	</div>
+
+	<div class="modal fade" tabindex="-1" role="dialog" id="pmtedit" data-backdrop="static" data-keyboard="false" >
+		<div class="modal-dialog" role="document">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <h4 class="modal-title">Modify (PMT)</h4>
+		      </div>
+		      <div class="modal-body">
+		      	<form method="post" id="editpmt" action="{{url_for('performance.edittool') }}">
+		      		<div class="form-group">
+		      			<label>Phase</label>
+		      			<select class="form-control" name="phase">
+		      				<option value="FQ">First Phase</option>
+		      				<option value="SQ">Second Phase</option>
+		      			</select>
+		      		</div>
+		      		<div class="form-group">
+		      			<label>Name</label>
+		      			<input type="hidden" name="pmt-id" id="editid">
+		      			<input type="hidden" name="i_name" id="i_name">
+		      			<input type="text" name="pmt-name" id="editname" class="form-control" required autocomplete="off">
+		      		</div>
+		      		<div class="form-group">
+		      			<label>Score</label>
+		      			<input type="number" name="pmt-score" id="editscore" class="form-control" required autocomplete="off">
+		      		</div>
+		      	</form>
+		      </div>
+		      <div class="modal-footer">
+		      	<button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Cancel</button>
+		        <button type="submit" form="editpmt" class="btn btn-primary btn-sm">Update</button>
+		      </div>
+		    </div><!-- /.modal-content -->
+		</div>
+	</div>
+
+	<div class="modal fade" tabindex="-1" role="dialog" id="pmtdelete" data-backdrop="static" data-keyboard="false" >
+		<div class="modal-dialog modal-sm" role="document">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <h4 class="modal-title">Delete</h4>
+		      </div>
+		      <div class="modal-body">
+		      	<h6><b>Are you sure you want to delete Record?</b></h6>
+		      	<small>Note: All associated record will be removed.</small>
+		      </div>
+		      <div class="modal-footer">
+		      	<button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Cancel</button>
+		        <span id="removepmtbtn"></span>
+		      </div>
+		    </div><!-- /.modal-content -->
+		</div>
+	</div>
+
+	<div class="modal fade" tabindex="-1" role="dialog" id="crtditem" data-backdrop="static" data-keyboard="false" >
+		<div class="modal-dialog modal-md" role="document">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <h4 class="modal-title"><span id="itemName"></span></h4>
+		      </div>
+		      <div class="modal-body">
+		      	<table class="table table-hover table-sm">
+		      		<thead>
+		      			<th>Title</th>
+		      			<th>Description</th>
+		      			<th>Score</th>
+		      		</thead>
+		      		<tbody id="itemList">
+		      			<tr>
+		      				
+		      			</tr>
+		      		</tbody>
+		      	</table>
+		      </div>
+		      <div class="modal-footer">
+		      	<button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Close</button>
+		      </div>
+		    </div><!-- /.modal-content -->
+		</div>
+	</div>
+
+	{% endblock %}
+
+	{% block script %}
+		<script>
+			$('.editpmtbtn').click(function(e){
+				e.preventDefault();
+				id = $(this).attr('id');
+
+				pmtid = document.getElementById(id).dataset.id;
+				name = document.getElementById(id).dataset.name;
+				score = document.getElementById(id).dataset.score;
+
+				document.getElementById('editid').value = pmtid;
+				document.getElementById('editname').value = name;
+				document.getElementById('editscore').value = score;
+				document.getElementById('i_name').value = name;
+
+				$('#pmtedit').modal('show');
+			});
+
+			$('.deletepmtbtn').click(function(e){
+				e.preventDefault();
+				id = $(this).attr('id');
+				pmtid = document.getElementById(id).dataset.id;
+				year = document.getElementById(id).dataset.year;
+
+				btn = '<a href="{{url_for("performance.deleteappraisal", pmtid="id", year="year")}}" class="btn btn-primary btn-sm">Yes</a>';
+				btn = btn.replace('id', pmtid);
+				btn = btn.replace('year', year);
+
+				document.getElementById('removepmtbtn').innerHTML = btn;
+
+				
+				$('#pmtdelete').modal('show');
+			});
+
+			
+			function openClose(id, open, close){
+				
+				if(id != 'x'){
+					codeid = document.getElementById(id).dataset.codeid;
+					cphase = document.getElementById(id).dataset.phase;
+					name = document.getElementById(id).dataset.name;
+					perc = document.getElementById(id).dataset.score;
+
+
+					document.getElementById('codeid').value = codeid;
+					document.getElementById('cphase').value = cphase;
+					document.getElementById('pmr').value = name;
+					document.getElementById('perc').innerHTML = perc;
+					document.getElementById('sectionscore').value = perc;
+				}
+
+				document.getElementById(open).style.display = 'block';
+				document.getElementById(close).style.display = 'none';
+
+				
+
+
+			};
+
+			$('#createbtn').click(function () {
+	          question = document.getElementById('title').value;
+	          desc = document.getElementById('desc').value;
+	          score = document.getElementById('scores').value;
+
+	          rulegenid = Math.floor(Math.random() * 100);
+
+	          if(question != '' && score != ''){
+	            /* get total section score*/
+	            initial_score = document.getElementById('sectionscore').value;
+	            /*sub value from section score*/
+	            if(parseFloat(score) > parseFloat(initial_score)){
+	              alert('PMR Score is greater than outstanding percentage');
+	              return
+	            }else{
+	            
+	            final_score = parseFloat(initial_score) - parseFloat(score);
+	            /*update session score*/
+	            document.getElementById('perc').innerHTML = final_score;
+	            document.getElementById('sectionscore').value = final_score; 
+
+	            record = ' <tr id="'+rulegenid+'_ruleadded">\
+	                          <td>'+ question +'<input type="hidden" name="rules" value="'+question+'" form="rulesubmit"></td>\
+	                          <td>'+ score +'<input type="hidden" name="scores" value="'+score+'" form="rulesubmit">\
+	                                        <input type="hidden" name="description" value="'+desc+'" form="rulesubmit"> \
+	                                        <span id="'+rulegenid+'_remove" data-score="'+score+'" data-id="'+rulegenid+'" style="cursor:pointer; z-index: 1000" title="remove rule" class="pull-right removerule" >&times;</span></td>\
+	                      </tr>';             
+	            }
+	          }
+
+          	$('#newrule').append(record);
+		        document.getElementById('title').value = null;
+		        document.getElementById('desc').value = null;
+		        document.getElementById('scores').value = null;
+
+		        createbtn();
+
+	        });
+
+
+	        $('body').on('click', '.removerule', function () {
+	        	id = $(this).attr('id');
+	        	score = document.getElementById(id).dataset.score;
+	        	row = document.getElementById(id).dataset.id;
+
+	        	rule_score = document.getElementById('sectionscore').value;
+
+	        	return_score = parseFloat(rule_score) + parseFloat(score);
+	          
+	        	document.getElementById('perc').innerHTML = return_score;
+	        	document.getElementById('sectionscore').value = return_score; 
+
+	        	document.getElementById(row+'_ruleadded').remove();
+	        	createbtn();
+	        });
+
+
+	        function createbtn(){
+	        	size = document.getElementById('newrule').rows.length;
+		          
+		        if(size > 0 ){
+		          document.getElementById('btn__').innerHTML = '<button type="submit" class="btn btn-success btn-sm form="rulesubmit" style="margin: 3px" name="rulesubmit" value="create">Create Rules</button>';
+		        }else{
+		          document.getElementById('btn__').innerHTML = '';
+		        }
+	        };
+
+
+	        $('.viewitem').click(function () {
+	        	id = $(this).attr('id');
+	        	name = document.getElementById(id).dataset.name;
+	        	code = document.getElementById(id).dataset.code;
+
+	        	loading = '<small><i>loading...</i></small>';
+	        	text = '<small><i>view created item</i></small>';
+
+	        	document.getElementById('itemName').innerHTML = name;
+	        	$('#itemList').empty();
+
+	        	$.ajax({
+	        		method: 'post',
+	        		url: 'appraisal-tool',
+	        		data:{name:name, code:code, 'rulesubmit': 'details'},
+
+	        		beforeSend: function(){
+	        			document.getElementById(id).innerHTML = loading;
+	        		},
+
+	        		success: function(data){
+	        			if (data) {
+		        			for (var i = data[3].length - 1; i >= 0; i--) {
+		        				tr = '<tr> <td>'+data[3][i]+' </td>  <td> '+data[4][i]+'  </td>  <td> '+data[5][i]+' </td> </tr>';
+		        				$('#itemList').append(tr)
+		        			}
+
+		        			$('#crtditem').modal('show');
+
+		        			document.getElementById(id).innerHTML = text;
+	        			}
+	        		}
+	        	})
+
+	        	
+	        });
+
+
+			$('#pmttable').dataTable({
+				"iDisplayLength": 50,
+
+			});
+		</script>
+	{% endblock %}
+	

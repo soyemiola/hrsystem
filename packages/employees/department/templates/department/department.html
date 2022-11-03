@@ -1,0 +1,59 @@
+{% extends "layout.html" %}
+{% block content %}
+
+	<div class="body">
+				<a href="" class="btn btn-secondary btn-sm btn-flat"
+						   style="float: right">
+					<i class="fa fa-arrow-circle-o-left"></i>
+					Back
+				</a>
+				<h6><i class="fa fa-bars"></i> Department List</h6>
+				<ul class="bodymenu">
+					<li>
+						<a href="{{url_for('dept.department')}}" class="active">List</a>
+					</li>
+					<li>
+						<a href="{{url_for('dept.addepartment')}}">Add Department</a>
+					</li>
+				</ul>
+				<div class="bodycontent">
+					<div class="row">
+						<div class="col-xs-12 col-md-12 category_list">
+							<table id="example" class="table table-striped table-bordered table-sm" style="width:100%">
+								<thead>
+									<th>Department Name</th>
+									<th>Tools</th>
+								</thead>
+								<tbody>
+								{% for dept in all_dept %}
+									<tr>
+										<td>{{dept[0]}}</td>
+										<td width="150px">
+											<a href="{{url_for('dept.editdepartment', edit=dept[1])}}" class="btn btn-secondary
+											btn-sm btn-flat">
+												<i class="fa fa-edit" ></i>
+                                                Edit</a>
+											<button class="btn btn-danger btn-sm btn-flat" disabled>
+												<i class="fa fa-trash" ></i>
+                                                Delete</button>
+										</td>
+									</tr>
+								{% endfor %}
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+
+{% endblock content %}
+
+
+{% block script %}
+<script>
+	$(document).ready(function() {
+		$('#example').DataTable();
+	});
+
+</script>
+{% endblock script %}

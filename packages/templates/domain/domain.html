@@ -1,0 +1,44 @@
+
+{% extends 'update_templates/loginlayout.html' %}
+    {% block content %}
+          
+          <div class="row">
+            <div class="col-md-1"></div>
+            <div class="col-md-7">
+              <div class="card">
+                <div class="card-header card-header-primary">
+                  <h4 class="card-title">Company</h4>
+                  <p class="card-category">Select Company Name</p>
+                </div>
+                <div class="card-body">
+                  <form method="post" action="{{url_for('domain.selectdomain') }}">
+                    <div class="row">
+	                    <div class="col-md-12">
+	                        <select name="domain" class="form-control">
+	                        	{% if company %}
+	                        		{% for client in company %}
+	                        			<option value="{{ client[1] }}">{{ client[1] }}</option>
+	                        		{% endfor %}
+	                        	{% endif %}
+								
+							</select>
+	                    </div>
+                     
+                    </div>
+                    <div class="row">
+                      <div class="col-md-12">
+                        <button class="btn btn-primary pull-right">Select</button>
+                        <div class="clearfix"></div>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+
+    {% endblock content %}
+
+    {% block script %}
+
+    {% endblock script %}

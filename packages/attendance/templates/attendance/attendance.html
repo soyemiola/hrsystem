@@ -1,0 +1,499 @@
+{% extends "layout.html" %}
+{% block content %}
+	
+	<div class="row">
+		<div class="col-xs-12 col-md-10">
+			<h4>Attendance Sheet</h4>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-xs-12 col-md-12">
+			<div class="" style="border-bottom:1px solid #fff; margin-top: 10px; padding-bottom: 3px">
+				<form method="post" action="{{ url_for('register.home') }}">
+					<div class="row">
+						<div class="col-xs-12 col-md-12">
+							<h5><b>Filter Record</b></h5>
+						</div>
+						<div class="col-xs-12 col-md-3">
+							<div class="form-group">
+								<select class="form-control" name="department" id="department">
+									<option value="0" selected disabled>Select Department</option>
+									{% for i in dept %}
+									<option value="" data-name="{{i[0]}}">{{i[0]}}</option>
+									{% endfor %}
+								</select>
+							</div>
+						</div>
+						<div class="col-xs-12 col-md-3">
+							<div class="form-group">
+								<select class="form-control" name="employee" id="employee">
+									<option value="" selected disabled>Select Employees</option>
+								</select>
+							</div>
+						</div>
+						<div class="col-xs-12 col-md-2">
+							<div class="form-group">
+								<select class="form-control" name="month">
+									<option value="" selected disabled>Select Month</option>
+									{% for m in month %}
+									{% if m != '' %}
+									<option value="{{ m }}">{{ m }}</option>
+									{% endif %}
+									{% endfor %}
+								</select>
+							</div>
+						</div>
+						<div class="col-xs-12 col-md-2">
+							<div class="form-group">
+								<select class="form-control" name="year">
+									<option value="" selected disabled>Select Year</option>
+									{% for y in year %}
+									<option value="{{ y }}">{{ y }}</option>
+									{% endfor %}
+								</select>
+							</div>
+						</div>
+						<div class="col-xs-12 col-md-2">
+							<div class="form-group">
+								<button type="submit" class="btn btn-success btn-sm btn-flat btn-block" name="getattendance" value="search">Search</button>
+							</div>
+						</div>
+						
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	<br>
+	
+	
+	<div class="row">
+		<div class="col-xs-12 col-md-12">
+			<div class="tools">
+				<span>
+					<ul class="" style="list-style: none;">
+						<li class="">
+							<i class="fa fa-ellipsis-h"></i> <small>Log in only</small>
+						</li>
+						<li class="">
+							<i class="fa fa-check"></i> <small>Accurate Attendance</small>
+						</li>
+						<li class="">
+							<i class="fa fa-check"></i>
+							<i class="fa fa-times"></i> <small>Left before close hour</small>
+						</li>
+						<li class="">
+							<i class="fa fa-info"></i> <small>Resume late and left before close hour</small>
+						</li>
+						<li class="">
+							<i class="fa fa-times" style="color: red"></i>
+							<i class="fa fa-check" style="color: green"></i> <small>Resume Late</small> 
+						</li>
+						<li class="pull-right">
+							<a href="#" class="greport" data-toggle="collapse" data-target="#reportbx">Generate report</a>
+						</li>
+					</ul>
+				</span>
+				
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-xs-12 col-md-12">
+			<div class="reportbx collapse" id="reportbx">
+				<form method="post" action="{{ url_for('register.attendance_reporting') }}">
+				 	<div class="row">
+				 		<div class="col-xs-12 col-md-2">
+				 			<div class="form-group">
+							    <label for="rtype"><small><b>Report type</b></small></label> &nbsp;
+							    <select class="form-control" id="rtype" name="rtype">
+							    	<option selected disabled>--select type--</option>
+							    	<option value="daily">Daily</option>
+							    	<option value="weekly">Weekly</option>
+							    	<option value="monthly" disabled>Monthly</option>
+							    </select>
+							</div>
+				 		</div>
+				 		<div class="col-xs-12 col-md-3 fdatebox" id="dD">
+				 			<div class="daily_date">
+						 		<div class="form-group ml-2">
+									<label for="date"><small><b>Select Date</b></small></label> &nbsp;
+									<input type="date" name="Ddate" class="form-control" id="Ddate">
+								</div>
+							</div>
+				 		</div>
+				 		<div class="col-xs-12 col-md-5 fdatebox" id="wD">
+				 			<div class="weelky_date" >
+						  		<div class="row">
+						  			<div class="col-xs-12 col-md-6">
+						  				<div class="form-group ml-2">
+									  		<label for="date"><small><b>Start week</b></small></label> &nbsp;
+									  		<input type="date" name="wdate-start" class="form-control" id="wdate-start">
+									  	</div>
+							  		</div>
+							  		<div class="col-xs-12 col-md-6">
+							  			<div class="form-group ml-2">
+									  		<label for="date"><small><b>End week</b></small></label> &nbsp;
+									  		<input type="date" name="wdate-end" class="form-control" id="wdate-end">
+									  	</div>
+							  		</div>
+						  		</div>
+						  	</div>
+				 		</div>
+				 		<div class="col-xs-12 col-md-4 fdatebox" id="mD">
+				 			<div class="daily_date" >
+						  		<div class="row">
+							  		<div class="col-xs-12 col-md-6">
+							  			<div class="form-group">
+							  				<label for="date"><small><b>Select Year</b></small></label>
+											<select class="form-control" name="Myear" id="Myear">
+												<option value="" selected disabled>Select Year</option>
+												{% for y in year %}
+												<option value="{{ y }}">{{ y }}</option>
+												{% endfor %}
+											</select>
+										</div>
+							  		</div>
+						  			<div class="col-xs-12 col-md-6">
+						  				<div class="form-group">
+									  		<label for="date"><small><b>Select Month</b></small></label>
+									  		<select class="form-control" name="Mmonth" id="mMonth">
+									  			<option value="" selected disabled>Select Month</option>
+									  			{% for m in month %}
+													{% if m != '' %}
+													<option value="{{ m }}">{{ m }}</option>
+													{% endif %}
+												{% endfor %}
+									  		</select>
+									  	</div>
+							  		</div>
+						  		</div>
+						  	</div>
+				 		</div>
+				 		<div class="col-xs-12 col-md-1">
+				 			<div class="form-group">
+				 				<label style="visibility: hidden;"><small><b></b></small>filter btn</label>
+						  		<button type="submit" class="btn btn-success btn-sm btn-block">Submit</button>
+						  	</div>
+				 		</div>
+				 	</div>	
+				  	
+
+				  	
+
+				  	
+				</form>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-xs-12 col-md-12">
+			<div class="attd">
+				<table id="" class="table table-stripped table-bordered table-sm">
+					<thead>
+						<th>Employee</th>
+						{% for i in range(32) %}
+							{% if i != 0 %}
+								<th>{{ i }}</th>
+							{% endif %}
+						{% endfor %}
+					</thead>
+					<tbody>
+						{% if att %}
+							{% for i in att %}
+							<tr class="attdinfo" id="1">
+								<td>
+									<a href="{{ url_for('register.staff_profile', userId=i[0], month=i[1], year=i[2]) }}">
+										{% set username = i[0] | get_register_name %}
+										{{ username }}
+										
+										{% set get_login_info = i[0] | get_register_date(i[1], i[2]) %}
+									</a>
+								</td>
+								{% for day_num in range(32) %}
+									{% if day_num != 0 %}
+
+										<td>
+											{% if get_login_info%}
+												{% for ech in get_login_info %}
+													{% set get_day = ech[2] | return_day_value %}
+
+
+													{% if get_day == day_num %}
+														{% set status = ech[10] %}
+														
+														<span>
+															{% if status == 'Log In' %}
+																<span title="{{ status }}">
+																	<i class="fa fa-ellipsis-h"></i>
+																</span>
+															
+															{% elif status == 'Accurate' %}
+																<span title="{{ status }}">
+																	<i class="fa fa-check" style="color: green"></i>
+																</span>
+															
+															{% elif status == 'Left before closing hour' %}
+																<span title="{{ status }}">
+																	<i class="fa fa-check" style="color: green"></i>
+																	<i class="fa fa-times" style="color: red"></i> 
+																</span>
+															
+															{% elif status == 'Resume late' %}
+																<span title="{{ status }}">
+																	<i class="fa fa-times" style="color: red"></i>
+																	<i class="fa fa-check" style="color: green"></i>
+																</span>
+															
+															{% elif status == 'Resume late and left before close hour' %}
+																<span title="{{ status }}">
+																	<i class="fa fa-info"></i>
+																</span>
+															
+															{% elif status == 'Attendance from Unregistered Device IP' %}
+																<span title="{{ status }}">
+																	<i class="fa fa-info" style="color: blue"></i>
+																</span>
+															
+															{% else %}
+
+															{% endif %}
+															
+														</span>
+													{% endif %}
+												{% endfor %}
+											{% endif %}
+											
+										</td>
+									{% endif %}
+								{% endfor %}
+								
+							</tr>
+							{% endfor %}
+						{% endif %}
+					</tbody>
+				</table>
+
+				<!-- Excel document -->
+				<table id="attendance_table" style="display: none;">
+					<thead>
+						<th>Employee</th>
+						{% for i in range(32) %}
+							{% if i != 0 %}
+								<th>{{ i }}</th>
+							{% endif %}
+						{% endfor %}
+					</thead>
+					<tbody>
+						{% if att %}
+							{% for i in att %}
+							<tr>
+								<td>
+									<span>
+										{% set username = i[0] | get_register_name %}
+										{{ username }}
+										
+										{% set get_login_info = i[0] | get_register_date(i[1], i[2]) %}
+										
+									</span>
+								</td>
+								{% for day_num in range(32) %}
+									{% if day_num != 0 %}
+
+										<td>
+											{% if get_login_info %}
+												{% for ech in get_login_info %}
+													{% set get_day = ech[2] | return_day_value %}
+
+													{% if get_day == day_num %}
+														{% set status = ech[7] %}
+														<span>
+															{% if status == 'Log In' %}
+																Log In 
+															
+															{% elif status == 'Accurate' %}
+																Accurrate
+															
+															{% elif status == 'Left before closing hour' %}
+																Left before closing hour
+															
+															{% elif status == 'Resume late' %}
+																Resume late
+															
+															{% elif status == 'Resume late and left before close hour' %}
+																Resume late and left before close hour
+															
+															{% elif status == 'Attendance from Unregistered Device IP' %}
+																Attendance from Unregistered Device IP
+															
+															{% else %}
+
+															{% endif %}
+															
+														</span>
+													{% endif %}
+												{% endfor %}
+											{% endif %}
+										</td>
+									{% endif %}
+								{% endfor %}
+								
+							</tr>
+							{% endfor %}
+						{% endif %}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	
+	{% if view %}
+	<div class="row">
+		<div class="col-xs-12 col-md-12">
+			<p class="text-center">
+				<a href="{{ url_for('register.home') }}" class="btn btn-sm btn-primary"><i class="fa fa-th-list"></i> click to view current month register</a>
+			</p>
+		</div>
+	</div>
+	{% endif %}
+	
+	<!-- Modal -->
+
+	<!-- <div class="modal fade" id="report_modal" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	          <span aria-hidden="true">&times;</span>
+	        </button>
+	        <h5 class="modal-title" id="staticBackdropLabel">Attendance information</h5>
+	      </div>
+	      <div class="modal-body">
+	       <div class="row">
+	       		<h4>Monthly Report</h4>
+	       </div>
+	      </div>
+	      <div class="modal-footer">
+	      	
+	        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+	        <button type="button" class="btn btn-success">Understood</button>
+	      </div>
+	    </div>
+	  </div>
+	</div> -->
+
+	<style>
+		.content-wrapper{
+			overflow-y: scroll;
+		}
+		.tools{
+			text-align: center;
+			margin-bottom: 2px;
+		}
+		.tools ul li{
+			display: inline-block;
+			border-right: 2px solid #fff;
+			padding-right: 5px;
+		}
+		.tools ul li i.fa-check{
+			color: green
+		}
+		.tools ul li i.fa-times{
+			color: red
+		}
+		.fdatebox{
+			display: none;
+		}
+	</style>
+
+{% endblock content %}
+
+{% block script %}
+<script>
+	$(document).ready(function () {
+		$('#department').change(function (){
+			getname = $(this).find('option:selected');
+			dept = getname[0].dataset.name;
+			/*emplst = document.getElementById('employee');*/
+
+			$.ajax({
+				method: 'POST',
+				url: '/admin/getemp',
+				data:{dept:dept},
+
+				success: function (data){
+					if(data.length > 0){
+						$('#employee').empty();
+						$('#employee').append('<option value="" selected disabled>Select Employees</option>');
+						/*$('#employee').append('<option value="000">All</option>');*/
+
+						for (var i = data.length - 1; i >= 0; i--) {
+							name = '<option value="'+data[i][0]+'">'+data[i][1]+'</option>';
+							$('#employee').append(name)
+						}
+					}else{
+						$('#employee').empty();
+						$('#employee').append('<option value="" selected disabled>Select Employees</option>');
+					}
+				},
+
+				error: function(e){
+					console.log(e)
+				}
+			})
+		});
+
+
+		$('#rtype').change(function () {
+			filter_type = $(this).find('option:selected');
+			filter_value = filter_type[0].value;
+
+			if (filter_value == 'daily' ) {
+				document.getElementById('wdate-start').value = '';
+				document.getElementById('wdate-end').value = '';
+				document.getElementById('mMonth').value = '';
+				document.getElementById('Myear').value = '';
+				document.getElementById('dD').style.display = 'block';
+				document.getElementById('wD').style.display = 'none';
+				document.getElementById('mD').style.display = 'none';
+			}
+			else if (filter_value == 'weekly') {
+				document.getElementById('Ddate').value = '';
+				document.getElementById('mMonth').value = '';
+				document.getElementById('Myear').value = '';
+				document.getElementById('wD').style.display = 'block';
+				document.getElementById('dD').style.display = 'none';
+				document.getElementById('mD').style.display = 'none';
+
+			}else if (filter_value == 'monthly') {
+				document.getElementById('Ddate').value = '';
+				document.getElementById('wdate-start').value = '';
+				document.getElementById('wdate-end').value = '';
+				document.getElementById('mD').style.display = 'block';
+				document.getElementById('dD').style.display = 'none';
+				document.getElementById('wD').style.display = 'none';
+
+			}
+		})
+	});
+
+	/*var wb = XLSX.utils.table_to_book(document.getElementById('attendance_table'), {sheet:'Sheet Js'});
+
+	var wbout = XLSX.write(wb, {bookType: 'xlsx', bookSST:true, type: 'binary' });
+
+	function s2ab(s){
+		var buf = new ArrayBuffer(s.length);
+		var view = new Uint8Array(buf);
+		for(var i=0; i<s.length; i++) view[i] = s.charCodeAt(i) & 0xFF;
+		return buf;
+	}
+
+	$('#registerexcel').click(function(){
+        name = 'Register_Sheet.xlsx';
+		saveAs(new Blob([s2ab(wbout)], {type: 'application/octet-stream'}), name)
+	});*/
+
+	
+
+</script>
+{% endblock script %}

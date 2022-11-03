@@ -1,0 +1,92 @@
+  <div class="modal fade" tabindex="-1" role="dialog" id="loanmodal">
+      <div class="modal-dialog modal-md" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title"><i class="fa fa-edit"></i> Clear Loan </h4>
+          </div>
+          <div class="modal-body" style="margin-left: 0px;">
+            <div class="row">
+              <div class="col-xs-12 col-md-6">
+                <div class="">
+                  <label>Name</label>
+                  <input type="text" name="" value="" id="loanname" readonly class="form-control">
+                </div>
+              </div>
+              <div class="col-xs-12 col-md-6">
+                <div class="">
+                  <label>Loan type</label>
+                  <input type="text" name="" value="" id="loantype" readonly class="form-control">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xs-12 col-md-6">
+                <div class="">
+                  <label>Loan Outstanding</label>
+                  <input type="text" name="" value="" id="outstanding" readonly class="form-control">
+                </div>
+              </div>
+              <div class="col-xs-12 col-md-6">
+                <div class="">
+                  <label>Loan Amount</label>
+                  <input type="text" name="" value="" id="loanamount" readonly class="form-control">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <form action="{{ url_for('loans.clearloan') }}" method="post">
+              <input type="hidden" name="id" id="id">
+              <input type="hidden" name="loan_id" id="loan_id">
+              <!-- <input type="hidden" name="tablename" value="loan"> -->
+              <input type="hidden" name="url" id="url">
+              <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Cancel</button>
+              <button type="submit" class="btn btn-success btn-sm" >Clear Loan</button>
+            </form>
+            
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+
+ 
+
+
+    <div class="modal fade" tabindex="-1" role="dialog" id="deleteloanModal">
+      <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h5 class="modal-title"><i class="fa fa-trash"></i> Delete Loan Type </h5>
+          </div>
+          <div class="modal-body">
+            <div class="notice">
+              <h5>
+                Are you sure to delete this Loan Type? <br>
+                <small><i class="fa fa-exclamation"></i> Some process loan might be dependent on the loan type.</small>
+              </h5>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-sm btn-default" data-dismiss="modal" aria-label="Close">Cancel</button>
+            <button class="btn btn-sm btn-success">Yes</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+<style type="text/css">
+  .notice{
+    text-align: center;
+  }
+  .notice h5{
+    font-weight: bold;
+  }
+  .notice small{
+    font-size: 10px;
+    color: red
+  }
+ 
+</style>

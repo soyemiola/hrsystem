@@ -1,0 +1,147 @@
+{% extends "layout.html" %}
+{% block content %}
+
+	<div class="offboard">
+		<h6><i class="fa fa-trash"></i> Offboarding Process</h6>
+
+		<div class="fil">
+			<div class="row">
+				<div class="col-xs-12 col-lg-12">
+					<form action="{{ url_for('users.offboard') }}" method="post" class="form-inline">
+					  	<div class="form-group mx-sm-3 mb-2">
+						    <label for="Employee" class="sr-only">Select Employee</label>
+						    <select name="emp_id" id="employees">
+								<option selected disabled>--Select Employee--</option>
+								{% for em in emps %}
+								<option value="{{ em[0]}}">{{ em[1] }}</option>
+								{% endfor %}
+							</select>
+						</div>
+						<button type="submit" name="submit" value="fetch" class="btn btn-primary btn-sm m-2">Fetch Record</button>
+						<!-- <a href="{{ url_for('users.offboard', status=1) }}" class="btn btn-primary btn-sm btn-flat">Active process</a> -->
+					</form>
+				</div>
+			</div>
+			
+		</div>
+		<hr>
+
+		{% if u_details %}
+
+		<div class="row mt-4">
+			<div class="col-xs-12 col-lg-5">
+				<div class="bxfill">
+					<h6>NAME: <span class="det ml-2">{{ u_details[1] }}</span></h6> 
+					<h6>DEPARTMENT: <span class="det ml-2">{{ u_details[5] }}</span></h6> 
+					<h6>LEVEL: <span class="det ml-2">{{ u_details[6] }}</span></h6> 
+					<h6>POST: <span class="det ml-2">{{ u_details[17] }}</span></h6> 
+					<h6>ACTIVE SERVICE YEAR: <span class="det ml-2">{{ u_details[9] | year_duration }}</span></h6> 
+				</div>
+			</div>
+			<div class="col-xs-12 col-lg-5">
+				<div class="bxfill">
+					<h6>WORK-TOOLS: <span class="det ml-2">
+						{% if u_tools %}
+							{% for i in u_tools %}
+								{% if i[3] | length > 0 %}
+									{% for x in i[3] %}
+										{{ x }},
+									{% endfor %}
+								{% endif %}
+							{% endfor %}
+						{% else %}
+							{{ 'None' }}
+						{% endif %}
+					</span></h6> 
+					<h6>ACTIVE SERVICES: <span class="det ml-2">
+						{% if u_tools %}
+							{% for i in u_tools %}
+								{% if i[2] | length > 0 %}
+									{% for x in i[2] %}
+										{{ x }},
+									{% endfor %}
+								{% endif %}
+							{% endfor %}
+						{% else %}
+							{{ 'None' }}
+						{% endif %}
+					</span></h6> 
+				</div>
+			</div>
+		</div>
+
+		<div class="row mt-2">
+			<div class="col-xs-12 col-lg-6">
+				<div class="bxfill">
+					<form method="post">
+						<div class="form-group">
+							<label for="reason">Reason for Offboarding</label>
+							<select class="form-control" name="reason" required>
+								<option value="Self Resignation" selected>Self Resignation</option>
+								<option value="Temporary Inactive">Temporary Inactive</option>
+								<option value="Termination of Appointment">Termination of Appointment</option>
+								<option value="Expire Contract">Expire Contract</option>
+							</select>
+							<input type="hidden" name="empid" value="{{ u_details[0] }}">
+							<input type="hidden" name="department" value="{{ u_details[5] }}">
+						</div>
+						<div class="form-group">
+							<label for="comment">Comment (Optional)</label>
+							<textarea class="form-control" name="comment" rows="3" style="resize: none;"></textarea>
+						</div>
+						<div class="form-group">
+							<input type="submit" name="submit" value="Offboard User" class="btn btn-sm btn-success">
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+
+		{% endif %}
+	</div>
+
+<style>
+	.bxfill h6{
+		font-weight: bold;
+	}
+	.bxfill h6 span{
+		font-weight: normal;
+	}
+</style>
+{% endblock content %}
+
+{% block script %}
+<script>
+	$(document).ready(function () {
+		$('#employees').chosen();
+	});
+
+	$('.action').click(function () {
+		var id = $(this).attr('id');
+		loaderid = document.getElementById(id).dataset.id;
+		emp_id = document.getElementById(id).dataset.emp_id;
+		dept = document.getElementById(id).dataset.dept;
+		loader = "<img src={{ url_for('static', filename='image/loading.gif') }} height=30px>";
+		sent = 'Sent <i class="fa fa-check"></i> ';
+
+		
+		$.ajax({
+			method: 'POST',
+			url: '/admin/mailoffboarding',
+			data: {emp_id:emp_id, dept:dept},
+
+			beforeSend : function(data){
+				document.getElementById('loader'+loaderid).innerHTML = loader;
+			},
+
+			success : function(data){
+				document.getElementById('loader'+loaderid).innerHTML = sent;
+			}
+		});
+		
+
+		/*$('#loader'+emp_id).innerHTML = loader;*/
+
+	})
+</script>
+{% endblock script %}

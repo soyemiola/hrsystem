@@ -1,0 +1,154 @@
+{% extends "domain/clientlayout.html" %}
+{% block content %}
+	<div class="row">
+		<div class="col-xs-12 col-md-1"></div>
+        <div class="col-xs-12 col-md-10">
+			<h4 style="text-align: center; font-weight:bold">Registered Clients</h4>
+			{% if clients %}
+			<table class="table table-responsive table-hover">
+				<thead>
+					<th>S/N</th>
+	            	<th>Client Name</th>
+	            	<th>Address</th>
+	                <th>Logo</th>
+	                <th>Active Date</th>
+	                <th></th>
+	            </thead>
+	            <tbody>
+	            {% for i in clients %}
+	            	<tr>
+	            		<td>{{ i[0] }}</td>
+	                	<td>{{ i[1] }}</td>
+	                	<td>{{ i[9] }}</td>
+	                    <td>
+	                    	{% if i[8] %}
+	                        	{% set logo = i[8] %}
+	                        {% else %}
+	                        	{% set logo = '' %}
+	                        {% endif %}
+	                        <img src="{{ url_for('static', filename='image/clientlogo/'+logo) }}" height="50" alt="brandlogo">
+	                        
+	                    </td>
+	                   	<td>
+	                    	{{ i[4] }}
+	                    </td>
+	                    <td>
+	                    	<button class="btn btn-primary btn-sm btneditlogo" id="edit_{{i[0]}}" data-name="{{ i[1] }}"><i class="fa fa-edit"></i> Edit logo</button>
+	                    	<button class="btn btn-default btn-sm addAdmin" id="admin_{{ i[0] }}" data-db="{{ i[2]}}">add admin</button>
+	                        					
+	                    </td>
+	                </tr>
+	            {% endfor %}
+	            </tbody>
+            </table>
+            {% endif %}
+        </div>
+    </div>
+      <!-- /.row -->
+	<div class="modal fade" tabindex="-1" role="dialog" id="editlogo">
+	  <div class="modal-dialog modal-sm" role="document">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	        <h4 class="modal-title"><i class="fa fa-edit"></i> Edit Logo</h4>
+	      </div>
+	      <div class="modal-body">
+	        <div class="editcont">
+	        	<form action="{{ url_for('domain.brandlogo') }}" method="post" enctype="multipart/form-data">
+	        		<span id="logoinsert"></span>
+	        		<input type="file" name="logo">
+	        		<input type="hidden" name="brandID" id="brandID">
+	        		<br>
+	        		<button type="submit" name="uploadlogo" class="btn btn-success btn-sm">Upload Logo </button>
+	        	</form>
+	        </div>
+	      </div>
+	      <div class="modal-footer"></div>
+	    </div><!-- /.modal-content -->
+	  </div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
+
+	<div class="modal fade" tabindex="-1" role="dialog" id="adminForm">
+	  <div class="modal-dialog modal-sm" role="document">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	        <h4 class="modal-title"><i class="fa fa-plus"></i> Create Admin Profile</h4>
+	      </div>
+	      <div class="modal-body">
+	        <div class="editcont">
+	        	<form action="{{ url_for('domain.clientAdminUser') }}" method="post">
+	        		<div class="">
+	        			<label>First Name:</label>
+	        			<input type="text" name="fname" class="form-control">
+	        		</div>
+	        		<div class="">
+	        			<label>Last Name:</label>
+	        			<input type="text" name="lname" class="form-control">
+	        		</div>
+	        		<div class="">
+	        			<label>Email Address:</label>
+	        			<input type="email" name="email" class="form-control">
+	        		</div>
+	        		<div class="">
+	        			<input type="hidden" name="dbname" id="dbname" class="form-control">
+	        			<button type="submit" name="addAdmin" class="btn btn-success btn-sm btn-block">Create Admin</button>
+	        		</div>
+	        	</form>
+	        </div>
+	      </div>
+	      <div class="modal-footer"></div>
+	    </div><!-- /.modal-content -->
+	  </div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
+
+<style type="text/css">
+	.editcont{
+		text-align: center;
+	}
+	.editlogo{
+		margin: 5px;
+	}
+</style>
+{% endblock content %}
+
+
+{% block script %}
+<script type="text/javascript">
+	$('.btneditlogo').click(function (e) {
+		e.preventDefault();
+
+		var id = $(this).attr('id');
+		
+		clientinfo = document.getElementById(id).dataset.name;
+		logo = "<img src={{ url_for('static', filename='image/clientlogo/logo_') }} height='100' class='editlogo'>";
+
+		$.ajax({
+			method: 'post',
+			url: '/HRsystemAdministrator/',
+			data: {name:clientinfo},
+
+			success: function(data){
+				console.table(data);
+				img = logo.replace('logo_', data[8]);
+				document.getElementById('logoinsert').innerHTML = img;
+				document.getElementById('brandID').value = data[0];
+				
+			}
+		})
+
+		$('#editlogo').modal('show');
+	});
+
+	$('.addAdmin').click(function (e) {
+		e.preventDefault();
+
+		var db_id = $(this).attr('id'),
+		dbname = document.getElementById(db_id).dataset.db;
+
+		document.getElementById('dbname').value = dbname;
+
+		$('#adminForm').modal('show');
+	})
+</script>
+{% endblock %}

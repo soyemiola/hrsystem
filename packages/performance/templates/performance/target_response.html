@@ -1,0 +1,133 @@
+{% extends "layout.html" %}
+{% block content %}
+
+            <div class="overview_table">
+              <h6>Appraisal Response </h6>
+              
+              <!-- filter -->
+              <form action="" method="post">
+                <div class="">
+                  <div class="row">
+                    <div class="col-xs-12 col-md-2">
+                      <div class="form-group">
+                       <!--  <label style="visibility: hidden;"><small>Select year:</small></label> -->
+                        <select class="form-control" name="year" id="year" required>
+                          <option selected disabled>--select year--</option>
+                          {% for yr in year %}
+                            <option data-id="" value="{{ yr }}">{{ yr }}</option>
+                            {% endfor %}
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-xs-12 col-md-3">
+                      <div class="form-group">
+                        <button class="btn btn-flat btn-sm btn-primary mt-1">Fetch Record</button>
+                      </div>
+                    </div>
+                    <div class="col-xs-12 col-md-7">
+                      <div class="greport pull-right">
+                        {% if info %}
+                        <span title="Download report"><small class="btn btn-sm btn-primary appreport"><i class="fa fa-file-excel-o"></i></small></span>
+                        {% endif %}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </form>
+              <!-- //-- end of filter -->
+
+              <table class="table table-sm table-stripped table-hover" id="appraisal_score">
+                <thead>
+                  <th>Staff Name</th>
+                  <th>Performance Title</th>
+                  <th>Department</th>
+                  <th>Year</th>
+                  <th>Review Point</th>
+                  <th>Total Point</th>
+                  <th></th>
+                </thead>
+                <tbody>
+                  {% if info %}
+                    {% for i in info %}
+                    <tr>
+                      <td>{{i[0]}}</td>
+                      <td>{{i[2]}}</td>
+                      <td>{{i[1]}}</td>
+                      <td>{{ i[8] }}</td>
+                      <td>{{i[4]}}%</td>
+                      <td>
+                        {% if info[7] %}
+                          {{i[7]}}%
+                        {% endif %}
+                      </td>
+                      <td>
+                        <a href="{{ url_for('performance.perform_details', code=i[3], team_member=i[6]) }}"><i class="fa fa-folder-open"></i></a>
+                      </td>
+                    </tr>
+                    {% endfor %}
+                  {% endif %}
+                </tbody>
+              </table>
+
+
+              <!-- report -->
+              {% if info %}
+              <table class="table table-sm table-stripped table-hover" id="appraisal_score_excel" style="display: none;">
+                <thead>
+                  <th>Staff ID</th>
+                  <th>Name</th>
+                  <th>Department</th>
+                  <th>Period</th>
+                  <th>Review Point</th>
+                  <th>Appraisal Point</th>
+                </thead>
+                <tbody>
+                    {% for i in info %}
+                    <tr>
+                      <td>{{i[9]}}</td>
+                      <td>{{i[0]}}</td>
+                      <td>{{i[1]}}</td>
+                      <td>{{ i[8] }}</td>
+                      <td>{{i[4] | string }}%</td>
+                      <td>
+                        {% if info[7] %}
+                          {{i[7] | string }}%
+                        {% endif %}
+                      </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+              </table>
+              {% endif %}
+            </div>
+ 
+{% endblock content %}
+
+
+{% block script %}
+<script>
+  function s2ab(s){
+    var buf = new ArrayBuffer(s.length);
+    var view = new Uint8Array(buf);
+    for(var i=0; i<s.length; i++) view[i] = s.charCodeAt(i) & 0xFF;
+    return buf;
+  }
+
+
+  $(document).ready(function () {
+    $('.appreport').click(function () {
+      
+      var wb = XLSX.utils.table_to_book(document.getElementById('appraisal_score_excel'), {sheet:'Sheet Js'});
+
+      var wbout = XLSX.write(wb, {bookType: 'xlsx', bookSST:true, type: 'binary' });
+            
+      saveAs(new Blob([s2ab(wbout)], {type: 'application/octet-stream'}), 'Appraisal Report.xlsx')
+    })
+  });
+
+
+  $('#appraisal_score').dataTable({
+    "bLengthChange": false
+  });
+</script>
+{% endblock %}

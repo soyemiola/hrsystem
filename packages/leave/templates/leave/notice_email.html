@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+    </head>
+    <body>
+        <div class="box" style='font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans",
+            sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";'>
+            <div class="innerbox" style="margin: 5%; padding: 20px; border:1px solid #f8f8ff;">
+                <div class="innertitle" style="text-align: left; border-bottom:1px solid #f8f8ff; padding: 20px;
+                background-color: #3c8dbc; color: #fff;">
+                    <h4 style="padding: 0px; margin: 4px;">BUSINESS TRAVEL MANAGEMENT</h4>
+                    <h5 style="padding: 0px; margin: 4px;">Leave Application Request</h5>
+                </div>
+                <div class="innerinfo">
+                    <h2>Attention: You have a leave request pending</h2>
+                    <a href="{{url_for('leaves.leave_request', _external=True)}}">Click to view leave request</a>
+                </div>
+            </div>
+        </div>
+    </body> 
+
+    <style>
+        .box{
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans",
+            sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+        }
+        .innerbox{
+            margin: 5%; padding: 20px; border:1px solid #f8f8ff;
+        }
+        .innertitle{
+            text-align: left; border-bottom:1px solid #f8f8ff;
+            padding: 20px;
+            background-color: #3c8dbc;
+            color: #fff;
+        }
+        .innertitle h4, .innertitle h5{
+            padding: 0px; margin: 4px;
+        }
+        .innerinfo {
+            padding: 20px
+        }
+
+    </style>
+</html>

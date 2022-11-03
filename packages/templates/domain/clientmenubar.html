@@ -1,0 +1,25 @@
+ <aside class="main-sidebar">
+      <!-- sidebar: style can be found in sidebar.less -->
+      <section class="sidebar">
+        <!-- Sidebar user panel -->
+        <div class="user-panel">
+          <div class="pull-left image">
+            <img src="{{url_for('static', filename='image/user.png')}}" class="img-circle" alt="User Image">
+          </div>
+          <div class="pull-left info">
+           <p>Soyemi Olanrewaju</p>
+            <!-- <a><i class="fa fa-user text-success"></i>Super Admin</a> -->
+          </div>
+        </div>
+        <!-- sidebar menu: : style can be found in sidebar.less -->
+        <ul class="sidebar-menu" data-widget="tree">
+          <li class="header">Menu List</li>
+          <li class=""><a href="{{ url_for('domain.hrAdmin') }}"><i class="fa fa-circle-o"></i> <span>Client</span></a></li>
+
+          <li class=""><a href="{{ url_for('domain.addClient') }}"><i class="fa fa-circle-o"></i> <span>Add Client</span></a></li>
+        
+        </ul>
+      </section>
+      <!-- /.sidebar -->
+    </aside>
+

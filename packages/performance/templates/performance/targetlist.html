@@ -1,0 +1,71 @@
+{% extends "layout.html" %}
+{% block content %}
+
+            <div class="overview_table">
+              <h6>Appraisal List </h6>
+              
+              <!-- filter -->
+              <form action="" method="post">
+                <div class="">
+                  <div class="row">
+                    <div class="col-xs-12 col-md-2">
+                      <div class="form-group">
+                       <!--  <label style="visibility: hidden;"><small>Select year:</small></label> -->
+                        <select class="form-control" name="year" id="year" required>
+                          <option selected disabled>--select year--</option>
+                          {% for yr in year %}
+                            <option data-id="" value="{{ yr }}">{{ yr }}</option>
+                            {% endfor %}
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-xs-12 col-md-3">
+                      <div class="form-group">
+                        <button class="btn btn-flat btn-sm btn-primary mt-1">Fetch Record</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </form>
+              <!-- //-- end of filter -->
+
+              <table class="table table-sm table-stripped table-hover" id="overview">
+                <thead>
+                  <th>Performance Title</th>
+                  <th>Department</th>
+                  <th>Target Staff</th>
+                  <th>Start Date</th>
+                  <th>End Date</th>
+                  <th>Year</th>
+                  <th></th>
+                </thead>
+                <tbody>
+                {% if targets %}
+                {% for tgt in targets %}
+                  <tr>
+                    <td>{{ tgt[1]}}</td>
+                    <td>{{ tgt[5] }}</td>
+                    <td>{{ tgt[4] }}</td>
+                    <td>{{ tgt[2] }}</td>
+                    <td>{{ tgt[3] }}</td>
+                    <td>{{ tgt[13] }}</td>
+                    <td>
+                        <a href="{{url_for('performance.perform_details', code=tgt[6])}}" class="btn btn-primary btn-sm">
+                          <i class="fa fa-folder-open"></i>
+                        </a>
+                      </td>
+                  </tr>
+                {% endfor %}
+                {% endif %}
+                </tbody>
+              </table>
+            </div>
+
+{% endblock content %}
+
+
+{% block script %}
+<script>
+  $('#overview').dataTable();
+</script>
+{% endblock %}

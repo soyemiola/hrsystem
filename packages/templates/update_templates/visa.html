@@ -1,0 +1,427 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required  meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700,900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="fonts/icomoon/style.css">
+
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    
+    <!-- Style -->
+    <link rel="stylesheet" href="css/style.css">
+
+    <title>Contact Form #10</title>
+  </head>
+  <body>
+  
+
+  <div class="content mt-2 pt-5">
+    
+    <div class="container-fluid">
+      <div class="row align-items-stretch justify-content-center no-gutters">
+        <div class="col-md-5 m-1">
+          <div class="form h-100 contact-wrap p-5">
+            <h5 class="text-center">Visa & Immigration Report</h5>
+            <form class="mb-5" method="post" id="contactForm" name="contactForm">
+              <div class="row">
+                <div class="col-md-4 form-group mb-3">
+                  <label for="date" class="col-form-label">Date</label>
+                  <input type="date" class="form-control" name="date" id="date">
+                </div>
+              </div>
+
+              <!-- Tab panes -->
+              <div class="tab-content">
+                <div class="tab-pane container active" id="page1">
+                   <div class="row">
+                      <div class="col-md-4 form-group mb-3">
+                        <label class="col-form-label">
+                          File opened for client?
+                        </label>
+                      </div>
+                      <div class="col-md-8 form-group mb-3">
+                        Yes <input type="radio" name="file_for_client" value="yes"> &nbsp; &nbsp; No <input type="radio" name="file_for_client" value="no">
+                      </div>
+                      <div class="col-md-4 form-group mb-3">
+                        <label class="col-form-label">
+                          Client Name
+                        </label>
+                      </div>
+                      <div class="col-md-8 form-group mb-3">
+                        <input type="text" name="client_name" class="form-control">
+                      </div>
+                      <div class="col-md-4 form-group mb-3">
+                        <label class="col-form-label">
+                          Client Contact
+                        </label>
+                      </div>
+                      <div class="col-md-8 form-group mb-3">
+                        <input type="text" name="client_contact" class="form-control">
+                      </div>
+                      <div class="col-md-4 form-group mb-3">
+                        <label class="col-form-label">
+                          Company/Walk in passenger, If walk in referred to BTM by whom?
+                        </label>
+                      </div>
+                      <div class="col-md-8 form-group mb-3">
+                        <input type="text" name="client_company_or_refer" class="form-control">
+                      </div>
+                      <div class="col-md-4 form-group mb-3">
+                        <label class="col-form-label">
+                          Type of visa/immigration service
+                        </label>
+                      </div>
+                      <div class="col-md-8 form-group mb-3">
+                        <input type="text" name="type_of_visa" class="form-control">
+                      </div>
+                      <div class="col-md-4 form-group mb-3">
+                        <label class="col-form-label">
+                          Client provided with list of requirements
+                        </label>
+                      </div>
+                      <div class="col-md-8 form-group mb-3">
+                        Yes <input type="radio" name="list_of_requirement" value="yes"> &nbsp; &nbsp; No <input type="radio" name="list_of_requirement" value="no">
+                      </div>
+                      <div class="col-md-4 form-group mb-3">
+                        <label class="col-form-label">
+                          Client provided with documented processes for service
+                        </label>
+                      </div>
+                      <div class="col-md-8 form-group mb-3">
+                        Yes <input type="radio" name="document_provided" value="yes"> &nbsp; &nbsp; No <input type="radio" name="document_provided" value="no">
+                      </div>
+                      <div class="col-md-4 form-group mb-3">
+                        <label class="col-form-label">
+                          Client signed documented processes for service
+                        </label>
+                      </div>
+                      <div class="col-md-8 form-group mb-3">
+                        Yes <input type="radio" name="signed_process_document" value="yes"> &nbsp; &nbsp; No <input type="radio" name="signed_process_document" value="no">
+                      </div>
+                      <div class="col-md-4 form-group mb-3">
+                        <label class="col-form-label">
+                          Client informed of processing timeframe
+                        </label>
+                      </div>
+                      <div class="col-md-8 form-group mb-3">
+                        Yes <input type="radio" name="process_timeframe" value="yes"> &nbsp; &nbsp; No <input type="radio" name="process_timeframe" value="no">
+                      </div>
+                      <div class="col-md-4 form-group mb-3">
+                        <label class="col-form-label">
+                          Client requested additional service?
+                        </label>
+                      </div>
+                      <div class="col-md-8 form-group mb-3">
+                        Yes <input type="radio" name="additional_service" value="yes" onchange="openOption('additionalservice', 'yes')"> &nbsp; &nbsp; No <input type="radio" name="additional_service" value="no" onchange="openOption('additionalservice', 'no')">
+
+                        <div id="additionalservice" style="display: none;">
+                          <div class="col-12 form-group ">
+                            <label class="col-form-label">
+                              Additional service selected by client
+                            </label>
+                            <input type="text" name="additional_service_list" class="form-control" placeholder="seperated by (,) for multiple services">
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div class="col-md-4 form-group mb-3">
+                        <label class="col-form-label">
+                          Courier service / document delivery fees applicable?
+                        </label>
+                      </div>
+                      <div class="col-md-8 form-group mb-3">
+                        Yes <input type="radio" name="courier" value="yes" onchange="openOption('deliverycost', 'yes')"> &nbsp; &nbsp; No <input type="radio" name="courier" value="no" onchange="openOption('deliverycost', 'no')">
+
+                        <div id="deliverycost" style="display: none;">
+                          <div class="col-12 form-group mb-3">
+                            <label class="col-form-label">
+                              Cost 
+                            </label>
+                            <input type="text" name="courier_cost" class="form-control">
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div class="col-md-4 form-group mb-3">
+                        <label class="col-form-label">
+                          Client provided with total cost in writing 
+                        </label>
+                      </div>
+                      <div class="col-md-8 form-group mb-3">
+                        Yes <input type="radio" name="total_cost" value="yes"> &nbsp; &nbsp; No <input type="radio" name="total_cost" value="no">
+                      </div>
+                      <div class="col-md-4 form-group mb-3">
+                        <label class="col-form-label">
+                          Payment received by client 
+                        </label>
+                      </div>
+                      <div class="col-md-8 form-group mb-3">
+                        Yes <input type="radio" name="payment_received" value="yes" onchange="openOption('paymentreceived', 'yes')"> &nbsp; &nbsp; No <input type="radio" name="payment_received" value="no" onchange="openOption('paymentreceived', 'no')">
+
+                        <div id="paymentreceived" style="display: none;">
+                          <div class="col-12 form-group mb-3">
+                            <label class="col-form-label">
+                              Date payment received 
+                            </label>
+                            <input type="date" name="payment_received_date" class="form-control">
+                          </div>
+                          <div class="col-12 form-group mb-3">
+                            <label class="col-form-label">
+                              Payment via
+                            </label> <br>
+                            Cash <input type="radio" name="payment_receivedVia" value="yes" onchange="openOption('paymentviaOther', 'no')"> &nbsp; &nbsp; 
+                            Cheque <input type="radio" name="payment_receivedVia" value="no" onchange="openOption('paymentviaOther', 'no')"> &nbsp; &nbsp; 
+                            Transfer <input type="radio" name="payment_receivedVia" value="yes" onchange="openOption('paymentviaOther', 'no')"> &nbsp; &nbsp; 
+                            Debit on BTM account <input type="radio" name="payment_receivedVia" value="no" onchange="openOption('paymentviaOther', 'no')"> &nbsp; &nbsp; 
+                            Other <input type="radio" name="" value="no" onchange="openOption('paymentviaOther', 'yes')"> <input type="text" name="payment_receivedVia" class="form-control" placeholder="specify" id="paymentviaOther" style="display: none;">
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-md-4 form-group mb-3">
+                        <label class="col-form-label">
+                          Receipt provided to client
+                        </label>
+                      </div>
+                      <div class="col-md-8 form-group mb-3">
+                        Yes <input type="radio" name="receipt_to_client" value="yes"> &nbsp; &nbsp; No <input type="radio" name="receipt_to_client" value="no">
+                      </div>
+                      <div class="col-md-4 form-group mb-3">
+                        <label class="col-form-label">
+                          Complete documents received from client and signed for by BTM officer
+                        </label>
+                      </div>
+                      <div class="col-md-8 form-group mb-3">
+                        Yes <input type="radio" name="complete_document_received_from_client" value="yes"> &nbsp; &nbsp; No <input type="radio" name="complete_document_received_from_client" value="no">
+                      </div>
+                      <div class="col-md-4 form-group mb-3">
+                        <label class="col-form-label">
+                          Total number of documents received
+                        </label>
+                      </div>
+                      <div class="col-md-8 form-group mb-3">
+                        <input type="text" name="total_document_received" class="form-control">
+                      </div>
+                      <div class="col-md-4 form-group mb-3">
+                        <label class="col-form-label">
+                          Date complete documents received
+                        </label>
+                      </div>
+                      <div class="col-md-8 form-group mb-3">
+                        <input type="date" name="date_complete_document_received" class="form-control">
+                      </div>
+                  </div>
+                </div>
+                <div class="tab-pane container fade" id="page2">
+                  <div class="row">
+                    <div class="col-md-4 form-group mb-3">
+                        <label class="col-form-label">
+                          Completed documents received by BTM officer
+                        </label>
+                      </div>
+                      <div class="col-md-8 form-group mb-3">
+                        <input type="text" name="complete_document_received_by" class="form-control" placeholder="Name">
+                      </div>
+                      <div class="col-md-4 form-group mb-3">
+                        <label class="col-form-label">
+                          Date documents submitted for processing
+                        </label>
+                      </div>
+                      <div class="col-md-8 form-group mb-3">
+                        <input type="date" name="date_document_received_for_processing" class="form-control">
+                      </div>
+                      <div class="col-md-4 form-group mb-3">
+                        <label class="col-form-label">
+                          If submission delay insert reason
+                        </label>
+                      </div>
+                      <div class="col-md-8 form-group mb-3">
+                        <textarea class="form-control" name="submission_delay_reason" rows="3" placeholder="Insert reason here..."></textarea>
+                      </div>
+                      <div class="col-md-4 form-group mb-3">
+                        <label class="col-form-label">
+                          Date Visa/immigration document returned from embassy/ consulate/ immigration
+                        </label>
+                      </div>
+                      <div class="col-md-8 form-group mb-3">
+                        <input type="date" name="date_visa_returned_from_eci" class="form-control">
+                      </div>
+                      <div class="col-md-4 form-group mb-3">
+                        <label class="col-form-label">
+                          Visa/Immigration result & status
+                        </label>
+                      </div>
+                      <div class="col-md-8 form-group mb-3">
+                        <input type="text" name="visa_status" class="form-control">
+                      </div>
+                      <div class="col-md-4 form-group mb-3">
+                        <label class="col-form-label">
+                          Appeal/resubmission required?
+                        </label>
+                      </div>
+                      <div class="col-md-8 form-group mb-3">
+                        Yes <input type="radio" name="appeal_required" value="yes" onchange="openOption('resubmission', 'yes')"> &nbsp; &nbsp; No <input type="radio" name="appeal_required" value="no" onchange="openOption('resubmission', 'no')">
+
+                        <div id="resubmission" style="display: none;">
+                          <div class="col-12 form-group mb-3">
+                            <label class="col-form-label">
+                              Reason for appeal / resubmission
+                            </label>
+                            <textarea class="form-control" name="appeal_required_reason" rows="3">Insert reason here...</textarea>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div class="col-md-4 form-group mb-3">
+                        <label class="col-form-label">
+                          Date documents collected by client
+                        </label>
+                      </div>
+                      <div class="col-md-8 form-group mb-3">
+                        <input type="date" name="date_document_received_by_client" class="form-control">
+                      </div>
+                      <div class="col-md-4 form-group mb-3">
+                        <label class="col-form-label">
+                          Refund required?
+                        </label>
+                      </div>
+                      <div class="col-md-8 form-group mb-3">
+                        Yes <input type="radio" name="refund_required" value="yes" onchange="openOption('refundopt', 'yes')"> &nbsp; &nbsp; No <input type="radio" name="refund_required" value="no" onchange="openOption('refundopt', 'no')">
+
+                        <div class="refundopt" id="refundopt" style="display: none;">
+                          <input type="text" name="refund_required_amount" class="form-control" placeholder="Refund amount">
+                          <input type="text" name="refund_required_reason" class="form-control" placeholder="Reason for refund">
+                          <label class="col-form-label">Date refund paid</label>
+                          <input type="date" name="refund_required_date" class="form-control">
+
+                          <label class="col-form-label">Refund via</label><br>
+
+                          Cash <input type="radio" name="refund_required_via" value="Cash" onchange="openOption('refundviaOther', 'no')">    &nbsp; &nbsp; 
+                          Cheque <input type="radio" name="refund_required_via" value="Cheque" onchange="openOption('refundviaOther', 'no')">   &nbsp; &nbsp; 
+                          Transfer <input type="radio" name="refund_required_via" value="Transfer" onchange="openOption('refundviaOther', 'no')">    &nbsp; &nbsp; 
+                          Debit on BTM account <input type="radio" name="refund_required_via" value="Debit on BTM account" onchange="openOption('refundviaOther', 'no')">  
+                          Other <input type="radio" name="" value="Other" onchange="openOption('refundviaOther', 'yes')"> 
+                          <input type="text" name="refund_required_via" class="form-control" placeholder="specify" style="display: none;" id="refundviaOther">
+
+                        <label class="col-form-label">Refund receipt/credit note provided to client</label><br>
+                        Yes <input type="radio" name="refund_required_receipt" value="yes"> &nbsp; &nbsp; No <input type="radio" name="refund_required_receipt" value="no">
+
+                        </div>
+                      </div>
+                      <div class="col-md-4 form-group mb-3">
+                        <label class="col-form-label">
+                          Process completed
+                        </label>
+                      </div>
+                      <div class="col-md-8 form-group mb-3">
+                        Yes <input type="radio" name="process_completed" value="yes" onchange="openOption('pcompleteYes', 'nil', 'pcompleteNo')"> &nbsp; &nbsp; No <input type="radio" name="process_completed" value="no" onchange="openOption('pcompleteNo', 'nil', 'pcompleteYes')">
+
+                        <div class="pcompleteNo" id="pcompleteNo" style="display: none;">
+                          <textarea class="form-control" name="process_completed_no_reason" rows="2" placeholder="Enter reason...."></textarea>
+                        </div>
+
+                        <div class="pcompleteYes" id="pcompleteYes" style="display: none;">
+                          <div class="form-group">
+                            <label class="col-form-label">Date of process completion</label>
+                            <input type="date" name="process_completed_yes_date" class="form-control">                            
+                          </div>
+                        </div>
+
+                      </div>
+                      <div class="col-md-4 form-group mb-3">
+                        <label class="col-form-label">
+                          BTM Visa & Immigration officer Name
+                        </label>
+                      </div>
+                      <div class="col-md-8 form-group mb-3">
+                        <input type="text" name="btm_officer_name" class="form-control">
+                      </div>
+                  </div>
+                </div>
+              </div>
+
+
+              <div class="row mt-5">
+                <div class="col-12">
+                  <ul class="nav nav-pills">
+                    <li class="nav-item">
+                      <a class="nav-link active" data-toggle="pill" href="#page1">Page 1</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" data-toggle="pill" href="#page2">Page 2</a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="row mt-5">
+                <div class="col-md-5 form-group text-center">
+                  <input type="submit" value="Save Record" id="saverecord" class="btn btn-block btn-success rounded-0 py-2 px-4">
+                </div>
+                <div class="col-md-5 form-group text-center">
+                  <input type="reset" value="Clear field" class="btn btn-block btn-dark rounded-0 py-2 px-4">
+                </div>
+              </div>
+            </form>
+
+            <div id="form-message-warning mt-4"></div> 
+            <div id="form-message-success">
+              Your message was sent, thank you!
+            </div>
+
+          </div>
+        </div>
+
+        <div class="col-md-5 m-1">
+          <div class="form h-100 contact-wrap p-5">
+            <h3 class="text-center">Report List</h3>
+            
+            <table class="table table-sm" id="recordtable">
+              <thead>
+                <th>S/N</th>
+                <th>Client Name</th>
+                <th>Visa Processed</th>
+                <th>Tools</th>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>1</td>
+                  <td>Soyemi Olanrewaju</td>
+                  <td>Dubai Visa</td>
+                  <td>
+                    <i class="fa fa-edit"></i>
+                    <i class="fa fa-trash"></i>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div class="row mt-2">
+                <div class="col-md-4 form-group">
+                  <input type="button" value="Send Report" id="saverecord" class="btn btn-block btn-success rounded-0 py-2 px-4">
+                </div>
+                <div class="col-md-4 form-group">
+                  <input type="reset" value="Save as Draft" class="btn btn-block btn-light rounded-0 py-2 px-4">
+                </div>
+              </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+    
+    
+
+    <script src="js/jquery-3.3.1.min.js"></script>
+    <script src="js/popper.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/jquery.validate.min.js"></script>
+    <script src="js/main.js"></script>
+
+  </body>
+</html>

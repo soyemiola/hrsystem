@@ -1,0 +1,56 @@
+{% extends "layout.html" %}
+{% block content %}
+
+            <div class="">
+                <h6><i class="fa fa-bars fa-sm"></i> Leave Record Details </h6>
+
+                <ul class="bodymenu">
+                    <li class="">
+                        <a href="{{url_for('leaves.staffleave')}}">Staff Record</a>
+                    </li>
+                    <li class="">
+                        <a href="{{url_for('leaves.addleave')}}"  class="active"><small>Leave Record</small></a>
+                    </li>
+                </ul>
+
+                <div class="bodycontent">
+                    <div class="row">
+                        <div class="col-xs-12 col-md-12">
+                            <table id="example" class="table table-stripped table-sm">
+                                <thead>
+                                    <th>Staff Name</th>
+                                    <th>Leave Type</th>
+                                    <th>Start Date</th>
+                                    <th>End Date</th>
+                                    <th>Resumption Date</th>
+                                    <th>Leave Duration</th>
+                                </thead>
+                                <tbody>
+                                    {% if details %}
+                                        {% for i in details %}
+                                        {% set name = i[1] | getName %}
+                                        <tr>
+                                            <td>{{ name }}</td>
+                                            <td>{{i[2]}}</td>
+                                            <td>{{i[3]}}</td>
+                                            <td>{{i[4]}}</td>
+                                            <td>{{i[6]}}</td>
+                                            <td>{{i[5]}}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    {% endif %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+{% endblock content %}
+
+
+{% block script %}
+<script>
+    $('#example').dataTable();
+</script>
+{% endblock %}

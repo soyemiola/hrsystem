@@ -1,0 +1,109 @@
+{% extends "domain/clientlayout.html" %}
+{% block content %}
+	<div class="row">
+        <div class="col-xs-12 col-md-12"> 
+        	<h5><i class="fa fa-plus"></i>ADD CLIENT</h5>
+
+        	<div class="addBox">
+        		<form action="#" method="post" enctype="multipart/form-data">
+                    <div class="row">
+                    	<div class="col-xs-12 col-md-1"></div>
+                        <div class="col-xs-12 col-md-6">
+                            <h4 style="text-align: center; font-weight:bold">Company Registration Form</h4>
+	                        <div class="">
+								<label for="name">Company Name:</label>
+								<input type="hidden" name="emp_id" value="">
+								<input type="text" name="companyname" id="name" value="" required class="form-control">
+	                        </div>
+	                        <div class="">
+	                        	<label for="address">Address</label>
+	                        	<input type="text" name="address" id="address" class="form-control">
+	                        </div>
+							<div class="">
+								<label for="email">Email: 
+									<small><i class="fa fa-info"></i> preferably a gmail account, and ensure it's less secure app is activated</small>
+								</label>
+								<input type="email" name="email" id="email"value="" required class="form-control">
+							</div>
+							<div class="">
+								<label for="pass">Password: 
+									<small><i class="fa fa-info"></i> email address password</small>
+								</label>
+								<input type="text" name="password" id="pass" value="" required class="form-control">
+							</div>
+							<br>
+							<div class="">
+								<button type="button" class="btn btn-success btn-sm submit" id="submit">
+								Create Profile</button>
+							</div>
+							<br>
+							<p class="alert alert-success" id="success" style="display: none;">
+								<i class="fa fa-check-circle"></i> Account create successfully
+							</p>
+							<p class="alert alert-danger" id="error" style="display: none;">
+								<i class="fa fa-times-circle"></i> Error creating account.
+							</p>
+                        </div>
+                    </div>
+                </form>
+
+        	</div>
+        </div>
+    </div>
+      <!-- /.row -->
+
+
+{% endblock content %}
+
+
+{% block script %}
+<script type="text/javascript">
+	$('.submit').click(function () {
+		var name = document.getElementById('name').value,
+			email = document.getElementById('email').value,
+			pass = document.getElementById('pass').value;
+			address = document.getElementById('address').value;
+
+		/*console.log(name, email, pass, logo);*/
+		if (name == null || name == '' ){
+			document.getElementById('name').focus();
+			return 0
+		}else if (email == null || email == '' ){
+			document.getElementById('email').focus();
+			return 0
+		}else if (pass == null || pass == '' ){
+			document.getElementById('pass').focus();
+			return 0
+		}else{
+			
+
+			$.ajax({
+				method: 'POST',
+				url: '/HRsystemAdminitrator/addClient',
+				data:{
+					name: name,
+					email: email,
+					password: pass,
+					address:address
+				},
+
+				beforeSend: function(){
+					document.getElementById('submit').innerHTML = "<img src='{{ url_for('static', filename='image/load.gif') }}' height=15> Processing";
+				},
+
+				success: function(data){
+					document.getElementById('submit').innerHTML = "Create Profile";
+					document.getElementById('success').style.display = 'block';
+				},
+
+				error: function(data){
+					document.getElementById('error').style.display = 'block';
+					document.getElementById('submit').innerHTML = "Create Profile";
+				}
+			})
+		}
+
+
+	});
+</script>
+{% endblock %}

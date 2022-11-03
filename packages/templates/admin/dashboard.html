@@ -1,0 +1,195 @@
+{% extends "layout.html" %}
+{% block content %}
+      <div class="row">
+        <div class="col-xs-12 col-md-12">
+          <div id="performanceBigGraph" class="overlay">
+            <a href="javascript:void(0)" class="closebtn" onclick="closeNav('performanceBigGraph')"><small>&times;</small></a>
+            <div class="overlay-content">
+              <h3>Top 10 Performance Result</h3>
+              <canvas id="performance_big" class="performance" height="120" width="300"></canvas>
+            </div>
+          </div>
+          <div id="geolocationBigGraph" class="overlay">
+            <a href="javascript:void(0)" class="closebtn" onclick="closeNav('geolocationBigGraph')"><small>&times;</small></a>
+            <div class="overlay-content">
+              <h3>Geolocation of Staff</h3>
+              <canvas id="geolocation_big" width="300" height="120"/>
+            </div>
+          </div>
+          <div id="turnoverBigGraph" class="overlay">
+            <a href="javascript:void(0)" class="closebtn" onclick="closeNav('turnoverBigGraph')"><small>&times;</small></a>
+            <div class="overlay-content">
+              <h3 id="turnover-label_big"></h3>
+              <br>
+              <div class="row">
+                <div class="col-xs-12 col-md-3">
+                 {% if terms %}
+                  <p class="chart-tag">
+                    <i class="fa fa-square color-1"></i> <= 5 years <small class="pull-right">{{ terms.lt_5_val}}</small>
+                  </p>
+                  <p class="chart-tag">
+                    <i class="fa fa-square color-2"></i> > 5 years < 10 years <small class="pull-right">{{terms.gt_5_lt_10_val}}</small>
+                  </p>
+                  <p class="chart-tag">
+                    <i class="fa fa-square color-3"></i> > 10 years < 15years <small class="pull-right">{{terms.gt_10_lt_15_val}}</small>
+                  </p>
+                  <p class="chart-tag">
+                    <i class="fa fa-square color-4"></i> > 15 years <small class="pull-right">{{terms.gt_15_val}}</small>
+                  </p>
+                  <p class="chart-tag">
+                    <small id="inactiveStaff_big" style="color: var(--red); font-weight: bold;"></small>
+                  </p>
+                 {% endif %}
+                </div>
+                <div class="col-xs-12 col-md-8">
+                  <canvas id="turnoverbox_big" width="300" height="120"/>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-3 col-xs-6">
+          <!-- small box -->
+          <div class="small-box bg-aqua">
+            <div class="inner">
+              <h3>{{info['employees']}}</h3>
+              <p>Total Employees</p> 
+            </div>
+            <div class="icon">
+              <i class="ion ion-person-stalker"></i>
+            </div>
+            <a href="{{url_for('users.employees')}}" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+          </div>
+        </div>
+        <!-- ./col -->
+        <div class="col-lg-3 col-xs-6">
+          <!-- small box -->
+          <div class="small-box bg-green">
+            <div class="inner">
+              <h3>{{info['active']}}</h3>
+
+              <p>Total Active Employees</p>
+            </div>
+            <div class="icon">
+              <i class="ion ion-pie-graph"></i>
+            </div>
+            <a class="small-box-footer" style="color: transparent"> <i class="fa fa-arrow-circle-right"></i></a>
+          </div>
+        </div>
+        <!-- ./col -->
+        <div class="col-lg-3 col-xs-6">
+          <!-- small box -->
+          <div class="small-box bg-yellow">
+            <div class="inner">
+
+              <h3>{{info['leave']}}</h3>
+              <p>Leave Request</p>
+            </div>
+            <div class="icon">
+              <i class="ion ion-clock"></i>
+            </div>
+            <a href="{{url_for('leaves.leave_request')}}" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+          </div>
+        </div>
+        <!-- ./col -->
+        <div class="col-lg-3 col-xs-6">
+          <!-- small box -->
+          <div class="small-box bg-red">
+            <div class="inner">
+
+              <h3>{{info['onleave']}}</h3>
+              <p>Staff on Leave</p>
+            </div>
+            <div class="icon">
+              <!--<i class="ion ion-alert-circled"></i>-->
+               <i class="ion ion-calendar"></i>
+            </div>
+            <a href="{{url_for('leaves.activeleave')}}" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+          </div>
+        </div>
+        <!-- ./col --> 
+      </div>
+      <!-- /.row -->
+
+      <!-- Graphs -->
+      {% include 'admin/graph.html' %}
+<style>
+  .canvas{
+    padding: 20px;
+    text-align: center;
+  }
+  .canvas h5{
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+  span.label i{
+    background: red;
+  }
+  span._2 i{
+    background: green;
+  }
+
+  .overlay {
+  height: 0%;
+  width: 100%;
+  position: fixed;
+  z-index: 100;
+  top: 0;
+  left: 0;
+  background-color: rgb(0,0,0);
+  background-color: rgba(0,0,0, 0.9);
+  overflow-y: hidden;
+  transition: 0.5s;
+}
+
+.overlay-content {
+  position: relative;
+  top: 10%;
+  /*width: 100%;*/
+  text-align: center;
+  margin-top: 30px;
+  margin-left: 250px;
+  margin-right: 50px;
+  color: #fff;
+  max-height: 500px;
+  overflow: hidden;
+}
+
+.overlay a {
+  padding: 8px;
+  text-decoration: none;
+  font-size: 36px;
+  color: #818181;
+  display: block;
+  transition: 0.3s;
+}
+
+.overlay a:hover, .overlay a:focus {
+  color: #f1f1f1;
+}
+
+.overlay .closebtn {
+  position: absolute;
+  top: 20px;
+  right: 45px;
+  font-size: 60px;
+}
+
+@media screen and (max-height: 450px) {
+  .overlay {overflow-y: auto;}
+  .overlay a {font-size: 20px}
+  .overlay .closebtn {
+  font-size: 40px;
+  top: 15px;
+  right: 35px;
+  }
+}
+</style>
+{% endblock content %}
+
+
+{% block script %}
+
+{% endblock %}

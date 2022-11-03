@@ -1,0 +1,204 @@
+<title>BTM | Attendance System</title>
+<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+<link rel="stylesheet" href="{{url_for('static', filename='bootstrap/dist/css/bootstrap.min.css')}}">
+<link rel="stylesheet" href="{{url_for('static', filename='font-awesome/css/font-awesome.min.css')}}">
+<script src="{{url_for('static', filename='bootstrap/dist/js/jquery-3.4.1.js')}}"></script>
+<!-- Plugin for the momentJs  -->
+<script src="{{ url_for('static', filename='assets/js/plugins/moment.min.js') }}"></script>
+<script src="{{url_for('static', filename='bootstrap/dist/js/bootstrap.min.js')}}"></script>
+<style type="text/css">
+  body{
+    height: 100%;
+    font-family: 'Source Sans Pro','Helvetica Neue',Helvetica,Arial,sans-serif;
+  }
+  nav.navbar p{
+    width: 100%; 
+    color: #fff
+  }
+  .login-box{
+    min-height: 500px;
+    border:1px solid #fff;
+    border-top: none;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  }
+  .a_img{
+    display: block;
+    background-image: url('static/assets//img/attendance.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: inherit;
+
+  }
+
+  @media only screen and (max-width: 600px) {
+    body{
+      background-image: url('static/assets//img/attendance.png');
+      background-repeat: no-repeat;
+      background-size: auto;
+      background-position: center left -100;
+      background-origin: content-box;
+    }
+    .a_img{
+      display: none;
+    }
+    .login-box{
+      min-height: auto;
+      margin-top: 10px;
+      background-color: rgba(0,0,0,0.7);
+      color: #fff;
+      border-color: rgba(0,0,0,0.7)
+    }
+    table th{
+      color: #fff;
+    }
+  }
+</style>
+
+
+<body style="">
+
+<div class="container">
+  <div class="row">
+    <div class="col-12">
+      <nav class="navbar navbar-expand-md bg-dark navbar-dark">
+        <a class="navbar-brand" href="#">Attendance System <br> <small>Business Travel Management</small></a>
+      </nav>      
+    </div>
+    
+  </div>
+  <div class="row ml-0 mr-0 pb-5">
+    <div class="col-xs-12 col-md-4">
+      <div class="login-box p-1">
+        {% if reg_time == 'disabled' %}
+          {% set action = reg_time %}
+          <div class="alert alert-info alert-sm mb-0">
+            <b>Attendance time has not been set! </b>
+          </div> 
+        {% else %}
+          {% set action = '' %}
+        {% endif %}
+         
+          {% if active %}
+          <div class="alert alert-{{active}} text-center mt-2" style="display: block;">
+            <p class="mb-0">
+              <b>{{ text[0] }}</b> <br>
+              <small>{{ text[1] }} <b>{{ text[2] }}</b></small>
+            </p>
+          </div>
+          {% endif %}
+
+          {% if status %}
+            {% set shiftid = status[11] %}
+          {% endif %}
+          
+          <div class="login-box-body mt-1 p-1">
+            <form method="post" action="{{ url_for('user_in.markattendance') }}">
+              <input type="hidden" name="shiftid" id="shiftid" value="{{ shiftid }}">
+              <div class="form-group mt-3">
+                <h4>{{current_user.name}}</h4>
+
+              </div>
+                {% if not status %}
+                <div class="form-group mt-3">
+                  <small>Select Shift</small>
+                  <select class="form-control" name="shift" id="shift" required {{ action }}>
+                    <option selected disabled value="0">--select shift--</option>
+                    {% if time_list %}
+                      {% for tm in time_list %}
+                      <option value="{{ tm[4] }}" data-id="{{ tm[0] }}">{{ tm[1] }}</option>
+                      {% endfor %}
+                    {% endif %}
+                  </select>
+                </div>
+                {% endif %}
+
+                <div class="form-group text-center mt-2">
+                  {% if not status or status[3] == None %}
+                  <span>
+                    <button type="submit" class="btn btn-primary btn-flat btn-lg" id="signin" value="signin" name="type" {{ action }}>
+                      <i class="fa fa-sign-in"></i> SIGN IN
+                    </button>
+                  </span>
+                  {% endif %}
+
+                  {% if status[4] == None %}
+                  <span>
+                    <button type="submit" class="btn btn-primary btn-flat btn-lg" id="signout" value="signout" name="type" {{ action }}>SIGN OUT 
+                      <i class="fa fa-sign-out"></i></button>
+                  </span>
+                  {% endif %}
+                  <p class="mt-2" style="color: red" id="alert-msg">
+                    
+                  </p>
+                </div>
+            </form>
+            {% if status %}
+            <div class="login-info">
+              <table class="table table-hover">
+                <tr>
+                  <th colspan="2" class="text-center">Attendance Information</th>
+                </tr>
+                <tr>
+                  <th>Date</th>
+                  <th>{{ status[2] }}</th>
+                </tr>
+                <tr>
+                  <th>Login Time</th>
+                  <th>{{ status[3] }} <span></span></th>
+                </tr>
+                <tr>
+                  <th>Logout Time</th>
+                  <th>
+                    {% if status[4] %}
+                      {{ status[4] }}
+                    {% endif %}
+                  </th>
+                </tr>
+              </table>
+            </div>
+            {% endif %}
+            <div>
+              <a href="{{url_for('user_in.home')}}" class="btn btn-dark btn-block">Go to Homepage</a>
+            </div>
+          </div>
+      </div>
+    </div>
+    <div class="col-xs-12 col-md-8 a_img">
+      <p class="pull-right text-right">
+        <span id="date"></span> <br>
+        <b id="time" class="bold"></b>
+      </p>      
+    </div>
+  </div>
+  <footer class="fixed-bottom">
+    <div class="row">
+    <div class="col-xs-12 col-md-12">
+      <div class="bg-light navbar-light text-center p-2">
+        <p>
+          &copy copyright 2021 | Business Travel Management
+          <br>
+          <small><b>Design & Develop by BTML Tech</b></small>
+        </p>
+      </div>
+    </div>
+  </div>
+  </footer>
+</div>
+  
+
+	
+<script type="text/javascript">
+
+
+$(document).ready(function () {
+  
+  $('#shift').on('change', function() {
+    selected = $(this).find('option:selected');
+    res = selected[0].dataset.id;
+
+    $('#shiftid').val(res);
+  })
+})
+</script>
+</body>
+</html>

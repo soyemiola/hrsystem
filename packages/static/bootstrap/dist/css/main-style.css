@@ -1,0 +1,128 @@
+nav.navbar{
+  background-color: #2E4053;
+}
+nav.navbar a.navbar-brand{
+  padding: 5px 15px;
+  margin-right: 5%;
+}
+ul.navbar-nav{
+  width: 100%;
+  text-align: center;
+  margin-left: 0px;
+}
+ul.navbar-nav li.nav-item{
+  margin-right: 10px;
+  margin-left: 10px;
+}
+ul.navbar-nav li.profile{
+  margin-left: 50%;
+}
+.dropdown-menu{
+  border:1px solid #343a40;
+  background-color: #343a40;
+  border-radius: 0px; 
+}
+.dropdown-menu a.dropdown-item{
+    padding-left: 3px;
+    color: rgba(255,255,255,0.5);
+}
+.dropdown-menu a.dropdown-item:hover{
+  color: #111;
+}
+
+.dashboard{
+  margin-top: 20px;
+  padding: 20px 35px;
+}
+.infobox{
+  border:1px solid #343a40;
+  margin-bottom: 30px;
+  background-color: rgba(255,255,255,0.5);
+  border-bottom-left-radius: 20px;
+  border-top-right-radius: 50px;
+  border-top: none;
+
+}
+.inner_box{
+  text-align: center;
+}
+.inner_box header{
+  border-top-right-radius: 30px;
+  background-color: #21618C;
+  margin-right: 3px;
+  color: rgba(255,255,255,0.5);
+}
+.inner_box h3{
+  padding: 20px;
+}
+.inner_catgeory{
+  margin-top: 50px;
+  border:1px solid grey;
+  padding: 10px 25px;
+  background-color: rgba(0,0,0,0.03);
+  border-radius: 5px;
+}
+.inner_catgeory header{
+  padding: 5px;
+  text-align: center;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+.category_class{
+  padding: 10px;
+  margin-bottom: 20px;
+}
+.category_list{
+  
+}
+.cat_list label{
+  width: 170px;
+  text-align: right;
+  font-weight: bold;
+}
+.cat_list input{
+
+}
+.cat_list button{
+  margin-left: 20px;
+  margin-top: 10px;
+}
+.btn-flat, button.btn-flat{
+  border-radius: 0px;
+}
+._search{
+  text-align: center;
+  padding: 10px;
+  margin-bottom: 20px;
+  border:1px solid green;
+}
+._search label{
+  text-align: right;
+  padding-right: 5px;
+}
+.add_box{
+  margin: 25px 0px;
+}
+.information{
+  padding: 4px 10px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+.information span.time{
+  float: right;
+}
+.preload{
+  position: absolute;
+  top: 50px;
+  left: 50px;
+  margin: 15% 0px 0px -50px;
+  height: 250px;
+  width: 100%;
+  text-align: center;
+  padding-top: 60px;
+}
+.preload i.spinner-grow{
+  height: 100px;
+  width: 100px;
+  color: #2E4053;
+}

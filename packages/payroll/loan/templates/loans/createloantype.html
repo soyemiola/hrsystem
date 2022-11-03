@@ -1,0 +1,46 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="">
+            <h6><i class="fa fa-money-bill-alt fa-sm"></i> Create Loan Type</h6>
+            <ul class="bodymenu">
+                <li>
+                    <a href="{{url_for('loans.loantypes')}}" class="active">Loan Type List</a>
+                </li>
+                {% if alert != '' %}
+                <li class="alertText">
+                    <small id="alert_msg" style="color: green">{{alert}} <i class="fa fa-check-circle-o"></i></small>
+                </li>
+                {% endif %}
+            </ul>
+            <div class="bodycontent container">
+                <div class="col-xs-12 col-md-4">
+                    <form action="{{url_for('loans.createloantype')}}" method="post">
+                         <div class="loantype">
+                        <div class="cat_list">
+                            <label style="text-align:left">Loan Name:</label>
+                            <input type="text" name="name" style="width: 100%;" id="name">
+                        </div>
+                        <div class="cat_list">
+                            <label style="text-align:left">Loan Description:</label>
+                            <textarea name="loandescription" id="loandescription" placeholder="Loan Description"
+                            style="width: 100%; min-height: 100px; resize: none"></textarea>
+                        </div>
+                        <div class="cat_list">
+                            <button type="submit" class="btn btn-secondary btn-block btn-sm creattype"
+                                    style="margin-left: 0px;">
+                                <i class="fa fa-save"></i> Create Type
+                            </button>
+                        </div>
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+{% endblock content %}
+
+
+{% block script %}
+
+{% endblock %}

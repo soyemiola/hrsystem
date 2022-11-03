@@ -1,0 +1,84 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="">
+				<h6><i class="fa fa-bars"></i> Loan Request List</h6>
+				<ul class="bodymenu">
+					<li>
+						<a href="{{url_for('loans.requests')}}" class="active">Loan request List</a>
+					</li>
+					<!-- <li>
+						<a href="">Cooperative Loan request List</a>
+					</li> -->
+				</ul>
+				<div class="">
+					<div class="row">
+						<div class="col-xs-12 col-md-12 category_list">
+							{% if list %}
+							<table class="table table-hover text-center" id="loanrequest">
+								<thead>
+									<th>Staff Id</th>
+									<th>Name</th>
+									<th>Department</th>
+									<th>Email</th>
+									<th>Loan Type</th>
+									<th>Submit date</th>
+									<!-- <th>Status</th> -->
+									<th></th>
+								</thead>
+								<tbody>
+									{% for loan in list %}
+									<tr>
+										<td>{{ loan[0] }}</td>
+										<td>{{ loan[1] }}</td>
+										<td>{{ loan[2] }}</td>
+										<td>{{ loan[3] }}</td>
+										<td>{{ loan[4] }}</td>
+										<td>{{ loan[5] }}</td>
+										<!-- <td>
+											{% if loan[8] == 'accepted' %}
+												{% set status = 'Loan review accepted by '+loan[1] %}
+												{% set color = '#00a65a' %}
+											{% elif loan[8] == 'rejected' %}
+												{% set status = 'Loan review rejected by '+loan[1] %}
+												{% set color = '#dd4b39' %}
+											{% elif loan[8] == 'processed' %}
+												{% set status = 'Loan processed' %}
+												{% set color = '#00a65a' %}
+											{% else %}
+												{% set status = '' %}
+											{% endif %}
+
+											<small style="color: {{ color  }}"><b>{{ status }}</b></small>
+										</td> -->
+										<td>
+											<a href="{{ url_for('loans.processLoanRequest', emp_id=loan[6], loanid=loan[7]) }}" class="btn btn-sm btn-primary"><i class="fa fa-folder-open"></i></a>
+										</td>
+									</tr>
+									{% endfor %}
+								</tbody>
+							</table>
+							{% else %}
+							<div class="alert alert-info">
+								<h6><i class="fa fa-info-circle"></i> No Record found</h6>
+							</div>
+							{% endif %}
+						</div>
+					</div>
+				</div>
+			</div>
+{% include 'loans/loanmodal.html' %}
+{% endblock content %}
+
+
+{% block script %}
+<script>
+	$(document).ready(function() {
+		$('#loanrequest').DataTable({
+			 'ordering': false
+		});
+	});
+
+	
+</script>
+{% endblock %}

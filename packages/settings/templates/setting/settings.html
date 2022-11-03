@@ -1,0 +1,103 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="">
+				<h6><i class="fa fa-cogs"></i> Payroll Item Information</h6>
+				<ul class="bodymenu">
+					<li>
+						<a href="{{url_for('empclass.classlist')}}">Class</a>
+					</li>
+                    <li>
+						<a href="{{url_for('settings.setting', q='dept')}}">Department</a>
+					</li>
+                    <li>
+						<a href="{{url_for('settings.setting', q='post')}}">Designation</a>
+					</li>
+                    <li>
+						<a href="{{url_for('settings.setting', q='branch')}}">Branch</a>
+					</li>
+                   <li>
+						<a href="{{url_for('settings.setting', q='pfa')}}">PFA</a>
+				   </li>
+					<li>
+						<a href="{{url_for('settings.setting', q='bank')}}">Banks</a>
+				   </li>
+
+				</ul>
+				<div class="bodycontent">
+                    <div class="row infodetails">
+						<div class="col-xs-12 col-md-3">
+							<a href="{{url_for('empclass.classlist')}}" class="_infobox">
+								<div class="infobox">
+									<header>Class</header>
+									<section>
+										{{emp_class[0]}}
+									</section>
+								</div>
+							</a>
+						</div>
+						<div class="col-xs-12 col-md-3">
+							<a href="{{url_for('settings.setting', q='dept')}}" class="_infobox">
+								<div class="infobox">
+									<header>Department</header>
+									<section>
+										{{department[0]}}
+									</section>
+								</div>
+							</a>
+						</div>
+						<div class="col-xs-12 col-md-3">
+							<a href="{{url_for('settings.setting', q='post')}}" class="_infobox">
+								<div class="infobox">
+									<header>Positions</header>
+									<section>
+										{{post[0]}}
+									</section>
+								</div>
+							</a>
+						</div>
+						<div class="col-xs-12 col-md-3">
+							<a href="{{url_for('settings.setting', q='branch')}}" class="_infobox">
+								<div class="infobox">
+									<header>Branch</header>
+									<section>
+										{{branch[0]}}
+									</section>
+								</div>
+							</a>
+						</div>
+						<div class="col-xs-12 col-md-3">
+							<a href="{{url_for('settings.setting', q='pfa')}}" class="_infobox">
+								<div class="infobox">
+									<header>PFA</header>
+									<section>
+										{{pfa[0]}}
+									</section>
+								</div>
+							</a>
+						</div>
+						<div class="col-xs-12 col-md-3">
+							<a href="{{url_for('settings.setting', q='bank')}}" class="_infobox">
+								<div class="infobox">
+									<header>Bank</header>
+									<section>
+										{{banks[0]}}
+									</section>
+								</div>
+							</a>
+						</div>
+					</div>
+				</div>
+			</div>
+
+{% endblock content %}
+
+
+{% block script %}
+<script>
+	$(document).ready(function() {
+		$('#example').DataTable();
+	});
+
+</script>
+{% endblock %}

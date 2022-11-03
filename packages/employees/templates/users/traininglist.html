@@ -1,0 +1,111 @@
+{% extends "layout.html" %}
+{% block content %}
+
+	<div class="row">
+		<div class="col-xs-12 col-md-12">
+			<div class="tlabel"><h6><i class="fa fa-th"></i> Training List</h6></div>
+			<a href="{{url_for('users.feedbacktraining')}}" class="btn btn-sm btn-primary pull-right m-1"><small>Feedbacklist list</small></a>
+		</div>
+
+		<div class="col-xs-12 col-md-12">
+			<div class="tlist mt-3">
+				<table class="table table-sm table-hover" id="tlist">
+					<thead>
+						<th>Staff Id</th>
+						<th>Staff Name</th>
+						<th>Department</th>
+						<th>No. of Training</th>
+					</thead>
+					<tbody>
+						{% if tlist %}
+							{% for x in tlist %}
+								{% set info = x[0] | FBempDet %}
+								<tr>
+									<td>{{ info[16] }}</td>
+									<td>{{ info[1] }}</td>
+									<td>{{ info[5] }}</td>
+									<td><a href="#" class="badge opentraining" id="opentraining_{{loop.index}}" data-emp_id="{{x[0]}}">{{ x[1] }}</a></td>
+								</tr>
+							{% endfor %}
+						{% endif %}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>	
+
+	<div class="modal fade" id="Training">
+	  <div class="modal-dialog modal-dialog-centered modal-md">
+	    <div class="modal-content">
+
+	      <!-- Modal Header -->
+	      <div class="modal-header">
+	        <h6 class="modal-title">Training Done</h4>
+	      </div>
+
+	      <!-- Modal body -->
+	      <div class="modal-body">
+	      	<table class="table table-sm">
+	      		<thead>
+		      		<th>Training Title</th>
+		      		<th>Training Date</th>	      			
+	      		</thead>
+	      		<tbody id="tdonelist">
+		      		
+		      	</tbody>
+
+	      	</table>
+	      	
+	      </div>
+
+	      <!-- Modal footer -->
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Close</button>
+	      </div>
+
+	    </div>
+	  </div>
+	</div>
+
+{% endblock content %}
+
+{% block script %}
+	<script type="text/javascript">
+		$('.opentraining').click(function () {
+			var id = $(this).attr('id');
+			empid = document.getElementById(id).dataset.emp_id;
+
+			$.ajax({
+				method: 'post',
+				url: 'list',
+				data:{emp_id:empid},
+
+				beforeSend: function(){
+					$('#tdonelist').empty();
+				},
+
+				success:function(data){
+					for (var i = data.length - 1; i >= 0; i--) {
+						row =  '<tr>\
+		      						<td>'+ data[i][1] +'</td>\
+		      						<td>'+ data[i][2] +'</td>\
+		      					</tr>';
+
+		      			$('#tdonelist').append(row)
+					}
+				
+				},
+
+				complete: function(){
+					$('#Training').modal('show');
+				}
+			})
+
+			
+		});
+
+		$('#tlist').dataTable({
+			"iDisplayLength": 100
+		});
+	</script>
+{% endblock script %}

@@ -1,0 +1,113 @@
+<header class="main-header">
+      <!-- Logo -->
+      <a href="#" class="logo">
+        <!-- mini logo for sidebar mini 50x50 pixels -->
+        <span class="logo-mini"><b>BTM</b>-HR</span>
+        <!-- logo for regular state and mobile devices -->
+        <span class="logo-lg"><b>BTM HR</b> System</span>
+      </a>
+      <!-- Header Navbar: style can be found in header.less -->
+      <nav class="navbar navbar-static-top">
+        <!-- Sidebar toggle button-->
+        <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
+          <span class="sr-only">Toggle navigation</span>
+        </a>
+
+        <div class="navbar-custom-menu">
+          <ul class="nav navbar-nav">
+            <!--Notification-->
+            <li class="dropdown user user-menu">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                <i class="fa fa-bell"></i>
+                {% with msglst = get_flashed_messages(category_filter=['total_notification']) %}
+                  {% if msglst %}
+                    <small>{{msglst[0]}}</small>
+                  {% endif %}
+                {% endwith %}
+
+              </a>
+              <ul class="dropdown-menu">
+                <!-- User image -->
+                <li class="user-header">
+                  {% with notice = get_flashed_messages(category_filter=['notification']) %}
+                    {% if notice %}
+                      {% for msg in notice %}
+                        {% set ls = msg[loop.index-1] %}
+                          {% if ls %}
+                          <a href="{{url_for('empUser.message', leaveid=ls[1], mode=ls[4])}}">
+                            <div class="leavenotice" style="">
+                              <span>Leave request notice</span> <i class="fa fa-envelope"></i><br>
+                              <small>22-02-2020 03:45pm </small>
+                            </div>
+                          </a>
+                          {% endif %}
+                      {% endfor %}
+                    {% else %}
+                      <a href="{{url_for('empUser.message', leaveid=39, mode='relief1')}}">
+                        <div class="leavenotice" style="">
+                          <h4 style="padding: 10px; text-align:center"> <b class="fa fa-exclamation-circle"></b> No Notification</h4>
+                        </div>
+                      </a>
+                    {% endif %}
+                  {% endwith %}
+                </li>
+              </ul>
+            </li>
+
+            <!-- User Account: style can be found in dropdown.less -->
+            <li class="dropdown user user-menu">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                <img src="{{url_for('static', filename='image/user.png')}}" class="user-image" alt="User Image">
+                <span class="hidden-xs">{{ current_user.name }}</span>
+              </a>
+              <ul class="dropdown-menu">
+                <!-- User image -->
+                <li class="user-header">
+                  <img src="{{url_for('static', filename='image/user.png')}}" class="img-circle" alt="User Image">
+
+                  <p>
+                    {{ current_user.name }}
+                    <!--<small>Member since 20-08-2020</small>-->
+                  </p>
+                </li>
+                <li class="user-footer">
+                  <div class="pull-left">
+                    <a href="{{url_for('empUser.profile', get_id=current_user.id)}}" data-toggle="modal" class="btn btn-default btn-flat" id="admin_profile">
+                      Profile</a>
+                  </div>
+                  <div class="pull-right">
+                    <a href="{{url_for('user_in.userlogout')}}" class="btn btn-default btn-flat">Sign out</a>
+                  </div>
+                </li>
+              </ul>
+            </li>
+
+          </ul>
+        </div>
+      </nav>
+    </header>
+
+<style>
+  .user-menu a.dropdown-toggle small{
+    font-size: 10px;
+    position: relative;
+    bottom: 5px;
+    right: 10px
+  }
+  li.user-header a{
+    text-align: left;
+    background-color: #222d32;
+    color: #fff;
+    padding:0px;
+    padding-left:5px;
+    margin-bottom: 5px
+  }
+  li.user-header a .leavenotice i{
+    float: right;
+    margin-right:5px;
+    padding:10px;
+  }
+  li.user-header a .leavenotice small{
+    font-size: 10px
+  }
+</style>

@@ -1,0 +1,272 @@
+{% extends "layout.html" %}
+{% block content %}
+
+	<div class="">
+				<h6><i class="fa fa-bars"></i> Employees List</h6>
+				<ul class="bodymenu">
+					<li>
+						<a href="{{ url_for('users.employees')}}" class="active">Employees List</a>
+					</li>
+					<li>
+						<a href="{{ url_for('users.staff')}}"><small>Employees Information</small></a>
+					</li>
+					{% if current_user.role == 'AD' %}
+					<li> 
+						<a href="{{ url_for('users.addemployee')}}"><small>Create new profile</small></a>
+					</li>
+					{% endif %}
+					<span style="float: right; padding-right: 10px">
+						<button class="btn btn-primary btn-sm" id="excelbtn">
+							<i class="fa fa-file-excel-o"> Excel</i>
+						</button>
+					</span>
+					
+				</ul>
+				<div class="bodycontent">
+					
+					<table id="employees" class="table table-striped table-bordered table-sm">
+						<thead>
+							<th>Staff ID</th>
+							<th>Name</th>
+							<th>Department</th>
+							<th>Position</th>
+							<th>Level</th>
+							<th>Email</th>
+							<th>Mobile</th>
+							{% if current_user.role == 'AD' %}
+							<th></th>
+							{% endif %}
+						</thead>
+						<tbody>
+						{% for emp in emp_details %}
+							<tr>
+								<td>{{ emp[5] }}</td>
+								<td>{{ emp[1] }}</td>
+								<td>{{ emp[2] }}</td>
+								<td>{{ emp[3] }}</td>
+								<td>{{ emp[7] }}</td>
+								<td>{{ emp[4] }}</td>
+								<td>{{ emp[6] }}</td>
+								{% if current_user.role == 'AD' %}
+								<td style="text-align: right; width: 200px;">
+									<button type="button" id="pass_{{ emp[0] }}" class="btn btn-primary btn-sm btn-flat access" data-id="{{ emp[0] }}">Access</button>
+									<a href="{{url_for('users.emp_profile', get_id=emp[0])}}" class="btn btn-secondary
+									btn-sm btn-flat" style="color:#fff"> Details</a>
+									<a href="{{url_for('users.editemployee', editemp=emp[0])}}" class="btn btn-secondary
+									btn-sm btn-flat" style="color:#fff"> Edit</a>
+								</td>
+								{% endif %}
+							</tr>
+						{% endfor%}
+						</tbody>
+					</table>
+
+					<table class="table" id="printlist" style="display: none;">
+						<thead>
+							<th>Staff ID</th>
+							<th>Name</th>
+							<th>Department</th>
+							<th>Post</th>
+							<th>Email</th>
+							<th>Mobile</th>
+						</thead>
+						<tbody id="printbody">
+							
+						</tbody>
+					</table>
+
+				</div>
+			</div>
+	<!-- The Modal -->
+<div class="modal modal-lg" id="">
+    <div class="modal-dialog modal-dialog-centered modal-md">
+      <div class="modal-content">
+      
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">×</button>
+          <h4 class="modal-title">Account Access</h4>
+        </div>
+        
+        <!-- Modal body -->
+        <div class="modal-body">
+          
+        </div>
+        
+      </div>
+    </div>
+  </div>
+
+
+<!-- The Modal -->
+<div class="modal fade" id="password">
+  <div class="modal-dialog modal-dialog-centered modal-md">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">Account Access</h4>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body">
+      	<div class="container">
+          	<div class="row">
+          		<div class="col-xs-12 col-md-12">
+          			<div class="form-group text-center">
+          				<img src="{{url_for('static', filename='image/user.png')}}" height="100px">
+          			</div>
+          		</div>
+          		<div class="col-xs-12 col-md-6">
+          			<div class="info">
+          				<label><b>Staff Number</b></label>
+          				<section id="_staffno"></section>
+          			</div>
+          			<div class="info">
+          				<label><b>Name</b></label>
+          				<section id="_name"></section>
+          			</div>
+          			<div class="info">
+          				<label><b>Email</b></label>
+          				<section id="_email"></section>
+          			</div> 
+          			<div class="info">
+          				<label><b>Department</b></label>
+          				<section id="_dept"></section>
+          			</div>         			
+          		</div>
+
+          		<div class="col-xs-12 col-md-6">
+          			<div class="info">
+          				<label><b>Account Status</b></label>
+          				<div id="_status"></div>
+          			</div>
+          			<div class="info">
+          				<div id="resetbtn"></div>
+          			</div>
+          			<div class="info">
+          				<div id="viewprofile"></div>
+          			</div>
+          		</div>
+
+          	</div>
+
+          	
+          </div>
+      </div>
+
+      <!-- Modal footer -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+<style type="text/css">
+	.info{
+		margin-bottom: 10px;
+	}
+</style>
+{% endblock content %}
+
+
+{% block script %}
+<script>
+	
+	
+	$(document).ready(function() {
+		$('.access').click(function (e) {
+			e.preventDefault();
+			var id = $(this).attr('id');
+			var det = document.getElementById(id);
+			emp_id = det.dataset.id;
+
+			getRecord(emp_id);
+
+			$('#password').modal('show');
+		});
+
+
+		$('#excelbtn').click(function(){
+	        name = 'Staff Information.xlsx';
+
+	        $.ajax({
+	        	method: 'post',
+	        	url: '/admin/employees',
+
+	        	success: function(data){
+	        		$('#printbody').empty()
+	        		for (var i = 0; i < data.length; i++) {
+	        			
+	        			record = '<tr>\
+									<td>'+data[i][5]+'</td>\
+									<td>'+data[i][1]+'</td>\
+									<td>'+data[i][2]+'</td>\
+									<td>'+data[i][3]+'</td>\
+									<td>'+data[i][4]+'</td>\
+									<td>'+data[i][6]+'</td>\
+								</tr>'
+
+	        			$('#printlist').append(record)
+	        		}
+
+	        		var wb = XLSX.utils.table_to_book(document.getElementById('printlist'), {sheet:'Sheet Js'});
+
+					var wbout = XLSX.write(wb, {bookType: 'xlsx', bookSST:true, type: 'binary' });
+	        		
+	        		saveAs(new Blob([s2ab(wbout)], {type: 'application/octet-stream'}), name)
+	        	}
+	        })
+
+			
+		});
+
+		$('#employees').dataTable({
+			"iDisplayLength": 50,
+			"ordering": false
+		});
+	});
+
+
+	function getRecord(emp_id){
+		$.ajax({
+			method: 'post',
+			url: 'getuserrecord',
+			data:{emp_id:emp_id},
+
+			success: function(data){
+				document.getElementById('_name').innerHTML = data[22]+' '+data[1];
+				document.getElementById('_email').innerHTML = data[7];
+				document.getElementById('_dept').innerHTML = data[5];
+				document.getElementById('_staffno').innerHTML = data[16];
+
+				viewprofile = "<a href={{ url_for('admin.viewUserProfile', emp_user_id='userid') }} class='btn btn-secondary btn-sm' target='_blank'>View Profile</a>".replace('userid', data[0]);
+
+				var status = data[12],
+					mybtn = "<a href={{ url_for('users.resetpass', resetpass='data') }} class='btn btn-sm btn-primary'>Reset Password</a>";
+					btn = mybtn.replace('data', data[0]);
+
+				if(status == 1){
+					info = '<span class="btn-success btn-sm">Active</span>';
+				}else{
+					info = '';
+				}
+
+				document.getElementById('_status').innerHTML = info;
+				document.getElementById('resetbtn').innerHTML = btn;
+				document.getElementById('viewprofile').innerHTML = viewprofile;
+			}
+		})
+	}
+
+	function s2ab(s){
+		var buf = new ArrayBuffer(s.length);
+		var view = new Uint8Array(buf);
+		for(var i=0; i<s.length; i++) view[i] = s.charCodeAt(i) & 0xFF;
+		return buf;
+	}
+	
+
+</script>
+{% endblock %}

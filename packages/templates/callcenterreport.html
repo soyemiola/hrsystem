@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+        
+    </head>
+    <body>
+        <div class="box" style='font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans",
+            sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";'>
+            <div class="innerbox" style="margin: 10px; padding: 10px; border:1px solid #f8f8ff;">
+                <div class="innertitle" style="text-align: left; border-bottom:1px solid #f8f8ff; padding: 20px;
+                background-color: #3c8dbc; color: #fff;">
+                    <h4 style="padding: 0px; margin: 4px;">BUSINESS TRAVEL MANAGEMENT</h4>
+                    <h5 style="padding: 0px; margin: 4px;">Call Center Report Details</h5>
+                </div>
+
+                <div class="innerinfo" style="padding: 20px">
+                    <p><b>Date:</b> <span>{{ info[0] }}</span></p>
+                    <h4><b>Name:</b> <span>{{ info[1] }}</span></h4>
+                    <p><b>Email:</b> <span>{{ info[2] }}</span></p>
+                    <p><b>Shift:</b> <span>{{ info[3] }} shift</span></p>
+
+                    <header><b>Call Center Handover Report</b></header>
+                    <table class="table table-hover" style="margin-top: 5px;">
+                        <thead>
+                            <th style="border-bottom: 1px solid grey">S/N</th>
+                            <th style="border-bottom: 1px solid grey">Customer Name</th>
+                            <th style="border-bottom: 1px solid grey">Customer Number</th>
+                            <th style="border-bottom: 1px solid grey; text-align: left;">Number Reachable</th>
+                            <th style="border-bottom: 1px solid grey; text-align: center;">Customer Feedback</th>
+                        </thead>
+                        <tbody>
+                            {% for i in info[5]   %}
+                            <tr>
+                                <td style="text-align: center; border:none; border-bottom: 1px solid grey; margin-bottom: 3px">{{ info[5][loop.index0] }}</td>
+                                <td style="text-align: center; border:none; border-bottom: 1px solid grey; margin-bottom: 3px">{{ info[6][loop.index0] }}</td>
+                                <td style="text-align: center; border:none; border-bottom: 1px solid grey; margin-bottom: 3px">{{ info[7][loop.index0] }}</td>
+                                <td style="text-align: center; border:none; border-bottom: 1px solid grey; margin-bottom: 3px">{{ info[8][loop.index0] }}</td>
+                                <td style="text-align: center; border:none; border-bottom: 1px solid grey; margin-bottom: 3px">{{ info[9][loop.index0] }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

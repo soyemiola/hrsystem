@@ -1,0 +1,426 @@
+{% extends "layout.html" %}
+{% block content %}
+
+	<div class="">
+				<h6><i class="fa fa-plus"></i> Add Employees</h6>
+				<ul class="bodymenu">
+					<li>
+						<a href="{{ url_for('users.employees') }}" class="active"><small>Employees List</small></a>
+					</li>
+					{% if status == '' %}
+						{% elif status == 'User Already Exist'%}
+							{% set action = 'User Already Exist'%}
+							{% set color = "style=color: red"%}
+							{% set icon = 'times'%}
+						{% elif status == 0 %}
+							{% set action = 'Error Creating Profile'%}
+							{% set color = "style=color: red"%}
+							{% set icon = 'times'%}
+						{% else %}
+							{% set action = 'New Profile created'%}
+							{% set color = "style=color: green"%}
+							{% set icon = 'check'%}
+					{% endif %}
+
+					{% if reg_list %}
+					<li style="float:right">
+						<div class="cat_list">
+							<form action="{{ url_for('users.addemployee') }}" method="post">
+								<lable>New staff list</lable>
+								<select id="list" name="list">
+									<option selected disabled>--Select from List--</option>
+									{% for lst in reg_list %}
+									<option value="{{ lst[0] }}">{{ lst[1] }}</option>
+									{% endfor %}
+								</select>
+
+								<button style="margin-left: 0px; display: none;" class="btn btn-sm btn-secondary btn-flat btn-block" 
+								type="submit" id="listbtn">Populate</button>
+							</form>
+						</div>
+					</li>
+					{% endif %}
+
+				</ul>
+				<div class="">
+					{% if record %}
+						{% set name = record[1] %}
+						{% set state = record[2] %}
+						{% set address = record[3] %}
+						{% set city = record[4] %}
+						{% set mobile = record[5] %}
+						{% set bankname = record[6] %}
+						{% set account = record[7] %}
+						{% set taxnumber = record[8] %}
+						{% set pension = record[9] %}
+						{% set pensionnum = record[10] %}
+						{% set frmlist = record[0] %}
+					{% else %}
+						{% set name = ''  %}{% set state = ''  %}{% set address = ''  %}{% set city = ''  %}{% set mobile = ''  %}
+						{% set bankname = ''  %}{% set account = '' %}{% set taxnumber = '' %}{% set pension = '' %}{% set pensionnum = ''  %}
+						{% set frmlist = 'no' %}
+					{% endif %}
+
+
+					{% if not department or not posts or not branch or not cat or not bank or not pensions %}
+						{% set dsb = 'disabled' %}
+					{% else %}
+						{% set dsb = '' %}
+					{% endif %}
+
+					<div class="container">
+						<div class="row">
+							<div class="col-xs-12 col-md-12">
+								<form action="{{url_for('users.addnewrecord')}}" method="post">
+									<input type="hidden" name="frmlist" value="{{ frmlist }}">
+									
+										<legend><small>Basic Information</small></legend>
+										<hr>
+										<div class="row mb-2">
+											<div class="col-xs-12 col-md-2">
+												<div class="form-group">
+													<label for="staff_id">Staff ID:</label>
+													{% if last_record %}
+														{% set id = last_record + 1 %}
+													{% else %}
+														{% set id = '' %}
+													{% endif %}
+													<input type="text" name="staff_id" class="form-control" id="staff_id" required 
+													value="BTM-{{ id }}" >
+												</div>
+											</div>
+											<div class="col-xs-12 col-md-2">
+												<div class="form-group">
+													<label for="title">Title:</label>
+													<input type="text" name="title" class="form-control" id="title" required
+													placeholder="Mr, Mrs, Ms, Dr, Prof">
+												</div>
+											</div>
+											<div class="col-xs-12 col-md-4">
+												<div class="form-group">
+													<label for="name">Name:</label>
+													<input type="text" name="name" id="name" class="form-control" required value="{{ name }}"
+													placeholder="surname firstname lastname">
+												</div>
+											</div>
+											<div class="col-xs-12 col-md-3">
+												<div class="form-group">
+													<label for="">Gender:</label>
+													<select name="gender" id="gender" required class="form-control">
+														<option selected disabled>--Select Gender--</option>
+														<option value="Male">Male</option>
+														<option value="Female">Female</option>
+													</select>
+												</div>
+											</div>
+										</div>
+										
+										<div class="row mb-2">
+											<div class="col-xs-12 col-md-2">
+												<div class="form-group">
+													<label for="dob">Date of Birth:</label>
+													<input type="date" name="dob" id="dob" class="form-control">
+												</div>
+											</div>
+											<div class="col-xs-12 col-md-2">
+												<div class="form-group">
+													<label for="state">State of Origin:</label>
+													<select name="state" id="" required class="form-control">
+														<option selected disabled>--Select State--</option>
+														{% if state != '' %}
+														<option selected>{{ state }}</option>
+														{% endif %}
+														
+														{% for st in states %}
+														<option>{{ st }}</option>
+														{% endfor%}
+													</select>
+												</div>
+											</div>
+											<div class="col-xs-12 col-md-4">
+												<div class="form-group">
+													<label for="address">Address:</label>
+													<input type="text" name="address" id="address" required value="{{ address }}" class="form-control">
+												</div>
+											</div>
+											<div class="col-xs-12 col-md-3">
+												<div class="form-group">
+													<label for="city">City:</label>
+													<input type="text" name="city" id="city" class="form-control" required value="{{ city }}">
+												</div>
+											</div>
+											<div class="col-xs-12 col-md-3">
+												<div class="form-group">
+													<label for="mobile">Mobile:</label>
+													<input type="text" name="mobile" id="mobile" class="form-control" required value="{{ mobile }}">
+												</div>
+											</div>
+										</div>
+
+
+										<legend><small>Next of Kin Information</small></legend>
+										<hr>
+										<div class="row mb-2">
+											<div class="col-xs-12 col-md-3">
+												<div class="form-group">
+													<label for="mobile">Next of Kin's name:</label>
+													<input type="text" name="nokin" id="nokin" class="form-control" required value="">
+												</div>
+											</div>
+											<div class="col-xs-12 col-md-3">
+												<div class="form-group">
+													<label for="mobile">Next of Kin's phone number:</label>
+													<input type="text" name="nokinnumber" id="nokinnumber" class="form-control" required value="">
+												</div>
+											</div>
+											<div class="col-xs-12 col-md-3">
+												<div class="form-group">
+													<label for="mobile">Next of Kin's email address:</label>
+													<input type="email" name="nokinemail" id="nokinemail" class="form-control" required value="">
+												</div>
+											</div>
+											<div class="col-xs-12 col-md-3">
+												<div class="form-group">
+													<label for="mobile">Next of Kin's relationship:</label>
+													<input type="text" name="nokinrel" id="nokinrel" class="form-control" required value="">
+												</div>
+											</div>
+										</div>
+										
+										<legend><small>Office Information</small></legend>
+										<hr>
+										<div class="row mb-2">
+											<div class="col-xs-12 col-md-4">
+												<div class="form-group">
+													<label for="email">Email:</label>
+													<input type="email" name="email" id="email" class="form-control" required>
+												</div>
+											</div>
+											<div class="col-xs-12 col-md-4">
+												<div class="form-group">
+													{% if department %}
+														{% set dept = '' %}
+													{% else %}
+														{% set dept = 'disabled' %}
+													{% endif %}
+													<label for="department">Department:</label>
+													<select name="department" id="department" required class="form-control" {{ dept }}>
+														<option selected disabled>--select Department--</option>
+														{% for dept in department %}
+														<option>{{ dept[0] }}</option>
+														{% endfor%}
+													</select>
+													{% if not department %}
+													<small style="color: #dd4b39;"><i class="fa fa-info"></i> 
+														No department created yet <a href="{{url_for('settings.setting', q='dept')}}">create now</a></small>
+													{% endif %}
+												</div>
+											</div>
+											<div class="col-xs-12 col-md-3">
+												<div class="form-group">
+													{% if posts %}
+														{% set chkpost = '' %}
+													{% else %}
+														{% set chkpost = 'disabled' %}
+													{% endif %}
+													<label for="jobtitle">Designation / Role:</label>
+													<select name="jobtitle" id="jobtitle" required class="form-control" {{ chkpost }}>
+														<option selected disabled>--select designation--</option>
+														{% for post in posts %}
+														<option>{{ post[0] }}</option>
+														{% endfor%}
+													</select>
+													{% if not posts %}
+													<small style="color: #dd4b39;"><i class="fa fa-info"></i>
+													 No Designation created yet <a href="{{url_for('settings.add_designation')}}">create now</a></small>
+													{% endif %}
+												</div>
+											</div>
+										</div>
+
+										
+										<div class="row mb-2">
+											<div class="col-xs-12 col-md-4">
+												<div class="form-group">
+													<label for="level">Level:</label>
+													<input type="text" name="level" id="level" class="form-control" {{ dsb }}>
+												</div>
+											</div>
+											<div class="col-xs-12 col-md-4">
+												<div class="form-group">
+													{% if branch %}
+														{% set chkbranch = '' %}
+													{% else %}
+														{% set chkbranch = 'disabled' %}
+													{% endif %}
+													<label for="branch">Office Branch:</label>
+													<select name="branch" id="branch" required class="form-control" {{ chkbranch }}>
+														<option selected disabled>--select Branch--</option>
+														{% for emp_branch in branch %}
+														<option>{{ emp_branch[0] }}</option>
+														{% endfor%}
+													</select>
+													{% if not branch %}
+													<small style="color: #dd4b39;"><i class="fa fa-info"></i>
+													 No office branch created yet <a href="{{url_for('settings.setting', q='branch')}}">create now</a></small>
+													{% endif %}
+												</div>
+											</div>
+											<div class="col-xs-12 col-md-3">
+												<div class="form-group">
+													<label for="activedate">Employment Date:</label>
+													<input type="date" name="activedate" id="activedate" class="form-control" required>
+												</div>
+											</div>
+										</div>
+										
+
+										<legend><small>Account Information</small></legend>
+										<hr>
+										<div class="row mb-2">
+											<div class="col-xs-12 col-md-4">
+												<div class="form-group">
+													{% if cat %}
+														{% set paycat = '' %}
+													{% else %}
+														{% set paycat = 'disabled' %}
+													{% endif %}
+													<label for="category">Class:</label>
+													<select name="category" id="category" required class="form-control" {{ paycat }}>
+														<option selected disabled>--select Class--</option>
+														{% for emp_class in cat %}
+														<option data-basic="{{ emp_class[2] }}" data-total="{{ emp_class[6] }}"
+																data-house_a="{{ emp_class[3] }}"
+																data-transport_a="{{ emp_class[4] }}" data-other_a="{{ emp_class[5] }}">
+															{{ emp_class[1] }}
+														</option>
+														{% endfor %}
+													</select>
+													{% if not cat %}
+													<small style="color: #dd4b39;"><i class="fa fa-info"></i>
+													 You have no payment class yet. <a href="{{url_for('empclass.addclass')}}">create now</a></small>
+													{% endif %}
+												</div>
+											</div>
+											<div class="col-xs-12 col-md-3">
+												<div class="form-group">
+													<label for="basic">Basic Pay:</label>
+													<input type="number" name="basic" id="basic" class="form-control"  readonly required>
+												</div>
+											</div>
+											<div class="col-xs-12 col-md-3">
+												<div class="form-group">
+													<label for="ToA">Allowances:</label>
+													<input type="text" name="ToA" id="ToA" class="form-control" readonly>
+													<input type="hidden" name="ha" id="HA">
+													<input type="hidden" name="ta" id="TA">
+													<input type="hidden" name="oa" id="OA">
+												</div>
+											</div>
+										</div>
+										
+										<div class="row mb-2">
+											<div class="col-xs-12 col-md-4">
+												<div class="form-group">
+													<label for="account">Bank Account Number:</label>
+													<input type="text" name="account" id="account" class="form-control" 
+														   maxlength="10" required value="{{ account }}">
+												</div>
+											</div>
+											<div class="col-xs-12 col-md-3">
+												<div class="form-group">
+													{% if bank %}
+														{% set chkbank = '' %}
+													{% else %}
+														{% set chkbank = 'disabled' %}
+													{% endif %}
+
+													<label>Bank Name:</label>
+													<select name="bankname" required class="form-control" {{ chkbank }}>
+														<option selected disabled>--select Bank Name--</option>
+														{% for emp_bank in bank %}
+														<option>{{ emp_bank[0] }}</option>
+														{% endfor%}
+													</select>
+													{% if not bank %}
+													<small style="color: #dd4b39;"><i class="fa fa-info"></i> 
+														No bank list created yet. <a href="{{url_for('settings.setting', q='bank')}}">create now</a></small>
+													{% endif %}
+												</div>
+											</div>
+											<div class="col-xs-12 col-md-3">
+												<div class="form-group">
+													<label for="taxnumber">Tax Number:</label>
+													<input type="text" name="taxnumber" id="taxnumber" class="form-control" required value="{{ taxnumber }}">
+												</div>
+											</div>
+										</div>
+										
+										<div class="row mb-2">
+											<div class="col-xs-12 col-md-4">
+												<div class="form-group">
+													{% if pensions %}
+														{% set chkpencom = '' %}
+													{% else %}
+														{% set chkpencom = 'disabled' %}
+													{% endif %}
+													<label for="pensioncompany">Pension company:</label>
+													<select name="pensioncompany" id="pensioncompany" required class="form-control" {{ chkpencom }}>
+														<option selected disabled>--select PFA company--</option>
+														{% for pen in pensions %}
+															<option>{{pen[1]}}</option>
+														{% endfor %}
+													</select>
+													{% if not pensions %}
+													<small style="color: #dd4b39;"><i class="fa fa-info"></i> 
+														No available list created yet. <a href="{{url_for('settings.setting', q='pfa')}}">create now</a></small>
+													{% endif %}
+												</div>
+											</div>
+											<div class="col-xs-12 col-md-4">
+												<div class="form-group">
+													<label for="pensionnumber">Pension Number:</label>
+													<input type="text" name="pensionnumber" id="pensionnumber" class="form-control" required value="{{ pensionnum }}">
+												</div>
+											</div>
+										</div>
+										<div class="row mt-3">
+											<div class="col-xs-12 col-md-12">
+												<button type="submit" class="btn btn-primary submit pull-left" {{ dsb }}>
+													<i class="fa fa-save"></i> Save
+												</button>
+										</div>
+								</form>
+							</div>
+						</div>						
+					</div>
+				</div>
+			</div>	
+
+
+	<style type="text/css">
+		legend{
+			margin-bottom: 10px;
+		}
+	</style>
+{% endblock content %}
+
+{% block script %}
+<script>
+
+	$('#category').on('change', function () {
+		var selectedOption = $(this).find('option:selected');
+		
+		$('#basic').val(selectedOption[0].dataset.basic);
+		$('#ToA').val(selectedOption[0].dataset.total);
+		$('#HA').val(selectedOption[0].dataset.house_a);
+		$('#TA').val(selectedOption[0].dataset.transport_a);
+		$('#OA').val(selectedOption[0].dataset.other_a);
+	});
+
+	 $('#list').on('change', function () {
+		document.getElementById('listbtn').style.display = 'block';
+	});
+
+</script>
+{% endblock script %}

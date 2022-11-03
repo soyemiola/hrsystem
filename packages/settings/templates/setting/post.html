@@ -1,0 +1,71 @@
+{% extends "layout.html" %}
+{% block content %}
+
+			<div class="">
+				<h6><i class="fa fa-bars"></i> Designation List</h6>
+				<ul class="bodymenu">
+					<li>
+						<a href="" class="active"><small>Designation List</small></a>
+					</li>
+					{% if current_user.role == 'AD' %}
+					<li>
+						<a href="{{ url_for('settings.add_designation') }}">Add Designation</a>
+					</li>
+					{% endif %}
+				</ul>
+				<div class="bodycontent">
+					<div class="row">
+						<div class="col-xs-12 col-md-12 category_list">
+							<table id="example" class="table table-striped table-bordered table-sm" style="width:100%">
+								<thead>
+									<th>Designation</th>
+									<th>Job Description</th>
+									<th>Department</th>
+									{% if current_user.role == 'AD' %}
+									<th>Tools</th>
+									{% endif %}
+								</thead>
+								<tbody>
+								{% for post in desg %}
+									<tr>
+										<td>{{post[0]}}</td>
+										<td>
+											{% if post[2] %}
+											<a href="{{ url_for('static', filename='JD/'+post[2]) }}" target="_blank">{{post[2]}}</a>
+											{% endif %}
+										</td>
+										<td>
+											{% if post[3] %}
+												{{post[3]}}
+											{% endif %}
+										</td>
+										{% if current_user.role == 'AD' %}
+										<td width="150px">
+											<a href="{{url_for('settings.editdesignation', pid=post[1]) }}"
+											   class="btn btn-secondary btn-sm btn-flat">
+												<i class="fa fa-edit fa-sm"></i>
+                                                Edit</a>
+											<a href="{{ url_for('settings.deleteDesignation', pid=post[1]) }}" id="{{post[1]}}" class="btn btn-danger btn-sm btn-flat"><i class="fa fa-trash fa-sm"></i>
+                                                Delete</a>
+										</td>
+										{% endif %}
+									</tr>
+								{% endfor %}
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+
+{% endblock content %}
+
+
+{% block script %}
+<script>
+	$(document).ready(function() {
+		$('#example').DataTable();
+	});
+
+</script>
+{% endblock %}

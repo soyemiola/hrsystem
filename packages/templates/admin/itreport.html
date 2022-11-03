@@ -1,0 +1,193 @@
+{% extends "layout.html" %}
+{% block content %}
+
+            <div class="" style="padding: 0px">
+				<h5>IT Report</h5>
+				<div class="bodycontent" style="margin-left: 0px">
+					<form action="" method="POST">
+                        <div class="row">
+                            <div class="col-xs-12 col-md-2">
+                                <div class="filter_search">
+                                    <div class="cat_list">
+                                        <label>Select Date:</label>
+                                        <input type="date" name="date" style="width: 100%">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-md-2">
+                                <div class="filter_search">
+                                    <div class="cat_list">
+                                        <p></p>
+                                        <button type="submit" name="filter_branch" class="btn btn-secondary btn-flat btn-sm" style="margin-left: 0px;">Fetch Record</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>  
+                    </form>
+                    <div class="row">
+                        <div class="col-xs-12 col-md-12">
+                            <div class="nav-tabs-navigation">
+                                <div class="nav-tabs-wrapper">
+                                  <ul class="nav nav-tabs" data-tabs="tabs">
+                                    <li class="nav-item">
+                                      <a class="nav-link active" href="#handover" data-toggle="tab">
+                                        Handover Report
+                                        <div class="ripple-container"></div>
+                                      </a>
+                                    </li>
+                                    <li class="nav-item">
+                                      <a class="nav-link" href="#activity" data-toggle="tab">
+                                        Activity Report
+                                        <div class="ripple-container"></div>
+                                      </a>
+                                    </li>
+                                  </ul>
+                                </div>
+                            </div>  
+                            <div class="tab-content">
+                                <div class="tab-pane active" id="handover">
+                                    <p>Date:<b> {{ today }}</b>
+                                        <span style="float: right; padding: 5px ">
+                                            <span style="cursor: pointer; margin-right: 5px">
+                                                <i class="fa fa-file-excel-o excelhandover" data-date="{{ today }}" id="excelhandover"> Excel</i>
+                                            </span>
+                                            <span style="cursor: pointer; margin-right: 5px">
+                                                 <a href="{{ url_for('report.operation_pdf', mode='Handover', date=today) }}" target="_blank">
+                                                    <i class="fa fa-file-pdf-o"> </i> PDF
+                                                </a>
+                                            </span>
+                                        </span>
+                                    </p>
+                                    <table id="handoverreport" class="table table-sm table-hover" >
+                                        <thead>
+                                            <th style="width: 200px">Consultant Name</th>
+                                           <!--  <th>Email</th> -->
+                                            <th>Shift</th>
+                                            <th style="width: 200px">Client Name</th>
+                                            <th>PNR</th>
+                                            <th>Details</th>
+                                        </thead>
+                                        <tbody>
+                                            {% if info %}
+                                                {% for handover in info[0] %}
+                                                <tr>
+                                                    <td>{{ handover[1] }}</td>
+                                                    <!-- <td>{{ handover[2] }}</td> -->
+                                                    <td>{{ handover[4] }}</td>
+
+                                                    <td>
+                                                       <ul class="list">
+                                                           {% for name in handover[9] %}
+                                                            <li>{{ name }}</li>
+                                                            {% endfor %}
+                                                       </ul>
+
+                                                    </td>
+                                                    
+                                                    <td>
+                                                        <ul class="list">
+                                                            {% for pnr in handover[6] %}
+                                                            <li>{{ pnr }}</li>
+                                                            {% endfor %}
+                                                        </ul>
+                                                    </td>
+                                                    <td>
+                                                        <ul class="list">
+                                                            {% for details in handover[7] %}
+                                                            <li>{{ details }}</li>
+                                                            {% endfor %}
+                                                        </ul>
+                                                    </td>
+                                                </tr>
+                                                {% endfor %}
+                                            {% endif %}
+                                        </tbody>
+                                    </table>   
+                                </div>                                
+                                <div class="tab-pane" id="activity">
+                                    <p>Date: <b>{{ today }}</b>
+                                        {% if info %}
+
+                                        <span style="float: right; padding: 5px ">
+                                            <span style="cursor: pointer; margin-right: 5px">
+                                                <i class="fa fa-file-excel-o excelactivity" data-date="{{ today }}" id="excelactivity"> Excel</i>
+                                            </span>
+                                            <span style="cursor: pointer; margin-right: 5px">
+                                                <a href="{{ url_for('report.operation_pdf', mode='Activity', date=today) }}" target="_blank">
+                                                    <i class="fa fa-file-pdf-o"> </i> PDF
+                                                </a>
+                                            </span>
+                                        </span>
+
+                                        {% endif %}
+                                    </p>
+                                    <table id="activityreport" class="table table-sm table-hover" >
+                                        <thead>
+                                            <th style="width: 150px">Consultant Name</th>
+                                            <!-- <th>Email</th> -->
+                                            <th>Shift</th>
+                                            <th style="width: 150px">Client Name</th>
+                                            <th>PNR</th>
+                                            <th style="width: 100px">Ticket / Vouchar No</th>
+                                            <th>Details</th>
+                                        </thead>
+                                        <tbody>
+                                           {% if info %}
+                                                {% for activity in info[1] %}
+                                                <tr>
+                                                    <td>{{ activity[1] }}</td>
+                                                    <!-- <td>{{ activity[2] }}</td> -->
+                                                    <td>{{ activity[4] }}</td>
+
+                                                    <td>
+                                                       <ul class="list">
+                                                           {% for name in activity[9] %}
+                                                            <li>{{ name }}</li>
+                                                            {% endfor %}
+                                                       </ul>
+
+                                                    </td>
+
+                                                    <td>
+                                                        <ul class="list">
+                                                            {% for pnr in activity[6] %}
+                                                            <li>{{ pnr }}</li>
+                                                            {% endfor %}
+                                                        </ul>
+                                                    </td>
+
+                                                    <td>
+                                                        <ul class="list">
+                                                            {% for ticket in activity[8] %}
+                                                            <li>{{ ticket }}</li>
+                                                            {% endfor %}
+                                                        </ul>
+                                                    </td>
+
+                                                    <td>
+                                                        <ul class="list">
+                                                            {% for details in activity[7] %}
+                                                            <li>{{ details }}</li>
+                                                            {% endfor %}
+                                                        </ul>
+                                                    </td>
+                                                </tr>
+                                                {% endfor %}
+                                            {% endif %}
+                                        </tbody>
+                                    </table>  
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    
+				</div>
+			</div>
+
+{% endblock content %}
+
+
+{% block script %}
+
+{% endblock %}

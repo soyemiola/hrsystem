@@ -1,0 +1,105 @@
+<form action="{{url_for('payroll.payslip')}}" method="post">
+    <div class="modal fade" tabindex="-1" role="dialog" id="payrunmodal" data-backdrop="static" data-keyboard="false" >
+      <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">Processing Payrun</h4>
+          </div>
+          <div class="modal-body">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-xs-12 col-md-12">
+                        <h6>
+                          <span id="empname"></span> | <span><small><b>Percentage <span id="perc"></span>%</b></small></span>
+                        </h6> 
+                        <div class="form-group">
+                          <input type="hidden" name="parun_id" id="parun_id">
+                          <input type="hidden" name="percentage" id="percentage">
+                        </div>
+
+                        <div class="form-group">
+                          <lable for="days">Days worked</lable>
+                            <select name="days" id="days" class="form-control">
+                                <option selected disabled>--select days--</option>
+                                {% for i in range(days + 1) %}
+                                  <!-- {% if i != 0 %}
+                                    <option>{{i}}</option>
+                                  {% endif %} -->
+                                  <option>{{i}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Cancel</button>
+              <button type="submit" class="btn btn-success btn-sm">Proceed</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+</form>
+
+
+<div class="modal fade" tabindex="-1" role="dialog" id="process_all" data-backdrop="static" data-keyboard="false">
+      <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">Processing Payrun</h4>
+          </div>
+          <div class="modal-body text-center">
+            <p>
+              <b>Payroll will be Calculated Based on Full Working days.</b>
+            </p>
+            <h6>Do you still want to Proceed?</h6>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Cancel</button>
+            <a href="{{ url_for('payroll.processall') }}" class="btn btn-success btn-sm" id="loader">Proceed</a>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+
+  <div class="modal fade" tabindex="-1" role="dialog" id="revert" data-backdrop="static" data-keyboard="false">
+      <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">Revert Payroll</h4>
+          </div>
+          <div class="modal-body">
+           <h5 class="text-center">
+               Are you sure you want to revert processed payroll ?
+           </h5>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Cancel</button>
+            <span id="btn_revert"></span>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+
+    <div class="modal fade" tabindex="-1" role="dialog" id="revertall" data-backdrop="static" data-keyboard="false">
+      <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">Revert Process Payroll</h4>
+          </div>
+          <div class="modal-body">
+            <h5 class="text-center">
+              Are you sure you want to revert processed payroll ?
+            </h5>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Cancel</button>
+            <a href="{{ url_for('payroll.revertall') }}" class="btn btn-success btn-sm">Revert All</a>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->

@@ -1,0 +1,187 @@
+{% extends "layout.html" %}
+{% block content %}
+
+            <div class="" style="padding: 0px 5px">
+				<div class="row">
+                    <div class="col-xs-12 col-md-12">
+                        <h6>
+                            <a href="{{url_for('payroll.review')}}" class="btn btn-primary btn-sm"><i class="fa fa-arrow-circle-o-left "></i> Back</a> 
+                        <span class="pull-right">{{month}}, {{ year }}</span>
+                        </h6>
+                    </div>            
+                </div>
+
+                <form action="{{ url_for('payroll.reviewlist', month=month, year=year) }}" method="POST">
+				    <div class="row">
+                        <div class="col-xs-12 col-md-12">
+                            <h6>Filter Record</h6>
+                        </div>
+    					<div class="col-xs-12 col-md-2">
+                            <div class="filter_search">
+                                <select id="office" name="office" class="form-control">
+                                    <option selected disabled>--Select Office--</option>
+                                    {% for brn in branch %}
+                                    <option value="{{ brn[0] }}">{{ brn[0] }}</option>
+                                    {% endfor %}
+                                </select>                                            
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-md-2">
+                            <button type="submit" name="filter_branch" class="btn btn-primary btn-sm">
+                                Fetch Record
+                            </button>
+                        </div>
+                    </div> 
+                </form>
+
+
+                {% if office %}
+                <p class="">
+                    <i>showing result for: </i><b>{{office}}</b>
+                </p>
+                {% endif %}
+                <p class="text-right">
+                    <a target="_blank" href="{{url_for('report.pdf_template', month=month, year=year)}}">
+                        <i class="fa fa-file-pdf-o"></i> PDF
+                    </a>
+                    <a id="excelbtn" data-month="{{ month }}" data-year="{{ year }}" style="cursor: pointer;">
+                        <i class="fa fa-file-excel-o"></i> Excel
+                    </a>
+                </p>
+                <hr>      
+                <div class="reviewTable" style="overflow: scroll;">
+                    <div class="row">
+						<div class="col-xs-12 col-md-12">
+                            {% if emp_list %}
+                            <table id="tablereview" class="table table-sm table-hover table-responsive">
+                                <thead>
+                                    <th>Staff ID</th>
+                                    <th>Employees</th>
+                                    <th>Basic</th>
+                                    <th>Allowances</th>
+                                    <th>Gross</th>
+                                    <th>Pension</th>
+                                    <th>Employer Savings</th>
+                                    <th>Relief</th>
+                                    <th>Tax</th>
+                                    <th>%</th>
+                                    <th>Workedfor</th>
+                                    <th>Social Deduction</th>
+                                    <th>Loan Deduction</th>
+                                    <th>Coop Loan</th>
+                                    <th>Coop Savings</th>
+                                    <th>Coop Deduction</th>
+                                    <th>Adjustment</th>
+                                    <th>Total Deduction</th>
+                                    <th>Present</th>
+                                    <th>Absent</th>
+                                    <th>Net Pay</th>
+
+                                </thead>
+                                <tbody>
+                                    {% if emp_list %}
+                                        {% for review in emp_list %}
+                                            <tr>
+                                                <td>{{ review[22] }}</td>
+                                                <td>{{ review[0] }}</td>
+                                                <td>{{ review[4] | numberFormat}}</td>
+                                                <td>{{ review[5] | numberFormat}}</td>
+                                                <td>{{ review[6] | numberFormat}}</td>
+                                                <td>{{ review[7] | numberFormat}}</td>
+                                                <td>{{ review[8] | numberFormat}}</td>
+                                                <td>{{ review[9] | numberFormat}}</td>
+                                                <td>{{ review[10] | numberFormat}}</td>
+                                                <td>{{ review[3] }}</td>
+                                                <td>{{ review[11] | numberFormat}}</td>
+                                                <td>{{ review[21] | numberFormat}} </td>
+                                                <td>{{ review[12] | numberFormat}}</td>
+                                                <td>{{ review[13] | numberFormat}}</td>
+                                                <td>{{ review[14] | numberFormat}}</td>
+                                                <td>{{ review[15] | numberFormat}}</td>
+                                                <td>{{review[16]| numberFormat}}</td>
+                                                <td>{{review[17]| numberFormat}}</td>
+                                                <td>{{ review[18] }}</td>
+                                                <td>{{ review[19] }}</td>
+                                                <th>{{ review[20] | numberFormat}}</th>
+                                            </tr>
+                                        {% endfor %}
+                                            {% if total %}
+                                            <tr>
+                                                <th>Total</th>
+                                                <th></th>
+                                                <th>{{total[0] | numberFormat}}</th>
+                                                <th>{{total[1] | numberFormat}}</th>
+                                                <th>{{total[2] | numberFormat}}</th>
+                                                <th>{{total[3] | numberFormat}}</th>
+                                                <th>{{total[4] | numberFormat}}</th>
+                                                <th>{{total[5] | numberFormat}}</th>
+                                                <th>{{total[6] | numberFormat}}</th>
+                                                <th></th>
+                                                <th>{{total[7] | numberFormat}}</th> 
+                                                <th>{{total[16] | numberFormat}}</th>
+                                                <th>{{total[8] | numberFormat}}</th>
+                                                <th>{{total[9] | numberFormat}}</th>
+                                                <th>{{total[10] | numberFormat}}</th>
+                                                <th>{{total[11] | numberFormat}}</th>
+                                                <th>{{total[12] | numberFormat}}</th>
+                                                <th>{{total[13] | numberFormat}}</th>
+                                                
+                                                <th></th>
+                                                <th></th>
+
+                                                <th>{{total[14] | numberFormat}}</th>
+                                            </tr>
+                                            {% endif %}
+                                    {% endif %}
+                                </tbody>
+                            </table>  
+
+                            {% else %}
+                            <div class="alert alert-error">
+                                <i class="fa fa-exclamation-circle"></i> No Record found
+                            </div>
+                            {% endif %}                
+                        </div>
+					</div>
+				</div>
+			</div>
+
+{% endblock content %}
+
+
+{% block script %}
+<script>
+    $(document).ready(function () {
+        $('#tablereview').DataTable({
+            "iDisplayLength": 50
+        });
+
+       /* $('#office').chosen();*/
+    })
+</script>
+<script>
+	var wb = XLSX.utils.table_to_book(document.getElementById('tablereview'), {sheet:'Sheet Js'});
+
+	var wbout = XLSX.write(wb, {bookType: 'xlsx', bookSST:true, type: 'binary' });
+
+	function s2ab(s){
+		var buf = new ArrayBuffer(s.length);
+		var view = new Uint8Array(buf);
+		for(var i=0; i<s.length; i++) view[i] = s.charCodeAt(i) & 0xFF;
+		return buf;
+	}
+
+	$('#excelbtn').click(function(){
+        const id = $(this).attr('id');
+        var month = document.getElementById(id).dataset.month,
+            year = document.getElementById(id).dataset.year,
+            name = 'Salary Review for '+month+' '+year+'.xlsx';
+
+
+
+		saveAs(new Blob([s2ab(wbout)], {type: 'application/octet-stream'}), name)
+	});
+</script>
+{% endblock %}
+
+    

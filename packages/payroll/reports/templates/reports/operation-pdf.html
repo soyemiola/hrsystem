@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Operation Report</title>
+</head>
+<style>
+    body{
+        font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",
+                    Roboto,"Helvetica Neue",Arial,"Noto Sans",
+                    sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+    }
+    .container{
+        padding: 10px 30px;
+    }
+    .brandlogo{
+        width: 150px;
+        padding-left: 10px;
+        float: left;
+    }
+    .brandlogo img{
+        height: 50px;
+    }
+    .brandname{
+        width:auto;
+    }
+    .brandname h2, .brandname h5, .title{
+        margin:5px;
+        text-align: center;
+    }
+    .emp_d{
+        padding: 10px 5%;
+        margin-top: 10px;
+        height:auto;
+        margin-bottom: 5%
+    }
+    .emp_d header, .emp_d span.title_header{
+        padding: 5px 0px;
+        font-size: 13px;
+        border-bottom: 1px solid #444;
+        margin-bottom: 2px;
+        width: 95%;
+    }
+    .emp_d_left{
+        border:1px solid #f2f5f7;
+        width: 100%;
+        margin-right:20px;
+        float: left;
+    }
+    .emp_d_left h5, .emp_net_s h4{
+        margin: 10px;
+        text-transform: uppercase
+    }
+    .emp_d_left h5{
+        border-bottom:1px solid #f2f5f7;
+        padding: 5px;
+    }
+    .emp_d_left span, .emp_net_s span{
+        float: right;
+        font-weight: normal;
+    }
+    .foot p{
+        text-align: center;
+        padding: 5px;
+        margin: 5% 10px 10px;
+    }
+    ul.list{
+        padding-left: 3px;
+    }
+    ul.list li{
+        list-style: none;
+        padding: 10px;
+    }
+
+</style>
+<body>
+    <div class="container">
+        <div class="brandlogo">
+            <img src="data:image/png;base64, {{ logo }}" alt="logo">
+        </div>
+        <div class="brandname">
+            <h2>BUSINESS TRAVEL MANAGEMENT LIMITED</h2>
+            <h5>45, Oduduway way, Ikeja GRA, Lagos, Nigeria</h5>
+        </div>
+    </div>
+    <div class="title">
+        <h4>Operation {{ mode }} Report</h4>
+        
+    </div>
+    <div class="emp_d">
+        <div class="emp_d_left">
+            {% if mode == 'Handover' %}
+                <table id="activityreport" class="table table-sm table-hover" >
+                    <thead>
+                        <th style="width: 100px">Consultant Name</th>
+                        <th>Shift</th>
+                        <th style="width: 100px">Client Name</th>
+                        <th style="width: 100px">PNR</th>
+                        <th>Details</th>
+                    </thead>
+                </table>
+                <table id="" class="table table-sm table-hover" >
+                    <tbody>
+                        {% if info %}
+                            {% for handover in info[0] %}
+                            <tr>
+                                <td  style="width: 100px">{{ handover[1] }}</td>
+                                <!-- <td>{{ handover[2] }}</td> -->
+                                <td>{{ handover[4] }}</td>
+
+                                <td  style="width: 100px">
+                                    <ul class="list">
+                                        {% for name in handover[9] %}
+                                        <li>{{ name }}</li>
+                                        {% endfor %}
+                                    </ul>
+
+                                </td>
+                                                        
+                                <td style="width: 100px">
+                                    <ul class="list">
+                                        {% for pnr in handover[6] %}
+                                        <li>{{ pnr }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </td>
+                                <td>
+                                    <ul class="list">
+                                        {% for details in handover[7] %}
+                                        <li>{{ details }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% endif %}
+                    </tbody>
+                </table>
+            {% endif %}
+
+            
+            {% if mode == 'Activity' %}
+                <table id="activityreport" class="table table-sm table-hover" >
+                    <thead>
+                        <th style="width: 15%">Consultant Name</th>
+                        <!-- <th>Email</th> -->
+                        <th>Shift</th>
+                        <th style="width: 15%">Client Name</th>
+                        <th>PNR</th>
+                        <th style="width: 15%">Ticket / Vouchar No</th>
+                        <th style="text-align: center; width: 50% ">Details</th>
+                    </thead>
+                </table>
+                <table>
+                    <tbody>
+                        {% if info %}
+                            {% for activity in info[0] %}
+                            <tr>
+                                <td style="width: 15%">{{ activity[1] }}</td>
+                                <!-- <td>{{ activity[2] }}</td> -->
+                                <td>{{ activity[4] }}</td>
+
+                                <td style="width: 15%">
+                                    <ul class="list">
+                                        {% for name in activity[9] %}
+                                        <li>{{ name }}</li>
+                                        {% endfor %}
+                                    </ul>
+
+                                </td>
+
+                                <td>
+                                    <ul class="list">
+                                        {% for pnr in activity[6] %}
+                                        <li>{{ pnr }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </td>
+
+                                <td style="width: 15%">
+                                    <ul class="list">
+                                        {% for ticket in activity[8] %}
+                                        <li>{{ ticket }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </td>
+
+                                <td style="width: 50%">
+                                    <ul class="list">
+                                        {% for details in activity[7] %}
+                                        <li>{{ details }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% endif %}
+                    </tbody>
+                </table>  
+            {% endif %}
+
+    </div>
+    <div class="foot">
+        <br><br>
+        <p>HR Management System</p>
+    </div>
+
+</body>
+</html>
+

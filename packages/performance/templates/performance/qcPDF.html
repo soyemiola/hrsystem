@@ -1,0 +1,80 @@
+{% include 'header.html' %}
+{% include 'scripts.html' %}
+
+<title>QC Report</title>
+
+<style>
+    body{
+        font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",
+                    Roboto,"Helvetica Neue",Arial,"Noto Sans",
+                    sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+    }
+    
+</style>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12 col-md-2">
+                <div class="brandlogo text-center">
+                    <img src="{{url_for('static', filename='image/logo.png')}}" alt="logo" height="50px">
+                </div>
+            </div>
+            <div class="col-xs-12 col-md-8">
+                 <div class="brandname">
+                    <h4>BUSINESS TRAVEL MANAGEMENT LIMITED</h4>
+                    <h6>45, Oduduway way, Ikeja GRA, Lagos, Nigeria</h6>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col-12">
+                <div class="title mt-0">
+                    <h5>CREDIBILTY REPORT</h5>
+                </div>
+            </div>
+        </div>
+        <br>
+        <div class="row">
+            <div class="col-12">
+                <table class="table">
+                    <tbody>
+                        <tr>
+                          <td ><b>Staff No: <br></b> {{ emp_det[16] }}</td>
+                          <td><b>Dept:<br></b> {{ emp_det[5] }}</td>
+                          <td><b>Name:<br></b> {{ emp_det[1] }}</td>
+                          <td><b>Role:<br></b> {{ emp_det[18] }}</td>
+                        </tr>
+                        <tr>
+                          <th>Mode</th>
+                          <th>Received On</th>
+                          <th>Subject</th>
+                          <th>Summary</th>
+                          <th>Attachment</th>
+                          <th>Save Date</th>
+                        </tr>
+                        {% for rp in reports %}
+                        <tr>
+                          <td>{{ rp[2] }}</td>
+                          <td>{{ rp[3] }}</td>
+                          <td>{{ rp[5] }}</td>
+                          <td>{{ rp[6] }}</td>
+                          {% if rp[7] == '' %}
+                            {% set att = 'No' %}
+                          {% else %}
+                            {% set att = 'Yes' %}
+                          {% endif %}
+                          <td>{{ att }}</td>
+                          <td>{{ rp[4] }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+</body>
+</html>
+
+

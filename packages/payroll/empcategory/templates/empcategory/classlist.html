@@ -1,0 +1,93 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="">
+				<h6><i class="fa fa-bars"></i> Class List</h6>
+				<ul class="bodymenu">
+					<li>
+						<a href="{{ url_for('empclass.classlist')}}" class="active">Class List</a>
+					</li>
+					{% if current_user.role == 'AD' %}
+					<li>
+						<a href="{{url_for('empclass.addclass')}}"><small>Add Class</small></a>
+					</li>
+					{% endif %}
+				</ul>
+				<div class="bodycontent">
+					<div class="row">
+						<div class="col-xs-12 col-md-12 category_list">
+							<table id="example" class="table table-striped table-bordered" style="width:100%">
+								<thead>
+									<th>Class Name</th>
+									<th>Basic Pay</th>
+									<th>Housing Allowance</th>
+									<th>Transport Allowance</th>
+									<th>Other Allowance</th>
+									<th>LASG Allowance</th>
+									<th>24Hours Allowance</th>
+									<th>Health Allowance</th>
+									<th>Total Allowances</th>
+									{% if current_user.role == 'AD' %}
+									<th>Tools</th>
+									{% endif %}
+								</thead>
+								<tbody>
+								{% if all__ %}
+								{% for classlist in all__ %}
+									<tr>
+										<td>{{ classlist[1] }}</td>
+										<td>{{ classlist[2] | numberFormat}}</td>
+										<td>{{ classlist[3] | numberFormat}}</td>
+										<td>{{ classlist[4] | numberFormat}}</td>
+										<td>{{ classlist[5] | numberFormat}}</td>
+										<td>
+											{% if classlist[7] %}
+												{{ classlist[7]  | numberFormat}}
+											{% endif %}
+										</td>
+										<td>
+											{% if classlist[8] %}
+												{{ classlist[8]  | numberFormat}}
+											{% endif %}										
+										</td>
+										<td>
+											{% if classlist[9] %}
+												{{ classlist[9]  | numberFormat}}
+											{% endif %}
+										</td>
+										
+										<td>{{ classlist[6] | numberFormat}}</td>
+										{% if current_user.role == 'AD' %}
+										<td>
+											<a href="{{url_for('empclass.editclass', get_id=classlist[0])}}"
+											   class="btn btn-secondary btn-sm btn-flat fa-sm">
+												<i class="fa fa-edit"></i>
+												Edit
+											</a>
+											<a href="{{ url_for('empclass.delete', getid=classlist[0]) }}" class="btn btn-danger btn-sm btn-flat">
+												<i class="fa fa-trash fa-sm"></i>
+												Delete
+											</a>
+										</td>
+										{% endif %}
+									</tr>
+								{% endfor %}
+								{% endif %}
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+
+{% endblock content %}
+
+
+{% block script %}
+<script>
+	$(document).ready(function() {
+		$('#example').DataTable();
+	});
+
+</script>
+{% endblock %}

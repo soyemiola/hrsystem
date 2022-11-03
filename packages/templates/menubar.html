@@ -1,0 +1,281 @@
+ <style>
+   section.sidebar{
+    max-height: 100vh; 
+    overflow-y: scroll;
+    padding-bottom: 20px;
+   }
+   section.sidebar::-webkit-scrollbar{
+    width: 0;
+    background-color: transparent;
+   }
+ </style>
+ <aside class="main-sidebar">
+      <!-- sidebar: style can be found in sidebar.less -->
+      <section class="sidebar">
+        <!-- Sidebar user panel -->
+        <div class="user-panel">
+          <div class="pull-left image">
+            <img src="{{url_for('static', filename='image/user.png')}}" class="img-circle" alt="User Image">
+          </div>
+          <div class="pull-left info">
+            <p>{{ current_user.firstname}} {{ current_user.lastname }}</p>
+            {% if current_user.role == 'AD' %}
+              {% set role = 'Administrator' %}
+            {% elif current_user.role == 'MD' %}
+              {% set role = 'Managing Director' %}
+            {% elif current_user.role == 'OB' %}
+              {% set role = 'Observer' %}
+            {% endif %}
+            <a><i class="fa fa-user text-success"></i> {{ role }}</a>
+          </div>
+        </div>
+        <!-- sidebar menu: : style can be found in sidebar.less -->
+        <ul class="sidebar-menu" data-widget="tree">
+          <li class=""><a href="{{ url_for('admin.dashboard') }}"><i class="fa fa-dashboard"></i> <span>Dashboard</span></a></li>
+          <li class="header">EMPLOYEES</li>
+          <li class="treeview">
+                <a href="#">
+                  <i class="fa fa-users"></i>
+                  <span>Employees</span>
+                  <span class="pull-right-container">
+                    <i class="fa fa-angle-left pull-right"></i>
+                  </span>
+                </a>
+                <ul class="treeview-menu">
+                  <li><a href="{{url_for('users.employees')}}"><i class="fa fa-circle-o"></i> Active Staff </a></li>
+                  <li><a href="{{url_for('users.inactiveusers')}}"><i class="fa fa-circle-o"></i> Inactive Staff </a></li>
+                  <li><a href="{{url_for('cms_coop.cooperative')}}"><i class="fa fa-circle-o"></i> Co-Op Staff</a></li>
+                  <li><a href="{{url_for('settings.departmentList')}}"><i class="fa fa-circle-o"></i> Department</a></li>
+                  <li><a href="{{url_for('settings.designation')}}"><i class="fa fa-circle-o"></i> Designation</a></li>
+                  <li><a href="{{url_for('settings.officebranch')}}"><i class="fa fa-circle-o"></i> Branch</a></li>
+                  <li><a href="{{url_for('settings.pfa')}}"><i class="fa fa-circle-o"></i> PFA</a></li>
+                  <li><a href="{{url_for('settings.banklist')}}"><i class="fa fa-circle-o"></i> Bank List</a></li>
+                  <li><a href="{{url_for('settings.document')}}"><i class="fa fa-circle-o"></i> Documentation </a></li>
+                  <li><a href="{{url_for('users.feedbacktraining')}}"><i class="fa fa-circle-o"></i> Training Feedback </a></li> 
+                </ul>
+          </li>
+
+          <li class="header">OFFSET EMPLOYEE</li>
+          <li class="treeview">
+                 <a href="#">
+                  <i class="fa fa-users"></i>
+                  <span>Offboard</span>
+                  <span class="pull-right-container">
+                    <i class="fa fa-angle-left pull-right"></i>
+                  </span>
+                </a>
+                <ul class="treeview-menu">
+                 {% if current_user.role == 'AD' %}
+                  <li><a href="{{ url_for('users.offboard') }}"><i class="fa fa-circle-o"></i> Offboarding</a></li>
+                  <li><a href="{{ url_for('users.onboard') }}"><i class="fa fa-circle-o"></i> Onboarding</a></li>
+                  {% endif %}
+
+                </ul>
+          </li>
+         <!--  <li class="treeview">
+                <a href="#">
+                  <i class="fa fa-file"></i>
+                  <span>SOP / JD</span>
+                  <span class="pull-right-container">
+                    <i class="fa fa-angle-left pull-right"></i>
+                  </span>
+                </a>
+                <ul class="treeview-menu">
+                  <li><a href="#"><i class="fa fa-circle-o"></i>SOP</a></li>
+                  <li><a href="#"><i class="fa fa-circle-o"></i>Job Description</a></li>
+                </ul>
+          </li> -->
+          
+          <li class="header">REPORTING</li>
+              <li class="treeview">
+                <a href="#">
+                  <i class="fa fa-files-o"></i>
+                  <span>Report</span>
+                  <span class="pull-right-container">
+                    <i class="fa fa-angle-left pull-right"></i>
+                  </span>
+                </a>
+                <ul class="treeview-menu">
+                  <li class=""><a href="{{ url_for('admin.operation', department='Operation') }}"><i class="fa fa-circle-o"></i> <span>Operation Report</span></a></li>
+                  <li class=""><a href="{{ url_for('admin.operation', department='IT') }}"><i class="fa fa-circle-o"></i> <span>IT Report</span></a></li>
+                  <li class=""><a href="{{ url_for('admin.operation', department='Comms') }}"><i class="fa fa-circle-o"></i> <span>Comms Report</span></a></li>
+                </ul>
+              </li>
+              
+          <li class="header">ATTENDANCE</li>
+          <li class="treeview">
+            <a href="#">
+              <i class="fa fa-clock-o"></i>
+              <span>Attendance</span>
+              <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+              </span>
+            </a>
+            <ul class="treeview-menu">
+              <li class=""><a href="{{ url_for('register.home') }}"><i class="fa fa-circle-o"></i> <span>Attendance</span></a></li>
+              <li class=""><a href="{{ url_for('register.att_settings') }}"><i class="fa fa-circle-o"></i> <span>Settings</span></a></li>
+            </ul>
+          </li> 
+
+          <li class="header">PAYROLL</li>
+          <li class="treeview">
+            <a href="#">
+              <i class="fa fa-th-list"></i>
+              <span>Payroll</span>
+              <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+              </span>
+            </a>
+            <ul class="treeview-menu">
+              <li><a href="{{url_for('empclass.classlist')}}"><i class="fa fa-circle-o"></i> Payroll class</a></li>
+              <li><a href="{{url_for('payroll.tax')}}"><i class="fa fa-money"></i> <span>Tax Information</span></a></li>
+              {% if current_user.role == 'AD' %}
+              <li><a href="{{url_for('payroll.payrun')}}"><i class="fa fa-th"></i> <span>Payrun</span></a></li>
+              {% endif %}
+              <li class="treeview">
+                <a href="#"><i class="fa fa-circle-o"></i> Filling
+                  <span class="pull-right-container">
+                    <i class="fa fa-angle-left pull-right"></i>
+                  </span>
+                </a>
+                <ul class="treeview-menu">
+                  <li><a href="{{url_for('payroll.filling')}}"><i class="fa fa-circle-o fa-sm"></i> Submission</a></li>
+                </ul>
+              </li>
+
+              {% if current_user.role == 'AD' %}
+              <li><a href="{{url_for('payroll.adjustment')}}"><i class="fa fa-edit"></i> <span>Adjustment</span></a></li>
+              <li><a href="{{ url_for('payroll.payclass') }}"><i class="fa fa-circle-o fa-sm"></i> <span>Generate Class</span></a></li>
+              <li><a href="{{url_for('payroll.remittance')}}"><i class="fa fa-cogs"></i> <span>Staff Remittance</span></a></li>
+              {% else %}
+                <li><a href="{{ url_for('payroll.adjustment_list') }}"><i class="fa fa-edit"></i> <span>Adjustment list</span></a></li>
+              {% endif %}
+
+              <li class="header" style="color: #fff"><small>PRINTABLES</small></li>
+              <li class="treeview">
+                <a href="#">
+                  <i class="fa fa-edit"></i>
+                  <span>Payslip</span>
+                  <span class="pull-right-container">
+                    <i class="fa fa-angle-left pull-right"></i>
+                  </span>
+                </a>
+                <ul class="treeview-menu">
+                  <li><a href="{{url_for('report.reports')}}"><i class="fa fa-circle-o"></i> Monthly</a></li>
+                  <li><a href="{{ url_for('report.yearreport') }}"><i class="fa fa-circle-o"></i> Yearly</a></li>
+                </ul>
+              </li>
+              <li><a href="{{url_for('report.paye')}}"><i class="fa fa-files-o"></i> <span>PAYE</span></a></li>
+              <li><a href="{{url_for('report.bankreport')}}"><i class="fa fa-files-o"></i> <span>Bank Report</span></a></li>
+              <li><a href="{{url_for('report.pfareport')}}"><i class="fa fa-files-o"></i> <span>PFA Report</span></a></li>
+            </ul>
+          </li>
+
+          <li class="header">LOAN</li>
+          <li class="treeview">
+            <a href="#">
+              <i class="fa fa-dollar"></i>
+              <span>Loan</span>
+              <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+              </span>
+            </a>
+            <ul class="treeview-menu">
+              {% if current_user.role == 'AD' %}
+              <li><a href="{{url_for('loans.loan')}}"><i class="fa fa-circle-o fa-sm"></i> New Application</a></li>
+              {% endif %}
+              <li><a href="{{url_for('loans.requests')}}"><i class="fa fa-circle-o fa-sm"></i>Request List</a></li>
+              <li><a href="{{url_for('loans.list')}}"><i class="fa fa-circle-o fa-sm"></i>Active Loan </a></li>
+              <li><a href="{{url_for('loans.loantypes')}}"><i class="fa fa-circle-o fa-sm"></i> Loan Types</a></li>
+              <li><a href="{{url_for('loans.loanreport')}}"><i class="fa fa-circle-o fa-sm"></i>Report</a></li>
+            </ul>
+          </li>
+
+          <li class="header">LEAVE MANAGEMENT</li>
+          <li class="treeview">
+            <a href="#">
+              <i class="fa fa-bed"></i>
+              <span>Leave</span>
+              <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+              </span>
+            </a>
+            <ul class="treeview-menu">
+              <li><a href="{{url_for('leaves.staffleave')}}"><i class="fa fa-circle-o"></i>Leave</a></li>
+              <li><a href="{{url_for('leaves.leave_request')}}"><i class="fa fa-circle-o"></i>Requisition List</a></li>
+              <li><a href="{{url_for('leaves.activeleave')}}"><i class="fa fa-circle-o"></i>Active Leave</a></li>
+              <li><a href="{{url_for('leaves.requestlist')}}"><i class="fa fa-circle-o"></i>Request Status</a></li>
+              <li><a href="{{url_for('leaves.leaveallowance')}}"><i class="fa fa-circle-o"></i>Allowance</a></li>
+              <li><a href="{{url_for('leaves.calendar')}}"><i class="fa fa-circle-o"></i>Leave Calendar</a></li>
+
+              {% if current_user.role == 'AD' %}
+              <li class="treeview">
+                <a href="#">
+                  <i class="fa fa-edit"></i>
+                  <span>Item List</span>
+                  <span class="pull-right-container">
+                    <i class="fa fa-angle-left pull-right"></i>
+                  </span>
+                </a>
+                <ul class="treeview-menu">
+                  <li><a href="{{url_for('leaves.addleave')}}"><i class="fa fa-circle-o"></i> Create Leave Type</a></li>
+                  <li><a href="{{url_for('leaves.leavelist')}}"><i class="fa fa-circle-o"></i> Leave List</a></li>
+                </ul>
+              </li>
+              {% endif %}
+              
+            </ul>
+          </li>
+
+          <li class="header">PERFORMANCE MGT. EVALUATION</li>
+          <li class="treeview">
+            <a href="#">
+              <i class="fa fa-file"></i>
+              <span>Performance</span>
+              <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+              </span>
+            </a>
+            <ul class="treeview-menu">
+              {% if current_user.role == 'AD' %}
+              <li><a href="{{url_for('performance.assessment')}}"><i class="fa fa-circle-o"></i>Weekly Assessment</a></li>
+              <li><a href="{{url_for('performance.performance_overview')}}"><i class="fa fa-circle-o"></i>Performance List</a></li>
+              <li><a href="{{url_for('performance.target_response')}}"><i class="fa fa-circle-o"></i>Performance Response</a></li>
+              <li><a href="{{url_for('performance.report')}}"><i class="fa fa-circle-o"></i>Report</a></li>
+              <li><a href="{{url_for('performance.variance')}}"><i class="fa fa-circle-o"></i>Performance Variance</a></li>
+              <li><a href="{{url_for('performance.appraisaltool')}}"><i class="fa fa-circle-o"></i>Performance Tool</a></li>
+              {% endif %}
+            </ul>
+          </li>
+          <li class="treeview">
+            <a href="#">
+              <i class="fa fa-file"></i>
+              <span>Credibility</span>
+              <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+              </span>
+            </a>
+            <ul class="treeview-menu">
+              {% if current_user.role == 'AD' %}
+              <li><a href="{{url_for('qc.addqc')}}"><i class="fa fa-circle-o"></i>Add Record</a></li>
+              <li><a href="{{url_for('qc.qcreport')}}"><i class="fa fa-circle-o"></i>Credibility</a></li>
+              {% endif %}
+              
+            </ul>
+          </li>
+
+          <li class="header">SETTINGS</li>
+          <li><a href="{{url_for('admin.settings')}}"><i class="fa fa-cogs"></i>Setting</a></li>
+          <li><a href="{{url_for('admin.password')}}"><i class="fa fa-lock"></i>Update password</a></li>
+          {% if current_user.role == 'AD' %}
+          <li><a href="{{url_for('admin.adminusers')}}"><i class="fa fa-user-secret"></i> Admin Users</a></li>
+          {% endif %}
+
+
+        </ul>
+      </section>
+      <!-- /.sidebar -->
+    </aside>
+
+
+

@@ -1,0 +1,122 @@
+{% extends "layout.html" %}
+{% block content %}
+
+            <div class="" style="padding: 0px">
+				<h4>{{department}} Report</h4>
+				<div class="bodycontent" style="margin-left: 0px">
+					<form action="" method="POST">
+                        <div class="row">
+                            <div class="col-xs-12 col-md-3">
+                                <div class="filter_search">
+                                    <div class="">
+                                        <label>Select Date:</label>
+                                        <input type="date" name="date" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-md-3">
+                                <div class="filter_search">
+                                    <button type="submit" name="filter_branch" class="btn btn-primary btn-flat btn-sm" style="margin-top: 15%;">Fetch Record</button>
+                                </div>
+                            </div>
+                        </div>  
+                    </form>
+
+                    <div class="row">
+                        <div class="col-xs-12 col-md-11">
+                            <div class="commsreport" style="margin-top: 10px;">
+                                {% if info %}
+                                <p>
+                                    <span style="float: right; padding: 5px ">
+                                        <small style="cursor: pointer; margin-right: 5px">
+                                            <i class="fa fa-file-excel-o excelreport" data-date="{{ today }}" id="excelreport"> Download Excel</i>
+                                        </small>
+                                    </span>
+                                </p>
+                                <table class="table table-sm table-hover table-striped" id="recordlist">
+                                    <thead>
+                                        <th>Staff Name: {{ info[1] }}</th>
+                                        <th>Email: {{ info[2] }}</th>                                        
+                                    </thead>
+                                    <tbody>                                        
+                                        <tr>
+                                            <th>Action Point</th>
+                                            <th>Description</th>
+                                            <th>Due date</th>
+                                            <th>Comment</th>
+                                        </tr>
+                                        {% for x in info[5] %}
+                                        <tr>
+                                            <td>
+                                                {{ info[5][loop.index0] }}
+                                            </td>
+                                            <td>
+                                                {{ info[6][loop.index0] }}
+                                            </td>
+                                            <td>
+                                                {{ info[7][loop.index0] }}
+                                            </td>
+                                            <td>
+                                                {{ info[8][loop.index0] }}
+                                            </td>                                            
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                                {% else %}
+
+                                <div class="alert alert-info">
+                                    <h6>No Record Available!</h6>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    
+				</div>
+			</div>
+<style>
+    ul.list{
+        padding-left: 3px;
+    }
+    ul.list li{
+        list-style: none;
+        padding: 10px;
+    }
+</style>
+{% endblock content %}
+
+
+{% block script %}
+<script>
+    /*$(document).ready(function () {
+        $('#recordlist').DataTable({
+            "iDisplayLength": 50
+        });
+
+       
+    })*/
+</script>
+<script>
+	var wb = XLSX.utils.table_to_book(document.getElementById('recordlist'), {sheet:'Sheet Js'});
+
+	var wbout = XLSX.write(wb, {bookType: 'xlsx', bookSST:true, type: 'binary' });
+
+	function s2ab(s){
+		var buf = new ArrayBuffer(s.length);
+		var view = new Uint8Array(buf);
+		for(var i=0; i<s.length; i++) view[i] = s.charCodeAt(i) & 0xFF;
+		return buf;
+	}
+
+	$('#excelreport').click(function(){
+        const id = $(this).attr('id');
+        var date = document.getElementById(id).dataset.date
+            name = 'Comms Report for '+date+'.xlsx'
+
+		saveAs(new Blob([s2ab(wbout)], {type: 'application/octet-stream'}), name)
+	});
+</script>
+
+
+{% endblock %}

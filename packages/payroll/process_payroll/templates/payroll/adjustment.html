@@ -1,0 +1,187 @@
+{% extends "layout.html" %}
+{% block content %}
+
+        <div class="">
+			<div class="search" id="search">
+				<h6><i class="fa fa-cogs"></i> Payroll Adjustment</h6>
+				<div class="search-result" id="search-result">
+                    <form action="{{url_for('payroll.adjustment')}}" method="post">
+                        <div class="row">
+                            <div class="col-xs-12 col-md-12">
+                                <h5>Filter Record</h5>
+                            </div>
+                            <div class="col-xs-12 col-md-3">
+                                <div class="form-group">
+                                    <select class="form-control" name="emp_id" id="empid">
+                                        <option value="0" selected disabled>--select employee--</option>
+                                        {% for ls in emp %}
+                                            <option value="{{ls[0]}}">{{ls[1]}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-md-3">
+                                <div class="form-group">
+                                    <select class="form-control" name="emp_month" id="month">
+                                        <option value="0" selected disabled>--select month--</option>
+                                        {% for mth in month %}
+                                            {% if mth != '' %}
+                                            <option value="{{ mth }}">{{mth}}</option>
+                                            {% endif %}
+                                        {% endfor%}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-md-3">
+                                <div class="form-group">
+                                    <select class="form-control" name="emp_year" id="year">
+                                        <option value="0" selected disabled>--select year--</option>
+                                        {% for yr in year %}
+                                            <option value="{{ yr }}">{{yr}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-md-3">
+                                <div class="form-group">
+                                    <button class="btn btn-success btn-sm">Fetch record</button>
+                                    <a href="/admin/adjustment-list" class="btn btn-primary btn-sm">
+                                        <i class="fa fa-th-list" style="color: #fff"></i> view list
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <hr style="border-bottom: 1px solid lightgrey; margin-top: 0px">
+                    <br>
+                        {% if info %}
+                        <div class="row">
+                            <div class="col-xs-12 col-md-6">
+                                <form action="{{url_for('payroll.process_adjustment')}}" method="post">
+                                    <div class="adjustbox">
+                                        <div class="col-10">
+                                            <h4 style="text-align: center; font-weight:bold">Payroll Adjustment Form</h4>
+                                            <div class="">
+                                                <label for="name">Employee Name</label>
+                                                <input type="hidden" name="emp_id" value="{{info[0][0]}}">
+                                                <input type="text" name="name" id="name"
+                                                       value="{{info[0][1]}}"
+                                                       readonly class="form-control">
+                                            </div>
+                                            <div class="">
+                                                <label for="dept">Department</label>
+                                                <input type="text" name="name" id="dept"
+                                                       value="{{info[0][5]}}"
+                                                        readonly class="form-control">
+                                            </div>
+                                            <div class="">
+                                                <label for="gross">Gross Pay</label>
+                                                <input type="text" name="name" id="gross"
+                                                       value="{{info[1].gross | numberFormat}}"
+                                                       readonly class="form-control">
+                                            </div>
+                                            <div class="">
+                                                <label for="basic">Basic Pay</label>
+                                                <input type="text" name="basic" id="basic"
+                                                       value="{{info[1].basic | numberFormat}}"
+                                                       readonly class="form-control">
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-xs-12 col-md-6">
+                                                    <div class="">
+                                                        <label for="adj_month">Month</label>
+                                                        <input type="text" name="adj_month" id="adj_month"
+                                                               value="{{ info[1].month }}"
+                                                               readonly class="form-control">
+                                                    </div>
+                                                </div>
+                                                <div class="col-xs-12 col-md-6">
+                                                    <div class="">
+                                                        <label for="adj_year">Year</label>
+                                                        <input type="text" name="adj_year" id="adj_year"
+                                                               value="{{info[1].year}}"
+                                                               readonly class="form-control">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="">
+                                                <label for="adj_type">Adjustment Type</label>
+                                                <select name="adj_type" id="adj_type" class="form-control">
+                                                    <option selected disabled>--Select Adjustment type--</option>
+                                                    <option value="add">Add to next Payroll</option>
+                                                    <option value="deduct">Deduct from next Payroll</option>
+                                                </select>
+                                            </div>
+                                            <div class="">
+                                                <label for="reason">Adjustment Reason</label>
+                                                <textarea name="reason" id="reason" cols="30" rows="10"
+                                                          style="resize:none; height: 150px; width: 100%" class="form-control"></textarea>
+                                            </div>
+                                            <div class="">
+                                                <label for="adj_salary">Adjustment rate</label>
+                                                <input type="text" name="adj_salary" id="adj_salary" value="" class="form-control">
+                                            </div>
+                                            <br>
+                                             <div class="">
+                                                <button type="submit" class="btn btn-sm btn-success btn-flat">
+                                                    <i class="fa fa-save" style="color: #fff;"></i> Add Adjustment
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form> 
+                            </div>
+                            <div class="col-xs-12 col-md-6">
+                                <h4 style="text-align: center; font-weight:bold">Salary Review</h4>
+                                <table class="table table-stripped table-hover table-sm">
+                                    <thead>
+                                        <th>Item</th>
+                                        <th>Value</th>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Gross</td>
+                                            <td>{{ info[1].gross | numberFormat }}</td>
+                                        </tr>
+                                        <tr>
+                                             <td>Basic</td>
+                                             <td>{{ info[1].basic | numberFormat }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Total Allowance</td>
+                                            <td>{{ info[1].allowance  | numberFormat }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Tax</td>
+                                            <td>{{ info[1].tax | numberFormat }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Pension</td>
+                                            <td>{{ info[1].pension | numberFormat }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Monthly Salary</td>
+                                            <td>{{ info[1].workedfor | numberFormat }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+				</div>
+			</div>
+		</div>
+
+{% endblock content %}
+
+
+{% block script %}
+<script>
+    
+    $('#emp_name').on('change', function(){
+        var name = $(this).find('option:selected');
+        $('#emp_id').val(name[0].dataset.id);
+    })
+</script>
+{% endblock %}

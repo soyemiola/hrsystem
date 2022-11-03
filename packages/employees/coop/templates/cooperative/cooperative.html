@@ -1,0 +1,136 @@
+{% extends "layout.html" %}
+{% block content %}
+	
+				<div class="">
+					<div>
+						<h6><i class="fa fa-bars"></i> Cooperative</h6>
+							<ul class="bodymenu">
+								<li>
+									<a href="{{url_for('cms_coop.cooperative')}}" class="active">Cooperative</a>
+								</li>
+							</ul>
+					</div>
+
+					<table id="example" class="table table-striped table-bordered">
+						<thead>
+							<th>Staff ID</th>
+							<th>Name</th>
+							<th>Department</th>
+							<th>Monthly contribution</th>
+							<th></th>
+						</thead>
+						<tbody>
+						{% if emp_details %}
+						{% for emp in emp_details %}
+							<tr>
+								<td>{{ emp[6] }}</td>
+								<td>{{ emp[1] }}</td>
+								<td>{{ emp[2] }}</td>
+								<td style="max-width: 200px">
+									{% if emp[7] == 'Yes' %}
+										{% set value = emp[0] | getContribution %}
+
+									<div class="input-group mb-3">
+									    <input type="text" id="value{{emp[0]}}" name="amount" class="form-control" value="{{ value }}">
+									    <div class="input-group-append">
+									      <span type="button" id="updt{{emp[0]}}" data-emp_id="{{ emp[0] }}" data-value="value{{emp[0]}}" class="btn btn-primary btn-update">Update</span>
+									    </div>
+									</div>
+									{% endif %}
+									
+								</td>
+								<td style="text-align: left; width: 100px;">
+									{% if emp[7] == None or emp[7] == '' %}
+										{% set link = url_for('cms_coop.cooperative', add_emp=emp[0]) %}
+										{% set btnclass = 'btn-primary' %}
+										{% set text = 'Add' %}
+									{% else %}
+										{% set link = url_for('cms_coop.cooperative', delete_emp=emp[0]) %}
+										{% set btnclass = 'btn-danger' %}
+										{% set text = 'Remove' %}
+									{% endif %}
+
+									{% if current_user.role == 'AD' %}
+									<a href="{{link}}" class="btn {{btnclass}}
+									btn-sm btn-flat"> {{text}}</a>
+									{% else %}
+									<span class="{{ btnclass }} btn-sm">{{ text }}</span>
+									{% endif %}
+
+									
+								</td>
+							</tr>
+						{% endfor%}
+						{% endif %}
+						</tbody>
+					</table>
+
+				</div>
+
+
+{% endblock content %}
+
+
+
+{% block script %}
+<script>
+	$(document).ready(function() {
+		$('#example').DataTable({
+			"iDisplayLength": 50
+		});
+
+
+		$('.btn-update').click(function (){
+			var id = $(this).attr('id'),
+				update = 'Updated <i class="fa fa-check-circle"></i>',
+				text = 'Update',
+
+				btnbtn = document.getElementById(id),
+
+				emp_id = btnbtn.dataset.emp_id,
+				value_id = btnbtn.dataset.value,
+				
+				amount = document.getElementById(value_id).value;
+
+			if (amount == '' || amount == null) {
+				document.getElementById(value_id).style.borderColor = 'red';
+				return 0
+			}				
+
+
+			$.ajax({
+
+				method: 'post',
+				url: '/admin/update-contribution',
+				data: {emp_id:emp_id, amount:amount},
+
+				beforeSend: function(){
+					btnbtn.innerHTML = 'Updating...';
+				},
+
+				success: function(data){
+					if (data == 'success') {
+						document.getElementById(value_id).value = amount;
+						btnbtn.innerHTML = update;
+
+						setTimeout(function () {
+							btnbtn.innerHTML = text;
+						}, 3000);
+					}
+				},
+
+				error: function(data){
+					document.getElementById(value_id).style.borderColor = 'red';
+					btnbtn.innerHTML = 'Error';
+
+					setTimeout(function () {
+						btnbtn.innerHTML = text;
+					}, 3000);
+				}
+			})
+		});
+	});
+
+
+</script>
+{% endblock script %}

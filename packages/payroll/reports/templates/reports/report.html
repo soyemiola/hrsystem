@@ -1,0 +1,126 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="">
+				<h6><i class="fa fa-newspaper-o"></i> Reports</h6>
+				<ul class="bodymenu">
+					<li>
+						<a href="{{ url_for('report.reports') }}" class="active">Monthly Payslip</a>
+					</li>
+                    <li>
+						<a href="{{ url_for('report.yearreport') }}">Payroll</a>
+					</li>
+				</ul>
+				<div class="bodycontent">
+					 <!--Display record in table-->
+                        <form action="{{ url_for('report.reports') }}" method="post">
+                            <div class="row">
+                                <div class="col-xs-12 col-md-2">
+                                    <div class="form-group">
+                                        <label style="text-align:right;">Search Employee:</label>
+                                        <select name="emp_name" id="emp_name" class="form-control">
+                                            <option selected disabled>--Select Employee--</option>
+                                            {% for emp in emp_list %}
+                                            <option data-id="{{ emp[0] }}" value="{{ emp[0] }}">{{ emp[1] }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <input type="hidden" id="emp_id">
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-md-2">
+                                    <div class="form-group">
+                                        <label style="text-align:right;">Month:</label>
+                                        <select name="month" id="month" class="form-control">
+                                            <option selected disabled>--Select Month--</option>
+                                            {% for mth in month %}
+                                                {% if mth != '' %}
+                                                    <option data-id="{{ mth }}" value="{{ mth }}">{{ mth }}</option>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-md-2">
+                                    <div class="form-group">
+                                        <label style="text-align:right;">Year:</label><br>
+                                        <select name="year" id="year" class="form-control">
+                                            <option selected disabled>--Select Year--</option>
+                                            {% for yr in year %}
+                                            <option data-id="" value="{{ yr }}">{{ yr }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-xs-12 col-md-12">
+                                    <div class="form-group">
+                                        <button type="submit" class="btn btn-primary btn-sm" id="btn-search-emp">
+                                            Fetch Record
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                        <hr>
+                        {% if details %}
+                        
+                        <div class="row" id="reportTable">
+                            <div class="col-12">
+                                <br>
+                                <h6><span id="reportmonth"></span> {{ details[1] }}, {{ details[2] }} Payslip</h6>
+                                <table class="table table-stripped table-hover table-sm">
+                                  <thead>
+                                    <th>Employee name</th>
+                                    <th>Gross Pay</th>
+                                    <th>Employee Pension</th>
+                                    <th>Tax</th>
+                                    <th>Salary</th>
+                                    <th></th>
+                                  </thead>
+                                  <tbody>
+                                    <tr>
+                                      <td>{{details[0]}}</td>
+                                      <td>{{details[6] | numberFormat}}</td>
+                                      <td>{{details[7] | numberFormat}}</td>
+                                      <td>{{details[10] | numberFormat}}</td>
+                                      <td>{{details[20] | numberFormat}}</td>
+                                      <td style="text-align: left; width: 200px;" id="print">
+                                          <a target="_blank" href='{{ url_for("report.empReport", getid=details[21], month=details[1], year=details[2]) }}' class="fa fa-print"> Print </a>
+                                      </td>
+                                    </tr>
+                                    
+                                  </tbody>
+                                </table>
+                               
+                            </div>
+                        </div>
+                        {% endif %}
+				</div>
+			</div>
+
+{% endblock content %}
+<style>
+    .face{
+		bottom: 20px;
+		left: 68%;
+		border-color: green;
+	}
+	.error_{
+	    border-color: red;
+	    background-color: red;
+	    color: #fff;
+	}
+</style>
+
+{% block script %}
+<script>
+	$('#emp_name').on('change', function () {
+		var selectedOption = $(this).find('option:selected');
+		$('#emp_id').val(selectedOption[0].dataset.id);
+	});
+
+    $('#example').DataTable();
+</script>
+{% endblock %}

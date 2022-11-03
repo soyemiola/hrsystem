@@ -1,0 +1,163 @@
+{% extends "layout.html" %}
+{% block content %}
+
+		<div class="leaverequest">
+			<h5>Staff Leave Record</h5>
+			{% if emp %}
+	            {% if leave %}
+	            <div class="row">
+					<div class="col-xs-12 col-md-12">
+						<table id="list" class="table table-sm table-hover">
+							<thead>
+								<th>Staff ID</th>
+								<th>Employee Name</th>
+								<th>Department</th>
+								<th></th>
+								<th></th>
+							</thead>
+							<tbody>
+								<tr class="text-center">
+									<td colspan="3"></td>
+
+									{% for i in leave %}
+									<th class="text-center">{{ i[1] }}</th>
+									{% endfor %}
+									<th></th>
+								</tr>
+									
+								{% for em in emp %}
+								<tr>
+									<td>{{em[5]}}</td>
+									<td>{{em[1]}}</td>
+									<td>{{em[2]}}</td>
+									{% for i in leave %}
+									{% set leavedays = em[0] | getleavedays(i[1]) %}
+									
+									{% if i[1] | lower == 'annual leave' %}
+										{% set used_days = leavedays[3] %}
+										{% set rm_days = leavedays[4] %}
+									{% else %}
+										{% if leavedays %}
+											{% set used_days = leavedays[4] %}
+											{% set rm_days = leavedays[5] %}
+										{% else %}
+											{% set used_days = 0 %}
+											{% set rm_days = i[3] %}
+										{% endif %}
+									{% endif %}
+									<td>
+										<table class="table table-sm table-condensed text-center">
+											<tr>
+												<td id="totaldays" class="success"><b>{{i[3]}}</b></td>
+												<td id="useddays" class="danger"><b>{{ used_days }}</b></td>
+												<td id="remainingdays" class="warning"><b>{{ rm_days }}</b></td>
+											</tr>
+										</table>
+									</td>
+									{% endfor %}
+									<td class="pull-right">
+										<a href="{{url_for('leaves.leaverecord', emp_id=em[0]) }}" class="btn btn-sm btn-primary">
+											<i class="fa fa-th-list"></i>
+										</a>
+										<button type="button" class="btn btn-primary btn-sm modifybtn" data-id="{{em[0]}}" data-name="{{em[1]}}" data-dept="{{em[2]}}" id="deduct_{{ em[0] }}">
+											<i class="fa fa-edit"></i>
+										</button>
+									</td>
+								</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+					</div>
+				</div>
+				{% else %}
+				<div class="alert alert-info">
+					<i class="fa fa-info-circle"></i> No Leave type has been set.
+				</div>
+				{% endif %}
+			{% else %}
+			<div class="alert alert-info">
+				<i class="fa fa-info-circle"></i> No Employee Record created.
+			</div>
+			{% endif %}
+
+		<!-- Leave modify modal -->
+		<div id="modifyleave" class="modal fade" role="dialog">
+		  <div class="modal-dialog">
+
+		    <!-- Modal content-->
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <h4 class="modal-title">Leave Deduction Form</h4>
+		        <button type="button" class="close" data-dismiss="modal">&times;</button>
+		      </div>
+		      <div class="modal-body">
+		      	<div class="row">
+		      			<div class="col-xs-12 col-md-6">
+		      				<b>Employee's Name:</b>
+		      				<p id="emp_name"></p>
+		      			</div>
+		      			<div class="col-xs-12 col-md-6">
+		      				<b>Department:</b>
+		      				<p id="emp_dept"></p>
+		      			</div>
+		      		</div>
+		      		<br>
+		        <form id="leavededuction" method="post">
+		        	<input type="hidden" name="emp_id" value="" id="emp_id">
+		        	<div class="form-group">
+		        		<label for="leaevtype">Select leave type</label>
+		        		<select class="form-control" name="leavetype">
+		        			<option selected disabled>--select leave--</option>
+		        			{% if leave %}
+		        				{% for i in leave %}
+		        				<option value="{{ i[1] }}">{{ i[1] }}</option>
+		        				{% endfor %}
+		        			{% endif %}
+		        			
+		        		</select>
+		        	</div>
+		        	<div class="form-group">
+		        		<label for="days">No. of Day(s)</label>
+		        		<input type="text" name="days" id="days" class="form-control">
+		        	</div>
+		        	<div class="form-group">
+		        		<label for="leaevtype">Reason for deduction</label>
+		        		<textarea class="form-control" name="reason" style="resize: none; min-height: 80px;"></textarea>
+		        	</div>
+		        </form>
+		      </div>
+		      <div class="modal-footer">
+		        <button type="submit" class="btn btn-success btn-sm" form="leavededuction">Submit</button>
+		        <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Close</button>
+		      </div>
+		    </div>
+
+		  </div>
+		</div>
+		</div>
+
+{% endblock content %}
+
+
+{% block script %}
+<script>
+
+
+	$(document).ready(function () {
+		$('.modifybtn').click(function (e) {
+			e.preventDefault();
+			id = $(this).attr('id');
+			emp_id = document.getElementById(id).dataset.id;
+			name = document.getElementById(id).dataset.name;
+			dept = document.getElementById(id).dataset.dept;
+			$('#emp_id').val(emp_id);
+			document.getElementById('emp_name').innerHTML = name;
+			document.getElementById('emp_dept').innerHTML = dept;
+
+			$('#modifyleave').modal('show');
+		});
+	});
+
+	$('#list').dataTable();
+</script>
+{% endblock %}

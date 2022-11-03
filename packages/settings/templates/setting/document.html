@@ -1,0 +1,210 @@
+{% extends "layout.html" %}
+{% block content %}
+
+			<div class="">
+				<h6><i class="fa fa-bars"></i> Bank List</h6>
+				<ul class="bodymenu">
+					<li>
+						<a href="{{url_for('settings.document')}}" class="active">Documentation</a>
+					</li>
+					<li>
+						<a class="add_document" data-target="#add_new_document" data-toggle="modal" style="cursor: pointer;">Add Document</a>
+					</li>
+				</ul>
+				<div class="bodycontent">
+					<div class="row">
+						<div class="col-xs-12 col-md-12">
+							<table id="example" class="table table-striped table-bordered table-sm">
+								<thead>
+									<th>Employee Name</th>
+									<th>Department</th>
+									<th>Job Title</th>
+									<th>Level</th>
+									<th>No. of Document</th>
+									<th></th>
+								</thead>
+								<tbody>
+									{% if has_docx %}
+										{% for i in has_docx %}
+											{% set noOfDocx = i[1] %}
+											{% set info = i[0] | getdocxInfo %}
+									<tr>
+										<td>{{ info[1] }}</td>
+										<td>{{ info[2] }}</td>
+										<td>{{ info[3] }}</td>
+										<td>{{ info[4] }}</td>
+										<td>{{ noOfDocx }}</td>
+										<td>
+											<button type="button" class="btn btn-primary btn-sm openDocument" id="openDocument_{{info[0]}}" data-empid="{{info[0]}}" data-empname="{{info[1]}}">
+												<i class="fa fa-folder-open"></i></button>
+										</td>
+									</tr>
+										{% endfor %}
+									{% endif %}
+								</tbody> 
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="modal fade" tabindex="-1" role="dialog" id="document" data-backdrop="static" data-keyboard="false">
+		      <div class="modal-dialog modal-lg" role="document">
+		        <div class="modal-content">
+		          <div class="modal-header">
+		            <h4 class="modal-title">
+		            	<span id="empname"></span>
+		            </h4>
+		          </div>
+		          <div class="modal-body">
+		            <table class="table table-sm table-striped table-hover">
+		            	<thead>
+		            		<th>Document Name</th>
+		            		<th></th>
+		            		<th>Type</th>
+		            		<th>Tool</th>
+		            	</thead>
+		            	<tbody id="empdocx">
+		            		
+		            	</tbody>
+		            </table>	
+		          </div>
+
+		          <div class="modal-footer">
+		            <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Close</button>
+		          </div>
+		        </div><!-- /.modal-content -->
+		      </div><!-- /.modal-dialog -->
+		    </div>
+
+		    <div class="modal fade" tabindex="-1" role="dialog" id="add_new_document" data-backdrop="static" data-keyboard="false">
+		      <div class="modal-dialog modal-md" role="document">
+		        <div class="modal-content">
+		          <div class="modal-header">
+		            <h4 class="modal-title">Add Document</h4>
+		          </div>
+		          <div class="modal-body">
+		            <form method="post" enctype="multipart/form-data" id="addempdoc">
+		            	<div class="form-group">
+		            		<label>Category</label>
+		            		<select class="form-control" name="category">
+		            			<option value="general">General</option>
+		            			<option value="confidential">Confidential</option>
+		            		</select>
+		            	</div>
+		            	<div class="form-group">
+		            		<label>Select Employee</label>
+		            		<select class="form-control" name="empid">
+		            			<option selected disabled>--select an employee--</option>
+		            			{% if emplist %}
+		            				{% for i in emplist %}
+		            				<option value="{{i[0]}}">{{i[1]}}</option>
+		            				{% endfor %}
+		            			{% endif %}
+		            		</select>
+		            	</div>
+		            	<div class="form-group">
+			            	<label>Document Title</label>
+			            	<input type="text" name="doc_name" class="form-control" autocomplete="off" required>
+			            </div>
+			            <div class="form-group">
+			            	<label>Date Received</label>
+			            	<input type="date" name="docxdate" class="form-control" autocomplete="off" required>
+			            </div>
+			            <div class="form-group">
+			            	<label>Upload Document</label>
+			            	<input type="file" name="file" class="form-control-file" accept="application/pdf" required>
+			            </div>
+		            </form>
+		          </div>
+
+		          <div class="modal-footer">
+		            <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">Close</button>
+		            <button type="submit" name="submit" class="btn btn-success btn-sm" form="addempdoc" value="addnewdocument">Add Document</button>
+		          </div>
+		        </div><!-- /.modal-content -->
+		      </div><!-- /.modal-dialog -->
+		    </div>
+
+		    <div class="modal fade" tabindex="-1" role="dialog" id="delete_document" data-backdrop="static" data-keyboard="false">
+		      <div class="modal-dialog modal-md" role="document">
+		        <div class="modal-content">
+		          <div class="modal-header">
+		            <h4 class="modal-title">Delete Document</h4>
+		          </div>
+		          <div class="modal-body">
+		            <h6>Are you sure you want to delete document?</h6>
+		          </div>
+
+		          <div class="modal-footer">
+		            <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal">No</button>
+		            <a href="#" class="btn btn-sm btm-danger">Yes</a>
+		          </div>
+		        </div><!-- /.modal-content -->
+		      </div><!-- /.modal-dialog -->
+		    </div>
+
+{% endblock content %}
+
+
+{% block script %}
+<script>
+	$(document).ready(function() {
+		$('.openDocument').click(function (e) {
+			e.preventDefault();
+
+			id = $(this).attr("id")
+			empid = document.getElementById(id).dataset.empid;
+			empname = document.getElementById(id).dataset.empname;
+
+
+			$.ajax({
+				method: 'post',
+				url: 'documentation',
+				data:{empid:empid, submit:'fetchdocx'},
+
+				beforeSend: function(){
+					$('#empdocx tr').remove();
+				},
+
+				success: function (data){
+					if (data) {
+						
+						document.getElementById('empname').innerHTML = empname; 
+
+						for (var i = data.length - 1; i >= 0; i--) {
+							if (data[i][8]) {
+								status = data[i][8];
+							}else{
+								status = '';
+							}
+
+							tr = '  <tr>\
+										<td>'+ data[i][2] +'</td>\
+				            			<td>\
+				            				<a href="{{url_for("static", filename="admin/documents/DOCX")}}" target="_blank"><small>'+ data[i][2] +'</small></a>\
+				            			</td>\
+				            			<td><small>'+status+'</small></td>\
+				            			<td>\
+				            				<a href="./deletedocx?DEL=TRUE&&ID='+data[i][0]+'&&empid='+data[i][1]+'&&docx='+data[i][3]+'" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></a>\
+				            			</td>\
+				            		</tr>';
+				            tr = tr.replace("DOCX", data[i][3]);
+
+							$('#empdocx').append(tr)
+						}
+						$('#document').modal("show");
+					}else{
+						alert('Error fetching record')
+					}
+
+				}
+			});
+		});
+
+
+		$('#example').DataTable();
+	});
+
+</script>
+{% endblock %}

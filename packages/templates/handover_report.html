@@ -1,0 +1,425 @@
+<title>BTM | Handover Report</title>
+<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+<div class="loader" id="loader"></div>
+<div class="container">
+	<div class="row">
+		<div class="col-12">
+			<div class="banner">
+				<span class="pull-left"><img src="{{url_for('static', filename='image/logo.png')}}" height="70px"></span> 
+				<h4 class="pt-3">BUSINESS TRAVEL MANAGEMENT <br><span style="font-size: 16px">HANDOVER REPORT</span> </h4>
+			</div>
+		</div>
+	</div>
+	<form action="" method="post"> 
+		<div class="det mt-1">
+			<div class="row">
+				<div class="col-xs-12 col-md-12">
+					{% with messages = get_flashed_messages(with_categories=true)%}
+							{% if messages %}
+								{% for category, message in messages %}
+									{% if category == 'success' %}
+										{% set icon = 'fa-check-circle' %}
+									{% elif category == 'danger' %}
+										{% set icon = 'fa-times-circle' %}
+									{% elif category == 'info' %}
+										{% set icon = 'fa-info-circle' %}
+									{% elif category == 'warning' %}
+										{% set icon = 'fa-exclamation-circle' %}
+									{% else %}
+									{% endif %}
+
+									<div class="alert alert-{{category}}" id="alert_msg">
+										<i class="fa {{icon}}"></i> {{ message }}
+									</div>
+
+									<script>
+										setTimeout(function () {
+											document.getElementById('alert_msg').style.display = 'None';
+										}, 3000)
+									</script>
+								{% endfor %}
+							{% endif %}
+						{% endwith %}
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-xs-12 col-lg-12">
+					<div class="header mt-3 mb-3">				
+						<h6>Date: {{today}}</h6>
+					</div>
+				</div>
+				<div class="col-xs-12 col-lg-4">
+					<div class="fileds">
+						{% if info %}
+							<input type="text" name="name" class="form-control form-control-sm" value="{{info[0][1]}}" required>
+						{% else %}
+							<input type="text" name="name" class="form-control form-control-sm" placeholder="Full Name" value="" required>
+						{% endif %}
+					</div>
+				</div>
+				<div class="col-xs-12 col-lg-4">
+					<div class="fileds">
+						{% if info %}
+						<input type="email" name="email" class="form-control form-control-sm" value="{{info[0][2]}}" required>
+						{% else %}
+						<input type="email" name="email" class="form-control form-control-sm" placeholder="Email Address"  value="" required>
+						{% endif%}
+					</div>
+				</div>
+			</div>
+			<div class="row mt-2">
+				<div class="col-xs-12 col-lg-2">
+					<div class="fileds">
+						<select class="form-control form-control-sm" required name="shift">
+							{% if info %}
+							<option selected value="{{info[0][4]}}">{{info[0][4]}} Shift</option>
+							<option value="Day">Day Shift</option>
+							<option value="Night">Night Shift</option>
+							{% else %}
+							<option selected disabled>--Select Shift--</option>
+							<option value="Day">Day Shift</option>
+							<option value="Night">Night Shift</option>
+
+							{% endif %}
+						</select>
+					</div>
+				</div>
+				<div class="col-xs-12 col-md-2">
+					<div class="fileds">
+						{% if info %}
+						<input type="date" name="date" class="form-control form-control-sm" value="{{info[0][3]}}" required>
+						{% else %}
+						<input type="date" name="date" class="form-control form-control-sm" required>
+						{% endif %}
+					</div>
+				</div>
+				<div class="col-xs-12 col-md-4">
+					<button type="submit" name="submit" value="fetch" class="btn btn-primary btn-sm mt-1">Fetch record</button>
+				</div>
+			</div>
+		</div>
+
+		<hr>
+			<div class="row p-3" style="background-color: snow">
+				<div class="col-12">
+
+					<ul class="nav nav-tabs">
+						<li class="nav-item"><a data-toggle="tab" class="nav-link active" href="#handover">Handover & Incident Report</a></li>
+						<li class="nav-item"><a data-toggle="tab" class="nav-link" href="#activity">Activity Report</a></li>
+					</ul>
+
+					<div class="tab-content">
+						<div id="handover" class="tab-pane container active">
+					  		<h6 class="m-2">Handover & Incident Report</h6>
+							<div class="bx">
+								<div class="row" id="elements">
+									{% if info %}
+										{% for x in info %}								
+											{% if x[5] | lower == 'handover' %}
+												{% set getInfo =  x %}
+											<input type="hidden" name="h_draft_id" value="{{getInfo[0]}}">
+												{% for i in getInfo[6] %}
+													<div class="col-xs-12 col-md-4 p-2 itemlist" id="itemlist_{{loop.index}}" style="border:1px solid lightgrey">
+														<div class="form-group">
+															<input type="text" name="pnr" class="form-control form-control-sm" placeholder="Enter PNR" value="{{ getInfo[6][loop.index - 1] }}">
+														</div>
+														<div class="form-group">
+															<input type="text" name="clientname" class="form-control form-control-sm" placeholder="Enter client name" value="{{ getInfo[9][loop.index - 1] }}">
+														</div>
+														<div class="form-group">
+															<textarea class="form-control form-control-sm" name="details" style="height: 100px;" placeholder="Enter Description">{{getInfo[7][loop.index - 1] }}</textarea>
+														</div>
+														<div class="form-group">
+															<div class="row">
+																<div class="col-xs-12 col-lg-6">
+																	<label for="future"><small>Future Date (Optional)</small></label>
+																	<input type="date" name="future" class="form-control form-control-sm" value="{{ getInfo[10][loop.index - 1] }}">
+																</div>
+																<div class="col-xs-12 col-lg-6">
+																	<button type="button" class="btn brn-sm btn-danger mt-4 pull-right remove" onclick="remove('itemlist_{{loop.index}}')"><i class="fa fa-trash"></i></button>
+																</div>
+															</div>
+														</div>
+													</div>
+												{% endfor %}
+											{% endif %}
+										{% endfor %}
+									{% else %}
+										<div class="col-xs-12 col-md-4 p-2 itemlist" style="border:1px solid lightgrey">
+														<div class="form-group">
+															<input type="text" name="pnr" class="form-control form-control-sm" placeholder="Enter PNR">
+														</div>
+														<div class="form-group">
+															<input type="text" name="clientname" class="form-control form-control-sm" placeholder="Enter client name">
+														</div>
+														<div class="form-group">
+															<textarea class="form-control form-control-sm" name="details" style="height: 100px;" placeholder="Enter Description"></textarea>
+														</div>
+														<div class="form-group">
+															<div class="row">
+																<div class="col-xs-12 col-lg-6">
+																	<label for="future"><small>Future Date (Optional)</small></label>
+																	<input type="date" name="future" class="form-control form-control-sm">
+																</div>
+															</div>
+														</div>
+													</div>
+									{% endif %}
+								</div>
+								<div class="row mt-3">
+									<div class="col-12">
+										<button type="button" class="btn btn-primary btn-sm insertitem"><i class="fa fa-plus"></i> Add Item</button>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div id="activity" class="tab-pane container fade">
+					  		<h6 class="m-2">Activity Report</h6>
+							<div class="bx">
+								<div class="row" id="a_elements">
+					  			{% if info %}
+									{% for x in info %}								
+										{% if x[5] | lower == 'activity' %}
+											{% set getInfo = x %}
+
+											<input type="hidden" name="a_draft_id" value="{{getInfo[0]}}">
+											{% for i in getInfo[6] %}
+												<div class="col-xs-12 col-md-4 p-2 a_itemlist" id="a_itemlist_{{i[0]}}" style="border:1px solid lightgrey">
+													<div class="row">
+														<div class="col-xs-12 col-lg-6">
+															<div class="form-group">
+																<input type="text" name="a_pnr" class="form-control form-control-sm form-control form-control-sm-sm" placeholder="Enter PNR" value="{{ getInfo[6][loop.index - 1] }}">							
+															</div>
+														</div>
+														<div class="col-xs-12 col-lg-6">
+															<div class="form-group">
+																<input type="text" name="a_ticket" class="form-control form-control-sm" placeholder="Ticket/Voucher No" value="{{ getInfo[8][loop.index - 1] }}">
+															</div>
+														</div>
+													</div>											
+													<div class="form-group">
+														<input type="text" name="a_clientname" class="form-control form-control-sm" placeholder="Enter client name" value="{{ getInfo[9][loop.index - 1] }}">
+													</div>
+													<div class="form-group">
+														<textarea class="form-control form-control-sm" name="a_details" style="height: 100px;" placeholder="Enter Description">{{ getInfo[7][loop.index - 1] }}</textarea>
+													</div>
+													<div class="form-group">
+														<div class="row">
+															<div class="col-12">
+																<button type="button" class="btn btn-sm btn-danger mt-1 pull-right remove" onclick="remove('a_itemlist_{{i[0]}}')"><i class="fa fa-trash"></i></button>
+															</div>
+														</div>
+													</div>
+												</div>
+											{% endfor %}
+										{% endif %}
+										
+									{% endfor %}
+
+									
+								{% else %}
+									<div class="col-xs-12 col-md-4 p-2 a_itemlist" style="border:1px solid lightgrey">
+										<div class="row">
+											<div class="col-xs-12 col-lg-6">
+												<div class="form-group">
+													<input type="text" name="a_pnr" class="form-control form-control-sm form-control form-control-sm-sm" placeholder="Enter PNR">							
+												</div>
+											</div>
+											<div class="col-xs-12 col-lg-6">
+												<div class="form-group">
+													<input type="text" name="a_ticket" class="form-control form-control-sm" placeholder="Ticket/Voucher No">
+												</div>
+											</div>
+										</div>
+										
+										
+										<div class="form-group">
+											<input type="text" name="a_clientname" class="form-control form-control-sm" placeholder="Enter client name">
+										</div>
+										<div class="form-group">
+											<textarea class="form-control form-control-sm" name="a_details" style="height: 100px;" placeholder="Enter Description"></textarea>
+										</div>
+									</div>
+								{% endif %}
+								</div>
+								<div class="row mt-3">
+									<div class="col-12">
+										<button type="button" class="btn btn-primary btn-sm a_insertitem"><i class="fa fa-plus"></i> Add Item</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<hr>
+					<div class="row mt-3">
+						<div class="col-xs-12 col-lg-4">
+							<div class="form-group fileds">
+								<small><b>Do you want a copy of your response?</b></small>
+								<select class="form-control form-control-sm col-3" required name="mailcopy">
+									<option selected value="No">No</option>
+									<option value="Yes">Yes</option>
+								</select>
+							</div>
+							<div class="form-group">
+								<button type="submit" name="submit" value="send" class="btn btn-sm btn-success submit">Submit Report</button>	
+								<button type="submit" name="submit" value="draft" class="btn btn-sm btn-dark submit">Save as Draft</button>						
+							</div>
+						</div>
+					</div>
+					
+				</div>
+			</div>
+	</form>
+
+	<div class="row mt-5">
+		<div class="col-xs-12 col-md-12">
+			<footer>
+				<p class="pull-center">
+					<small>BUSINESS TRAVEL MANAGEMENT</small> <br>
+					<small><b>&copy; {{ year }}</b></small>
+
+				</p>
+				<p></p>
+			</footer>
+		</div>
+	</div>
+</div>
+
+
+<style>
+	.container{
+		font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",
+                    Roboto,"Helvetica Neue",Arial,"Noto Sans",
+                    sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+	}
+	.banner{
+		text-align: ;
+		padding: 10px;
+		background: grey;
+		border:1px solid #f8f8f8;
+	}
+	.banner img{
+		height: 50px;
+		float: left;
+		margin-right: 10px;
+	}
+	.banner h4, .banner h6{
+		color: white
+	}
+	.det{
+		padding: 5px;
+	}
+	.sectionbox{
+		margin-top: 5px;
+		padding: 10px;
+	}
+	.sectionbox header{
+		font-weight: bold;
+		padding-bottom: 3px;
+		border-bottom: 1px solid grey;
+		margin-bottom: 10px;
+	}
+	.sectioninner-top{
+		margin-top: 20px;
+	}
+	.element{
+		margin:10px;
+	}
+	.inner{
+		padding-left: 0px;
+		margin-left: 0px;
+	}
+	
+</style> 
+
+
+<script>
+	$(document).ready(function () {
+		$('.insertitem').click(function () {
+			value = $('.itemlist').length + 1;
+			elem_value = value - 1;
+
+			block = `<div class="col-xs-12 col-md-4 p-2 itemlist" style="border:1px solid lightgrey" id="`+value+`">
+								<div class="form-group">
+									<input type="text" name="pnr" class="form-control form-control-sm" placeholder="Enter PNR">
+								</div>
+								<div class="form-group">
+									<input type="text" name="clientname" class="form-control form-control-sm" placeholder="Enter client name">
+								</div>
+								<div class="form-group">
+									<textarea class="form-control form-control-sm" name="details" style="height: 100px;" placeholder="Enter Description"></textarea>
+								</div>
+								<div class="form-group">
+									<div class="row">
+										<div class="col-xs-12 col-lg-6">
+											<label for="future"><small>Future Date (Optional)</small></label>
+											<input type="date" name="future" class="form-control form-control-sm">
+										</div>
+										<div class="col-xs-12 col-lg-6">
+											<button type="button" class="btn btn-sm btn-danger mt-4 pull-right remove" onclick="remove(`+value+`)"><i class="fa fa-trash"></i></button>
+										</div>
+									</div>
+								</div>
+							</div>`;
+
+			$('#elements').append(block);
+		});
+
+		$('.a_insertitem').click(function () {
+			value = $('.a_itemlist').length + 1;
+			name = 223;
+			id = value+name;
+
+			block = `<div class="col-xs-12 col-md-4 p-2 a_itemlist" id="`+id+`" style="border:1px solid lightgrey">
+										<div class="row">
+											<div class="col-xs-12 col-lg-6">
+												<div class="form-group">
+													<input type="text" name="a_pnr" class="form-control form-control-sm" placeholder="Enter PNR">							
+												</div>
+											</div>
+											<div class="col-xs-12 col-lg-6">
+												<div class="form-group">
+													<input type="text" name="a_ticket" class="form-control form-control-sm" placeholder="Ticket/Voucher No">
+												</div>
+											</div>
+										</div>
+										
+										
+										<div class="form-group">
+											<input type="text" name="a_clientname" class="form-control form-control-sm" placeholder="Enter client name">
+										</div>
+										<div class="form-group">
+											<textarea class="form-control form-control-sm" name="a_details" style="height: 100px;" placeholder="Enter Description"></textarea>
+										</div>
+										<div class="form-group">
+											<div class="row">
+												<div class="col-12">
+													<button type="button" class="btn btn-sm btn-danger mt-1 pull-right remove" onclick="remove(`+id+`)"><i class="fa fa-trash"></i></button>
+												</div>
+											</div>
+										</div>
+									</div>`;
+
+			$('#a_elements').append(block);
+		});
+
+		/*$('.submit').click(function () {
+			document.getElementById('loader').style.display = 'block';
+		})*/
+	});
+
+	function value(){
+		return $('.itemlist').length + 1;
+	}
+	
+	function remove(getname){
+		document.getElementById(getname).remove();
+		
+	}
+</script>

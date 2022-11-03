@@ -1,0 +1,167 @@
+{% extends "layout.html" %}
+{% block content %}
+
+            <div class="overview_table">
+              <h6>Appraisal Variance</h6>
+              <br>
+                <div class="row">
+                    <div class="col-xs-12 col-md-4">
+                        {% if edit != '' %}
+                        <form action="{{url_for('performance.update_var', editid=edit[0])}}" method="post">
+                            <div class="form-group">
+                                <label for="name">Name</label>
+                                <input type="text" name="category" class="form-control" autocomplete="off"
+                                        required value="{{edit[1]}}">
+                                <input type="hidden" name="oldname" value="{{ edit[1] }}">
+                            </div>
+                            <div class="form-group">
+                                <label for="score">Point</label>
+                                <input type="number" name="score" class="form-control" autocomplete="off"
+                                        required value="{{edit[2]}}">
+                            </div>
+                            <div class="form-group">
+                                <label for="desc">Description</label>
+                                <textarea name="note" style="resize:none; height: 100px;" class="form-control" >{{edit[3]}}</textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="tag">Condition</label>
+                                <select name="tag" class="form-control" required>
+                                    {% if edit[4] == 1 %}
+                                        {% set label = 'Positive' %}
+                                    {% else %}
+                                        {% set label = 'Negative' %}
+                                    {% endif %}
+                                    <option selected value="{{edit[4]}}">{{label}}</option>
+                                    <option disabled>--Select Option--</option>
+                                    <option value="1">Positive</option>
+                                    <option value="0">Negative</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <a href="{{ url_for('performance.variance') }}" class="btn btn-light btn-sm">Cancel</a>
+                                <button type="submit" class="btn btn-sm btn-primary">Update</button>
+                            </div>
+                        </form>
+                        {% else %}
+                        <form action="{{url_for('performance.variance')}}" method="post">
+                            <div class="form-group">
+                                <label for="name">Name</label>
+                                <input type="text" id="name" name="category" class="form-control" autocomplete="off"
+                                required>
+                            </div>
+                            <div class="form-group">
+                                <label for="score">Point</label>
+                                <input type="number" id="score" name="score" class="form-control" autocomplete="off"
+                                required>
+                            </div>
+                            <div class="form-group">
+                                <label for="desc">Description</label>
+                                <textarea name="note" id="desc" style="resize:none; height: 100px;" class="form-control"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="tag">Condition</label>
+                                <select name="tag" id="tag" class="form-control" required>
+                                    <option selected disabled>--Select Option--</option>
+                                    <option value="1">Positive</option>
+                                    <option value="0">Negative</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-sm btn-flat btn-primary btn-block">Add</button>
+                            </div>
+                        </form> 
+                        {% endif %}
+                    </div>
+
+                    {% if var %}
+                    <div class="col-xs-12 col-md-6 offset-md-1">
+                        <div class="var_names">
+                            <h5>Variation List</h5>
+                            <table class="table table-hover table-stripped table-sm">
+                                <thead>
+                                    <th>Name</th>
+                                    <th>Description</th>
+                                    <th>Point</th>
+                                    <th></th>
+                                </thead>
+                                <tbody>
+                                    {% for lst in var %}
+                                    <tr>
+                                        <th>{{lst[1] | replace_dash}}</th>
+                                        <td>{{lst[3]}}</td>
+                                        {% if lst[4] == 0 %}
+                                            {% set sign = '-' %}
+                                        {% else %}
+                                            {% set sign = '+' %}
+                                        {% endif %}
+                                        <td><span>{{sign}}</span> {{lst[2]}}</td>
+                                        <td>
+                                            <a href="{{url_for('performance.variance', edit=lst[0])}}" class="btn btn-secondary btn-sm">
+                                                <i class="fa fa-edit"></i>
+                                            </a>
+                                            <span class="btn btn-danger btn-sm deletevariance" id="deletevariance_{{lst[0]}}" data-deleteid="{{lst[0]}}" data-name="{{lst[1]}}">
+                                                <i class="fa fa-trash"></i>
+                                            </span>
+
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+
+                <div class="modal fade" id="deletevariance">
+                    <div class="modal-dialog modal-sm">
+                      <div class="modal-content">
+
+                        <!-- Modal Header -->
+                        <div class="modal-header">
+                          <h5 class="modal-title">Delete Variance</h5>
+                          <!-- <span type="button" class="close" data-dismiss="modal">&times;</span> -->
+                        </div>
+
+                        <!-- Modal body -->
+                        <div class="modal-body">
+                          <h6><b>Note that some information may be dependent on the variance.</b></h6>
+                          <h5>Do you want to PROCEED?</h5>
+                        </div>
+
+                        <!-- Modal footer -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal">Cancel</button>
+                            <span id="btndel"></span>
+                        </div>
+
+                      </div>
+                    </div>
+                </div>
+{% endblock content %}
+
+
+{% block script %}
+<script>
+    $(document).ready(function () {
+        $('.deletevariance').click(function (e) {
+            var id = $(this).attr('id');
+            delete_id = document.getElementById(id).dataset.deleteid;
+            delete_name = document.getElementById(id).dataset.name;
+
+            deletebtn = '<a class="btn btn-danger btn-sm" href="{{url_for("performance.variance", delete="del_id", name="delete_name")}}"> Yes </a>';
+            deletebtn = deletebtn.replace('del_id', delete_id);
+            deletebtn = deletebtn.replace('delete_name', delete_name);
+
+
+            document.getElementById('btndel').innerHTML = deletebtn;
+
+
+            $('#deletevariance').modal('show');
+        })
+    })
+    $('#overview').dataTable();
+</script>
+{% endblock %}

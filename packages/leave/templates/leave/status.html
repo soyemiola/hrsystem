@@ -1,0 +1,194 @@
+{% extends "layout.html" %}
+{% block content %}
+
+				<h4>Leave Request Status</h4>
+				<div class="leaverequest" id="leaverequest">
+					<table id="list" class="table table-sm" width="100%">
+						<thead>
+							<th>Employee Name</th>
+							<th>Department</th>
+							<th>Leave Type</th>
+                            <th>Status</th>
+                            <th>Date Requested</th>
+                            <th>Tools</th>
+						</thead>
+						<tbody>
+						{% for lst in status %}
+							{% if lst[3] == 'Pending' %}
+								{% set class = 'info' %}
+								{% set label = 'Pending' %}
+							{% elif lst[3] == 'Approved' %}
+								{% set class = 'primary' %}
+								{% set label = 'Approved' %}
+							{% elif lst[3] == 'Declined' %}
+								{% set class = 'danger' %}
+								{% set label = 'Declined' %}
+							{% elif lst[3] == 'Completed' %}
+								{% set class = 'success' %}
+								{% set label = 'Completed' %}
+							{% elif lst[3] == 'Deleted' %}
+								{% set class = 'danger' %}
+								{% set label = 'Leave Cancelled' %}
+							{% else %}
+								{% set class = '' %}
+							{% endif %}
+							<tr>
+								<td>{{lst[0]}}</td>
+								<td>{{lst[1]}}</td>
+								<td>{{lst[2]}}</td>
+								<td>
+									<span class="btn-{{class}} btn-sm">{{label}}</span>
+								</td>
+                                <td>
+                                	{{ lst[6] }}
+                                </td>
+                                <td>
+                                	{% if lst[3] != 'Deleted' %}
+                                	<button class="btn btn-sm btn-primary status_details" id="detailsbtn_{{lst[5]}}" data-id="{{lst[5]}}">Details</button>
+                                	{% endif %}
+                                </td>
+							</tr>
+						{% endfor %}
+						</tbody>
+					</table>
+					
+				</div>
+
+				<!-- Leave details -->
+				<div class="leaverequest" id="status-info">
+					<div class="status_info">
+						<div class="row">
+							<div class="col-xs-12 col-md-5">
+								<div class="statusfield">
+									<p>
+										<b>Name: </b><span id="statusname_name"></span>
+									</p>
+									<p>
+										<b>Department: </b><span id="statusname_dept"></span>
+									</p>
+									<p>
+										<b>Leave Type: </b><span id="statusname_leave"></span>
+									</p>
+									<p>
+										<b>Date Requested: </b><span id="status_request_date"></span>
+									</p>
+									<p>
+										<b>Start date: </b><span id="statusname_start"></span> <b>End Date: </b><span id="statusname_end"></span>
+									</p>
+									<p>
+										<b>Allowance: </b> <span id="statusname_allowance"></span> <br> 
+										<small><i class="fa fa-info"></i>
+											<span id="alterbtn"></span>
+										</small>
+									</p>
+									<p>
+										<b>Handover Note</b><span id="handovernote"></span>
+									</p>
+									<br><br>
+									<p>
+										<button class="btn btn-sm btn-danger close_status">Close</button>
+									</p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				{% include 'leave/leavemodal.html' %}
+
+
+<style type="text/css">
+	#status-info{
+		display: none;
+	}
+	#leaverequest{
+		display: block;
+	}
+	.actionbtn{
+		cursor: pointer;
+	}
+</style>
+{% endblock content %}
+
+
+{% block script %}
+<script>
+	$(document).ready(function(){
+		$('.status_details').click(function() {
+			var getID = $(this).attr('id'),
+				id = document.getElementById(getID).dataset.id;
+
+			$.ajax({
+				method: 'post',
+				url: 'requestlist',
+				data: {id:id},
+
+				beforeSend: function(){
+					document.getElementById(getID).innerHTML = 'fetching record...';
+				},
+				success: function (data){
+					document.getElementById('statusname_name').innerHTML = data[0];
+					document.getElementById('statusname_dept').innerHTML = data[11];
+					document.getElementById('statusname_leave').innerHTML = data[1];
+					document.getElementById('statusname_start').innerHTML = data[3];
+					document.getElementById('statusname_end').innerHTML = data[4];
+					document.getElementById('statusname_allowance').innerHTML = data[22];
+					document.getElementById('Aleaveid').value =  data[13];
+					document.getElementById('status_request_date').innerHTML =  data[9];
+
+					if (data[12] != 'Declined') {
+						if (data[23] == 'No') {
+							if (data[22] == 'No') {
+								info = '<b> click <a class="actionbtn" data-target="#allowance" data-toggle="modal">here</a> to action allowance for employee</b>';
+								document.getElementById('allowanceStatus').innerHTML = 'action';
+								document.getElementById('alterbtn').innerHTML = info;
+								document.getElementById('allowanceStat').value =  'Yes';
+							}else if (data[22] == 'Yes') {
+								info = '<b> click <a class="actionbtn" data-target="#allowance" data-toggle="modal">here</a> to cancel allowance for employee</b>';
+								document.getElementById('allowanceStatus').innerHTML = 'cancel';
+								document.getElementById('alterbtn').innerHTML = info;
+								document.getElementById('allowanceStat').value =  'No';
+							}
+						}else{
+							document.getElementById('alterbtn').innerHTML = "Allowance received.";
+						}
+					}else{
+						document.getElementById('alterbtn').innerHTML = "Leave request declined";
+					}
+
+					if(data[24]){
+						handover = '<a href={{url_for("static", filename="handover/docx")}} target="_blank">View Handover Note</a>';
+						handover = handover.replace('docx', data[24]);
+						document.getElementById('handovernote').innerHTML = handover;
+					}else{
+						document.getElementById('handovernote').innerHTML = '<i class="fa fa-info-circle"></i> No Handover submitted';
+					}
+				},
+
+				complete: function(){
+					document.getElementById(getID).innerHTML = 'Details';
+					document.getElementById('leaverequest').style.display = 'none';
+					document.getElementById('status-info').style.display = 'block';
+				}
+			});
+		});
+
+
+		$('.close_status').click(function() {
+			document.getElementById('statusname_name').innerHTML = '';
+			document.getElementById('statusname_dept').innerHTML = '';
+			document.getElementById('statusname_leave').innerHTML ='';
+			document.getElementById('statusname_start').innerHTML = '';
+			document.getElementById('statusname_end').innerHTML = '';
+			document.getElementById('statusname_allowance').innerHTML = '';
+			document.getElementById('alterbtn').innerHTML = '';
+
+			document.getElementById('status-info').style.display = 'none';
+			document.getElementById('leaverequest').style.display = 'block';
+		});
+
+
+		$('#list').DataTable();
+	});
+</script>
+{% endblock %}

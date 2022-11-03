@@ -1,0 +1,27 @@
+{% include 'header.html' %}
+{% include 'scripts.html' %}
+
+<div class="container">
+	<div class="row">
+		<div class="col-xs-12 col-lg-12">
+            <div class="error-template">
+                <h1>
+                    Oops!</h1>
+                <h2>
+                    404 Not Found</h2>
+                <div class="error-details">
+                    Sorry! The requested URL was not found on the server. <br> If you entered the URL manually please check your spelling and try again.
+                </div>
+                <div class="error-actions">
+                    <a href="{{url_for(path)}}" class="btn btn-primary btn-lg"><span class="glyphicon glyphicon-home"></span>
+                        Homepage </a>
+            </div>      
+        </div>
+	</div>
+</div>
+
+<style>
+	.error-template {padding: 40px 15px;text-align: center;}
+	.error-actions {margin-top:15px;margin-bottom:15px;}
+	.error-actions .btn { margin-right:10px; }
+</style>

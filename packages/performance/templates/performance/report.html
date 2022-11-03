@@ -1,0 +1,145 @@
+{% extends "layout.html" %}
+{% block content %}
+
+            <div class="report_table">
+              <h6>Appraisal Report </h6>
+              
+              <div class="">
+                <form action="" method="post">
+                 <div class="">
+                    <div class="row">
+                      <div class="col-xs-12 col-md-3">
+                        <div class="form-group">
+                          <label>select department:</label>
+                          <select class="form-control dept" name="department" id="department" required>
+                            <option selected disabled>--choose department--</option>
+                            {% if department %}
+                              {% for dept in department %}
+                                <option value="{{ dept[0] }}">{{ dept[0] }}</option>
+                              {% endfor %}
+                            {% endif %}
+                          </select>
+                        </div>
+                      </div>
+                      <div class="col-xs-12 col-md-3">
+                        <div class="form-group">
+                          <label>from:</label> 
+                          <input type="date" name="from" class="form-control" required>
+                        </div>
+                      </div>
+                      <div class="col-xs-12 col-md-3">
+                        <div class="form-group">
+                          <label>to:</label>
+                          <input type="date" name="to" class="form-control">
+                        </div>
+                      </div>
+                      <div class="col-xs-12 col-md-3">
+                        <div class="form-group">
+                          <label style="visibility: hidden;">filter</label>
+                          <button type="submit" class="btn btn-sm btn-flat btn-primary btn-block">Fetch Record</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+                <div class="row">
+                  <div class="col-12">
+                    {% if info %}
+                      <i><span class="info"> showing result <b>From:</b> {{info[0]}} <b>To:</b> {{info[1]}}</span></i>
+                    {% endif %}
+                  </div>
+                </div>
+                <hr>  
+              </div>
+
+              <div class="record_view">
+                {% if result %}
+                <h5 style="border-bottom: 1px solid darkgrey; font-weight:bold; margin-bottom: 5px;">Record Details</h5>
+                <div class="row">
+                  <div class="col-xs-12 col-md-6">
+                    <div class="report_graph" id="report_graph">
+                      <canvas id="canvas" height="300" width="500"></canvas>
+                      <p id="deptname"></p>
+                    </div>
+                  </div>
+                  
+                  <div class="col-xs-12 col-md-4">
+                    <div class="report_graph" id="report_graph">
+                      <h5>PERFORMANCE DETAILS</h5>
+
+                      <table class="table tabe-stripped table-hover table-responsive">
+                        <thead>
+                          <th>Names</th>
+                          <th>Review Score</th>
+                          <th>Total Score</th>
+                        </thead>
+                        <tbody>
+                          {% for det in result %}
+                          <tr>
+                            <td>{{ det[0] }}</td>
+                            <td>{{ det[2] }}%</td>
+                            <td>{{ det[3] }}%</td>
+                          </tr>
+                          {% endfor %}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+                  {% endif %}
+              </div>
+            </div>
+
+<style>
+  
+  .record_view{
+    margin: 10px;
+    padding-top: 20px;
+  }
+ 
+  span.info{
+    float: right;
+  }
+</style>
+{% endblock content %}
+
+{% block script %}
+<script>
+
+    var barChartData = {
+      labels : [{% if label %}
+                  {% for name in label %}
+                    '{{ name }}',
+                  {% endfor %}
+                {% endif %}],
+      datasets : [
+        {
+          label: "Hello World",
+          fillColor : "rgba(93, 173, 226,0.5)",
+          strokeColor : "rgba(93, 173, 226, 0.8)",
+          pointColor : "rgba(93, 173, 226, 0.75)",
+          pointStrokeColor : "#fff",
+          pointHighlightFill : "#fff",
+          pointHighlightStroke : "rgba(220,220,220,1)",
+          data : [{% if values %}
+                    {% for value in values %}
+                      '{{ value }}',
+                    {% endfor %}
+                  {% endif %}]
+        }
+      ]
+
+    };
+
+  window.onload = function(){
+    var ctx = document.getElementById("canvas").getContext("2d");
+    window.myBar = new Chart(ctx).Bar(barChartData, {
+            responsive : true
+    });
+
+    $('#deptname').innerHTML('{{ dept }}');
+
+ 
+  };
+</script>
+{% endblock %}

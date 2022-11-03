@@ -1,0 +1,206 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="" id="bank_summary" style="display:block">
+			 <h6><i class="fa fa-newspaper-o"></i> Reports</h6>
+			 <ul class="bodymenu">
+				 <li>
+					 <a href="#" class="active">PFA Report</a>
+				 </li>
+			 </ul>
+			 <div class="bodycontent">
+				 <div class="filterbox" style="border-left:1px solid grey; padding: 10px 15px;">
+					 <header>Filter Search:</header>
+					 <form action="{{url_for('report.pfareport')}}" method="post">
+						 <div class="row">
+							 <div class="col-xs-12 col-md-2 col-xl-2">
+								 <div class="">
+									 <select name="pfaname" id="pfaname" class="form-control">
+										 <option selected disabled>--Select PFA--</option>
+										 <option>All PFA</option>
+										 {% for pfa in pfas %}
+										 <option>{{pfa[1]}}</option>
+										 {% endfor %}
+									 </select>
+								 </div>
+							 </div>
+							 <div class="col-xs-12 col-md-2 col-xl-2">
+								 <div class="">
+									 <select name="month" id="month" class="form-control">
+										 <option selected disabled>--Select Month--</option>
+										 {% for month in months %}
+										 {% if month != '' %}
+										 <option value="{{ month }}">{{month }}</option>
+										 {% endif %}
+										 {% endfor %}
+									 </select>
+								 </div>
+							 </div>
+							 <div class="col-xs-12 col-md-2 col-xl-2">
+								 <div class="">
+									 <select name="year" id="year" class="form-control">
+										 <option selected disabled>--Select Year--</option>
+										 {% for year in years %}
+										 <option>{{year}}</option>
+										 {% endfor %}
+									 </select>
+								 </div>
+							 </div>
+						 </div>
+
+						 <div class="row">
+							 <div class="col-xs-12 col-md-2" style="padding: 10px 15px">
+								 <div class="">
+									 <button type="submit" class="btn btn-primary btn-flat btn-sm" style="margin:0px">
+										 Fetch Record
+									 </button>
+								 </div>
+							 </div>
+						 </div>
+					 </form>
+				 </div>
+				 {% if dsp != '' %}
+				 <div class="row" style="margin-top: 30px;">
+					 <div class="col-12">
+						 <div class="mpay" style=" margin-bottom: 20px">
+							 <header>{{Tsummary['month'] }} Pension Report </header>
+							 <div class="boxinfo">
+								 <table class="table" style="width:100%">
+									 <thead>
+										 <th>Company Name</th>
+										 <th>No of Employees</th>
+										 <th>Employees Savings</th>
+										 <th>Employer Savings</th>
+										 <th>Total</th>
+										 <th></th>
+									 </thead>
+									 <tbody>
+									 {% if Tsummary != '' %}
+									 	{% set total = Tsummary['summary'][1] + Tsummary['summary'][2] %}
+									 <tr>
+										 <td>{{Tsummary['pfaname']}}</td>
+										 <td>{{Tsummary['summary'][0]}}</td>
+										 <td>N{{Tsummary['summary'][1] | numberFormat}}</td>
+										 <td>N{{Tsummary['summary'][2] | numberFormat}}</td>
+										 <td>N{{ total | numberFormat }}</td>
+										 <td>
+											 <a class="fa fa-bars openlist"
+												style="margin-right:20px; text-decoration:none; cursor:pointer"
+												title="showlist">
+
+											 </a>
+											 <a target="_blank" href="{{url_for('report.pfa_report_pdf', name=Tsummary['pfaname'],
+											 month=Tsummary['month'], year=Tsummary['year'])}}"
+												style="text-decoration:none; cursor:pointer; margin-right:10px;"
+												   class="fa fa-print" title="print report"> PDF
+												</a>
+											 <a id="pfabtn" class="fa fa-file-excel-o" style="cursor: pointer"> Excel</a>
+										 </td>
+									 </tr>
+									 {% endif %}
+									 </tbody>
+								 </table>
+							 </div>
+						 </div>
+					 </div>
+				 </div>
+				 {% endif %}
+			 </div>
+		 </div>
+
+		<div class="container" id="banklist" style="display: none">
+			<h6><a class="fa fa-arrow-circle-left closelist"></a> Pension Monthly Report
+				<span style="float:right; margin-right: 5%">
+					<a target="_blank" href="{{url_for('report.pfa_report_pdf', name=Tsummary['pfaname'], month=Tsummary['month'],
+					year=Tsummary['year'])}}" style="text-decoration:none; cursor:pointer; margin-right:10px;"
+					   class="fa fa-print" title="print report"> PDF
+					</a>
+					<a id="pfabtn-1" class="fa fa-file-excel-o" style="cursor: pointer"> Excel</a>
+				</span>
+			</h6>
+			<br>
+			<div class="">
+				<div class="row">
+					<div class="col-11">
+						<table id="pfareport" class="table table-sm table-responsive">
+							<thead>
+								<th>Staff ID</th>
+								<th>Employees</th>
+								<th>Month</th>
+								<th>PFA Name</th>
+								<th>Pension Number</th>
+								<th>Employee Savings</th>
+								<th>Employer Savings</th>
+								<th>Total</th>
+							</thead>
+							<tbody>
+							{% for report in dsp %}
+								{% set total = report[3] + report[6] %}
+							<tr>
+								<td>{{ report[7] }}</td>
+								<td>{{report[0]}}</td>
+								<td>{{report[1] }}</td>
+								<td>{{report[4]}}</td>
+								<td>{{report[5]}}</td>
+								<td>{{report[3] | numberFormat}}</td>
+								<td>{{report[6] | numberFormat}}</td>
+								<td>{{total | numberFormat}}</td>
+							</tr>
+							{% endfor %}
+							{% if Tsummary != '' %}
+							<tr>
+								<th colspan="5">Sub-total</th>
+								<th>{{Tsummary['summary'][1] | numberFormat }}</th>
+								<th>{{Tsummary['summary'][2] | numberFormat }}</th>
+							</tr>
+							{% endif %}
+							<tr>
+								<th colspan="6">Total</th>
+								<th>{{total | numberFormat}}</th>
+							</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+
+{% endblock content %}
+
+
+{% block script %}
+<script>
+    $(document).ready(function(){
+        $('.openlist').click(function(){
+            document.getElementById('bank_summary').style.display = 'none';
+            document.getElementById('banklist').style.display = 'block';
+        });
+
+        $('.closelist').click(function(){
+            document.getElementById('bank_summary').style.display = 'block';
+            document.getElementById('banklist').style.display = 'none';
+        });
+    });
+</script>
+<script>
+	var wb = XLSX.utils.table_to_book(document.getElementById('pfareport'), {sheet:'Sheet Js'});
+
+	var wbout = XLSX.write(wb, {bookType: 'xlsx', bookSST:true, type: 'binary' });
+
+	function s2ab(s){
+		var buf = new ArrayBuffer(s.length);
+		var view = new Uint8Array(buf);
+		for(var i=0; i<s.length; i++) view[i] = s.charCodeAt(i) & 0xFF;
+		return buf;
+	}
+
+	$('#pfabtn').click(function(){
+		saveAs(new Blob([s2ab(wbout)], {type: 'application/octet-stream'}), 'test.xlsx')
+	});
+
+	$('#pfabtn-1').click(function(){
+		saveAs(new Blob([s2ab(wbout)], {type: 'application/octet-stream'}), 'test.xlsx')
+	});
+
+</script>
+{% endblock %}

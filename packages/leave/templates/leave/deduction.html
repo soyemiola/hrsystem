@@ -1,0 +1,46 @@
+{% extends "layout.html" %}
+{% block content %}
+
+            <div class="">
+                <h6><i class="fa fa-bars fa-sm"></i> Leave Record Details </h6>
+                <div class="bodycontent">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <table id="example" class="table table-stripped table-sm">
+                                <thead>
+                                    <th>Staff Name</th>
+                                    <th>Leave Type</th>
+                                    <th>Deducted Day(s)</th>
+                                    <th>Reason</th>
+                                    <th>Date</th>
+                                    <th>Leave Year</th>
+                                </thead>
+                                <tbody>
+                                    {% if details %}
+                                        {% for i in details %}
+                                            {% set name = i[1] | getname %}
+                                        <tr>
+                                            <td>{{name }}</td>
+                                            <td>{{i[2]}}</td>
+                                            <td>{{i[3]}}</td>
+                                            <td>{{i[4]}}</td>
+                                            <td>{{i[5]}}</td>
+                                            <td>{{i[6]}}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    {% endif %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+{% endblock content %}
+
+
+{% block script %}
+<script>
+    $('#example').dataTable();
+</script>
+{% endblock %}

@@ -1,0 +1,60 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="">
+            <h6><i class="fa fa-bars"></i> Loan Types</h6>
+            <ul class="bodymenu">
+                <li>
+                    <a href="{{url_for('loans.loantypes')}}" class="active">Loan Types</a>
+                </li>
+                <li>
+                    <a href="{{url_for('loans.createloantype')}}">Add Loan Type</a>
+                </li>
+            </ul>
+            <div class="bodycontent">
+                <div class="row">
+                    <div class="col-xs-12 col-md-12 category_list">
+                        <table id="example" class="table table-striped table-bordered table-sm" style="width:100%">
+                            <thead>
+                                <th>Loan Type Name</th>
+                                <th>Loan Description</th>
+                                {% if current_user.role == 'AD' %}
+                                <th>Tools</th>
+                                {% endif %}
+                            </thead>
+                            <tbody>
+								{% for ty in typelist %}
+                                <tr>
+                                    <td>{{ty[1]}}</td>
+                                    <td>{{ty[2]}}</td>
+                                    {% if current_user.role == 'AD' %}
+                                    <td width="150px">
+                                        <a href="{{url_for('loans.editloantype', get_id=ty[0])}}"
+                                           class="btn btn-secondary btn-sm btn-flat">
+                                            <i class="fa fa-edit fa-sm" ></i>
+                                            Edit</a>
+                                        <button class="btn btn-danger btn-sm btn-flat" data-toggle='modal' data-target="#deleteloanModal">
+                                            <i class="fa fa-trash" ></i>
+                                            Delete</button>
+                                    </td>
+                                    {% endif %}
+                                </tr>
+								{% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% include 'loans/loanmodal.html' %}
+{% endblock content %}
+
+
+{% block script %}
+<script>
+	$(document).ready(function() {
+		$('#example').DataTable();
+	});
+
+</script>
+{% endblock %}

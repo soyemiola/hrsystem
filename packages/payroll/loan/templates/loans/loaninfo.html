@@ -1,0 +1,159 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="">
+				<h6><i class="fa fa-bars"></i> Loan Details</h6>
+				<ul class="bodymenu">
+					<li>
+						<a href="/admin/list"><small><i class="fa fa-arrow-circle-left"></i> Loan List</small></a>
+					</li>
+					<li>
+						<a href="{{url_for('loans.requests')}}" class="active">Loan Process</a>
+					</li>
+				</ul>
+				<div class="bodycontent">
+					<div class="row">
+
+						<div class="col-xs-12 col-md-4">
+							<div class="loandet">
+								<h5><b>Employee</b> <span class="pull-right">{{ user[1] }}</span></h5>
+								<h5><b>Email</b> <span class="pull-right">{{ user[7] }}</span></h5>
+								<h5><b>Job Title</b> <span class="pull-right">{{ user[6] | upper }}</span></h5>
+								<h5><b>Department</b> <span class="pull-right">{{ user[5] }}</span></h5>
+							</div>
+						</div>
+						<div class="col-xs-12 col-md-2"></div>
+						<div class="col-xs-12 col-md-4">
+							<div class="loandet">
+								<h5><b>Loan ID</b> <span class="pull-right">{{loanrecord[12] }}</span></h5>
+								<h5><b>Loan Type</b> <span class="pull-right">{{loanrecord[2] | upper }}</span></h5>
+								<h5><b>Processed Date</b> <span class="pull-right">{{loanrecord[10]}} / {{loanrecord[11]}}</span></h5>
+								<h5><b>Category</b> <span class="pull-right">{{loanrecord[9] | upper }}</span></h5>
+								
+							</div>
+						</div>
+					</div>
+					<br>
+					
+					<div class="container">
+						<div class="row">
+							<div class="loandet">
+								<div class="det">
+			                        <ul class="nav nav-tabs">
+			                          <li class="nav-item">
+			                            <a class="nav-link active" data-toggle="tab" href="#GENERAL" style="">General</a>
+			                          </li>
+			                          <li class="nav-item">
+			                            <a class="nav-link" data-toggle="tab" href="#EMI">Remaining EMI</a>
+			                          </li>
+			                        </ul>
+
+			                        <!-- Tab panes -->
+			                        <div class="tab-content">
+			                          	<div class="tab-pane container active" id="GENERAL">
+				                          	<div class="row">
+				                          		<div class="col-xs-12 col-md-8">
+				                          			<div class="row">
+				                          				<div class="col-xs-12 col-md-6">
+				                          					<div class="loandet">
+								                          		<table class="table">
+								                          			<tr>
+								                          				<th>Amount</th>
+								                          				<td>
+								                          					<input type="text" name="amount" value="{{loanrecord[3]}}" class="form-control" readonly>
+								                          				</td>
+								                          			</tr>
+								                          			<tr>
+								                          				<th>Rate</th>
+								                          				<td>
+								                          					<input type="text" value="{{loanrecord[5]}}" readonly class="form-control">
+								                          				</td>
+								                          			</tr>
+								                          			<tr>
+								                          				<th>Outstanding</th>
+								                          				<td>
+								                          					<input type="number" name="repayment" class="form-control" readonly value="{{loanrecord[4]}}" readonly>
+								                          					
+								                          				</td>
+								                          			</tr>
+								                          		</table>
+								                          	</div>
+				                          				</div>
+
+				                          				<div class="col-xs-12 col-md-6">
+				                          					<div class="loandet">
+						                          				<table class="table">
+						                          					<tr>
+								                          				<th>Duration (Monthly)</th>
+								                          				<td>
+								                          					<input type="number" name="duration" class="form-control" value="{{loanrecord[6]}}" readonly>
+								                          					
+								                          				</td>
+								                          			</tr>
+								                          			<tr>
+								                          				<th>EMI</th>
+								                          				<td>
+								                          					<input type="number" name="deduction" class="form-control" readonly value="{{loanrecord[7]}}" >
+								                          				</td>
+								                          			</tr>
+						                          				</table>
+						                          			</div>
+				                          				</div>
+				                          			</div>
+				                          			
+				                          		</div>
+				                            </div>
+				                        </div>
+			                        	<div class="tab-pane container fade" id="EMI">
+				                          	
+				                          	<div class="row">
+				                          		<div class="col-xs-12 col-md-10">
+				                          			{% set emi_list = loanrecord[6] | emi_payment(loanrecord[0], loanrecord[1], user[1] ) %}
+				                          			 
+				                          			<table class="table table-hover" id="paymentDetails">
+				                          				<thead>
+				                          					<th>Loan ID</th>
+				                          					<th>Employee</th>
+				                          					<th>Next Emi</th>
+				                          					<th>Amount</th>
+				                          					<th>State</th>
+				                          				</thead>
+				                          				<tbody>
+				                          				{% if emi_list %}
+					                          				{% for emi in emi_list %}
+					                          					{% if emi[4] == 'Paid' %}
+					                          						{% set color = '#00a65a' %}
+					                          					{% else %}
+					                          						{% set color = '#dd4b39' %}
+					                          					{% endif %}
+					                          					<tr style="color: {{ color }}">
+					                          						<td>{{ emi[0] }}</td>
+					                          						<td>{{ emi[1] }}</td>
+					                          						<td>{{ emi[2] }}</td>
+					                          						<td>{{ emi[3] | numberFormat }}</td>
+					                          						<td>{{ emi[4] }}</td>
+					                          					</tr>
+					                          				{% endfor %}
+				                          				{% endif %}
+				                          				</tbody>
+				                          			</table>
+				                          		</div>
+				                          	</div>
+				                        </div>
+			                        </div>
+			                      </div>
+							</div>
+						</div>
+						</div>
+					</form>
+				</div>
+			</div>
+
+{% endblock content %}
+
+
+{% block script %}
+<script>
+	$('#paymentDetails').dataTable();
+</script>
+{% endblock %}

@@ -1,0 +1,131 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="">
+			<h6>Monthly Submission</h6>
+				<ul class="bodymenu">
+					<li>
+						<a href="{{url_for('payroll.filling')}}" class="active">Monthly Submissions</a>
+					</li>
+					<li>
+						<a href="{{url_for('payroll.review')}}" class="">Monthly Review</a>
+					</li>
+
+				</ul>
+				<div class="">
+					<form action="{{ url_for('payroll.filling') }}" method="post" id="filter">
+						<div class="row" style="padding: 0px 5px 0px 5px">
+							<div class="col-xs-12 col-md-12">
+								<h5>Filter Record</h5>
+							</div>
+							<div class="col-xs-12 col-md-3">
+								<div class="form-group">
+									<select class="form-control" id="month" name="month">
+										<option value="0" selected disabled>--select month--</option>
+										{% for mth in month %}
+											{% if mth != '' %}
+											<option data-month={{mth}}>{{ mth }}</option>
+											{% endif %}
+										{% endfor %}
+									</select>
+								</div>
+							</div>
+							<div class="col-xs-12 col-md-3">
+								<div class="form-group">
+									<select class="form-control" id="year" name="year">
+										<option value="0" selected disabled>--select year--</option>
+										{% for yr in year %}
+											<option data-year={{yr}}>{{ yr }}</option>
+										{% endfor %}
+									</select>
+								</div>
+							</div>
+							<div class="col-xs-12 col-md-3">
+								<button class="btn btn-primary btn-sm" type="submit" form="filter">
+									Search
+								</button>
+							</div>
+						</div>
+					</form>
+					
+					{% if filters %}
+					<p class="">
+						<i>showing result for: </i><b>{{ filters[0] }} / {{ filters[1] }}</b>
+					</p>
+					{% endif %}
+					<hr>
+
+					<p class="pull-right">
+						{% if details %}
+							<a href="{{ url_for('payroll.filling', finalize='YES', month=filters[0] , year=filters[1]) }}" class="btn btn-success btn-sm">Finalise all</a>
+						{% endif %}
+						
+					</p>
+
+					<div class="row">
+						<div class="col-xs-12 col-md-12">
+							<div class="fln">
+								<table id="filling" class="table table-hover">
+									<thead>
+										<th>Staff ID</th>
+										<th>Emp. Name</th>
+										<th>Status</th>
+										<th>Date Processed</th>
+										{% if current_user.role == 'AD' %}
+										<th></th>
+										<th>Information</th>
+										{% endif %}
+									</thead>
+									<tbody>
+									{% if details %}
+										{% for emp in details %}
+											<tr>
+												<td>{{ emp[5] }}</td>
+												<td>{{ emp[1] }}</td>
+												<td>
+													{% if emp[3] == 'No' %}
+														{{ 'Pending' }}
+													{% else %}
+														{{ 'Finalise' }}
+													{% endif %}
+												</td>
+												<td>{{ emp[2] }}</td>
+											{% if current_user.role == 'AD' %}
+												<td>
+													{% if emp[3] == "No" %}
+													<a href="{{ url_for('payroll.finalise', get_id=emp[0],
+														month=filters[0] , year=filters[1], page='filling' )}}"
+														class="btn btn-secondary btn-sm btn-flat">Finalise</a>
+													{% endif %}
+												</td>
+													
+												<td>													
+													{% if emp[3] == "No" %}
+														{{'Please finalise'}} {{emp[1]}}
+													{% endif %}
+													
+												</td>
+											{% endif %}
+											</tr>
+										{% endfor %}
+									{% endif %}
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+		</div>
+
+{% endblock content %}
+
+
+{% block script %}
+<script>
+	$(document).ready(function() {
+		$('#filling').DataTable({
+			"iDisplayLength": 50
+		});
+	});
+</script>
+{% endblock %}

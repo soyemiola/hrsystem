@@ -1,0 +1,112 @@
+{% extends "layout.html" %}
+{% block content %}
+
+            <div class="">
+                <h6><i class="fa fa-newspaper-o"></i> Reports</h6>
+                <ul class="bodymenu">
+                    <li>
+                        <a href="{{ url_for('report.reports') }}">Monthly Payslip</a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('report.yearreport') }}" class="active">Payroll</a>
+                    </li>
+                </ul>
+                <div class="bodycontent">
+                    <form action="{{url_for('report.yearreport')}}" method="post">
+                            <div class="row">
+                                <div class="col-xs-12 col-md-2">
+                                    <div class="form-group">
+                                        <label>Search Employee:</label>
+                                        <select name="id" id="emp_name" class="form-control">
+                                            <option selected disabled>--Select Employee--</option>
+                                            {% for emp in emp_list %}
+                                            <option data-id="{{ emp[0] }}" value="{{ emp[0] }}">{{ emp[1] }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <input type="hidden" id="emp_id">
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-md-2">
+                                    <div class="form-group">
+                                        <label>Year:</label>
+                                        <select name="year" id="year" class="form-control">
+                                            <option selected disabled>--Select Year--</option>
+                                            {% for yr in year %}
+                                            <option data-id="" value="{{ yr }}">{{ yr }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-12 col-md-12">
+                                    <div class="form-group">
+                                        <button type="submit" class="btn btn-primary btn-sm" id="">
+                                            Fetch Record
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                        <hr>
+                        <!--Display record in table-->
+                        {% if details %}
+                        <div class="row" id="reportTable">
+                            <div class="col-xs-12 col-md-11 cat_list">
+                                <br>
+                                <h6>
+                                    <b>{{ details.info[0][2] }} Payroll slip</b>
+                                </h6>
+                                    <p id="printbtn" class="pull-right">
+                                        <a href="{{ url_for('report.empYearreport', id=details.info[0][19], year=details.info[0][2] ) }}" target="_blank" class="fa fa-print">
+                                          Print 
+                                        </a>
+                                    </p>
+                                <table id="payrolltable" class="table" >
+                                  <thead>
+                                    <th>Employee name</th>
+                                    <th>Month</th>
+                                    <th>Gross Pay</th>
+                                    <th>Pension</th>
+                                    <th>Tax</th>
+                                    <th>Net Pay</th>
+                                    <th>Take Home</th>
+                                  </thead>
+                                  <tbody>
+                                    {% for info in details.info %}
+                                    <tr>
+                                      <td>{{ info[0] }}</td>
+                                      <td>{{ info[1] }}</td>
+                                      <td>{{ info[6] | numberFormat }}</td>
+                                      <td>{{ info[7] | numberFormat }}</td>
+                                      <td>{{ info[10] | numberFormat }}</td>
+                                      <td>{{ info[11] | numberFormat }}</td>
+                                      <td>{{ info[18] | numberFormat }}</td>
+                                    </tr>
+                                    {% endfor %}
+
+                                    <tr>
+                                      <th colspan="2">Total</th>
+                                      <td>{{ details.sum.gross | numberFormat }}</td>
+                                      <td>{{ details.sum.pension | numberFormat }}</td>
+                                      <td>{{ details.sum.tax | numberFormat }}</td>
+                                      <td>{{ details.sum.workedfor | numberFormat }}</td>
+                                      <td>{{ details.sum.netpay | numberFormat }}</td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        {% endif %}
+                </div>
+            </div>
+
+{% endblock content %}
+
+{% block script %}
+<script>
+   $('#payrolltable').dataTable({
+        "iDisplayLength": 50
+    });
+</script>
+{% endblock %}

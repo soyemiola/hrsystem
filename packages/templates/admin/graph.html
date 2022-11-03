@@ -1,0 +1,519 @@
+<div class="row graphs">
+  <div class="col-xs-12 col-md-6">
+    {% if birthday %}
+    <div class="graphbox" id="monthbox">
+      <div class="canvas empDOB">
+        <h5 id="" class="title">Month Celebrants </h5>
+          <table class="table table-hover">
+              <thead>
+                <th>Staff Name</th>
+                <th>Department</th>
+                <th>DOB</th>
+                <th>Picture</th>
+              </thead>
+              <tbody>
+                {% for emp in birthday %}
+                <tr style="text-align: left;">
+                  <td>{{ emp[1] }}</td>
+                  <td>{{ emp[2] }}</td>
+                  <td>{{ emp[3] }}</td>
+                  <td>
+                    {% if emp[4] %}
+                    <img src="{{ url_for('static', filename='image/'+emp[4]) }}" height="40px">
+                    {% endif %}
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+      </div>
+    </div>
+    {% endif %}
+    <div class="graphbox" id="payrollbox">
+      <div class="canvas">
+        <h5 id="payroll-label" class="title"></h5>
+        <h3 id="payroll-nill" class="title"></h3>
+        <canvas id="payroll" class="payroll" height="150" width="250"></canvas>
+      </div> 
+    </div>
+  </div>
+  <div class="col-xs-12 col-md-6">
+    <div class="row">
+     <!--  <div class="col-xs-12 col-md-6" id="performancebox">
+        <div class="graphbox graphbox-sm">
+          <div class="canvas">
+            <h5 id="performance-label" class="title"></h5>
+              <canvas id="performance" class="performance" height="150" width="300"></canvas>
+          </div>
+          <span class="pull-right">
+            <i class="fa fa-expand" style="cursor: pointer;" onclick="openGraph('performanceBigGraph')" title="Expand Graph"></i>
+          </span>
+        </div>
+      </div> -->
+      <div class="col-xs-12 col-md-6" id="genderbox">
+        <div class="graphbox graphbox-sm">
+          <div class="canvas">
+            <h5 id="gender-label" class="title"></h5>
+            <canvas id="gender" class="gender" width="300" height="230"/>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-xs-12 col-md-6" id="geolocationbox">
+        <div class="graphbox graphbox-sm">
+          <div class="canvas">
+            <h5 id="geolocation-label" class="title"></h5>
+            <canvas id="geolocation" width="300" height="200"/>
+          </div>
+          <span class="pull-right">
+            <i class="fa fa-expand" style="cursor: pointer;" onclick="openGraph('geolocationBigGraph')" title="Expand Graph"></i>
+          </span>
+        </div>
+      </div>
+
+      <div class="col-xs-12 col-md-6" id="turnoverbox">
+        <div class="graphbox graphbox-sm">
+          <div class="canvas">
+            <h5 id="turnover-label" class="title"></h5>
+            <small id="inactiveStaff"></small>
+           {% if terms %}
+            <p class="chart-tag">
+              <i class="fa fa-square color-1"></i> <= 5 years <small class="pull-right">{{ terms.lt_5_val}}</small>
+            </p>
+            <p class="chart-tag">
+              <i class="fa fa-square color-2"></i> > 5 years < 10 years <small class="pull-right">{{terms.gt_5_lt_10_val}}</small>
+            </p>
+            <p class="chart-tag">
+              <i class="fa fa-square color-3"></i> > 10 years < 15years <small class="pull-right">{{terms.gt_10_lt_15_val}}</small>
+            </p>
+            <p class="chart-tag">
+              <i class="fa fa-square color-4"></i> > 15 years <small class="pull-right">{{terms.gt_15_val}}</small>
+            </p>
+           {% endif %}
+            <canvas id="chart-area" width="300" height="200"/>
+          </div>
+          <span class="">
+            <i class="fa fa-expand" style="cursor: pointer;" onclick="openGraph('turnoverBigGraph')" title="Expand Graph"></i>
+          </span>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="row graphs">
+  {% set emp_engage = 5 | honours_year %}
+  {% if emp_engage %}
+  <div class="col-xs-12 col-md-12">
+    <div class="graphbox">
+      <h5 class="title">Staff Roll of Honour </h5>
+      <table class="table table-sm table-hover">
+        <thead>
+          <th>ID</th>
+          <th>Staff Name</th>
+          <th>Department</th>
+          <th>Post</th>
+          <th>Branch</th>
+          <th>Duration</th>
+        </thead>
+        <tbody>
+          {% for eng in emp_engage %}
+          <tr style="text-align: left;">
+            <td>{{ eng[16]}}</td>
+            <td>{{ eng[1] }}</td>
+            <td>{{ eng[5]}}</td>
+            <td>{{ eng[6]}}</td>
+            <td>{{ eng[8]}}</td>
+            <td>{{ eng[9] | year_duration }}</td>
+          </tr>
+          {% endfor %}
+          <tr>
+            <td colspan="6">
+              <a data-toggle="modal" href="#engage" class="btn btn-secondary btn-sm btn-flat pull-right">View All</a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  {% endif %}
+</div>
+
+
+{% set honour = 'all' | honours_year %}
+<!-- The Modal -->
+  <div class="modal modal-lg fade" id="engage">
+    <div class="modal-dialog modal-dialog-centered modal-md">
+      <div class="modal-content">
+      
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">×</button>
+          <h4 class="modal-title"><b>Staff Roll of Honour</b></h4>
+        </div>
+        
+        <!-- Modal body -->
+        <div class="modal-body"> 
+          <table class="table table-sm table-hover" id="honour">
+            <thead>
+              <th>ID</th>
+              <th>Staff Name</th>
+              <th>Department</th>
+              <th>Post</th>
+              <th>Branch</th>
+              <th>Duration</th>
+            </thead>
+            <tbody>
+              {% for eng in honour %}
+              <tr style="text-align: left;">
+                <td>{{ eng[16]}}</td>
+                <td>{{ eng[1] }}</td>
+                <td>{{ eng[5]}}</td>
+                <td>{{ eng[6]}}</td>
+                <td>{{ eng[8]}}</td>
+                <td>{{ eng[9] | year_duration }}</td>
+              </tr>
+              {% endfor %}
+              
+            </tbody>
+          </table>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+
+<style type="text/css">
+  .graphs{    
+    border-top:1px solid lightgrey;
+    padding-bottom: 20px;
+    margin-bottom: 10px;
+  }
+
+  .graphbox{
+    margin-top: 20px;
+    position:relative;
+            -webkit-box-shadow:0 0 10px 5px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1);
+               -moz-box-shadow:0 0 10px 5px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1);
+                    box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    background-color: #fff;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+  }
+  .graphbox-sm{
+    min-height: 250px;
+    max-height: auto;
+  }
+  
+  .canvas{
+    padding: 0px !important;
+  }
+  .title{
+    display: inline-block;
+    font-weight: bold;
+    width: 100%
+  }
+  .title a{
+    font-size: 13px;
+    display: none;
+  }
+  ul.line-legend, ul.bar-legend, ul.pie-legend{
+    text-align: center;
+    padding-left: 0px;
+  }
+  ul.line-legend li, ul.bar-legend li, ul.pie-legend li{
+    list-style-type: none;
+  }
+  .empDOB{
+    border-radius: 0px;
+    border:none;
+    max-height: 300px;
+    overflow-y: scroll;
+  }
+  .empDOB img{
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+  }
+  small#inactiveStaff{
+    position: relative;
+    bottom: 10px;
+    font-weight: bold;
+    color: var(--red)
+  }
+  p.chart-tag{
+    text-align: left;
+  }
+  i.color-1{
+    color: var(--blue)
+  }
+  i.color-2{
+    color: var(--indigo)
+  }
+  i.color-3{
+    color: var(--orange)
+  }
+  i.color-4{
+    color: var(--teal)
+  }
+</style>
+
+
+<script>
+    var vw = '<a href="{{url_for("report.payrollgraph")}}" class="pull-right">view</a>';
+ 
+    var payrollChartData = {
+      labels : [{% if labels %}
+                  {% for item in labels %}
+                    "{{ item }}" ,
+                  {% endfor %}
+                {% endif %}
+              ],
+      datasets : [
+        {
+          label: "{{ legend }} ({{ year }})"+vw,
+          fillColor : "rgba(220,220,220,0.2)",
+          strokeColor : "green",
+          pointColor : "green",
+          pointStrokeColor : "#fff",
+          pointHighlightFill : "#fff",
+          pointHighlightStroke : "rgba(220,220,220,1)",
+          data : [{% if values %}
+                    {% for data in values %}
+                    "{{ data }}",
+                    {% endfor %}
+                  {% endif %}
+                ]
+        }
+      ]
+
+    };
+
+    /*var performanceChartData = {
+        labels : [{% if performance %}
+                    {% for label in performance[0] %}
+                      "{{ label }}",
+                    {% endfor %}
+                  {% endif %}],
+        datasets : [
+            {
+                label: 'Top 10 performance rate',
+                fillColor : "rgba(93, 173, 226,0.5)",
+                strokeColor : "rgba(93, 173, 226,0.8)",
+                highlightFill: "rgba(93, 173, 226,0.75)",
+                highlightStroke: "rgba(93, 173, 226,1)",
+                data : [{% if performance %}
+                    {% for value in performance[1] %}
+                      "{{ value }}",
+                    {% endfor %}
+                  {% endif %}]
+            }
+            
+        ]
+
+    };*/
+
+
+    var genderData = [
+      {% if gender[0] %}
+        {
+          value: '{{ gender[0][1] }}',
+          color:"#F7464A",
+          highlight: "#FF5A5E",
+          label: "{{ gender[0][0] }}"
+        }
+
+      {% endif %}
+      {% if gender[1] %}
+        ,
+        {
+          value: '{{ gender[1][1] }}',
+          color: "#46BFBD",
+          highlight: "#5AD3D1",
+          label: "{{ gender[1][0] }}"
+        }   
+
+      {% endif %}    
+
+      ];
+
+
+    function colorSelect(){
+      const color = ['#FF5A5E', '#5AD3D1', '#FFC870', '#A8B3C5', '#616774']
+      const highlight = ['#4D5360', '#949FB1', '#FDB45C', '#46BFBD', '#F7464A']
+      const rad = Math.floor(Math.random() * color.length);
+      result = [color[rad], highlight[rad]]
+      return result
+    }
+    
+
+    var geoData = [
+      {% if geolocation %}
+        {% for st in geolocation %}
+          {
+            value: "{{ st[1] }}",
+            color: colorSelect()[0],
+            highlight: colorSelect()[0],
+            label: "{{ st[0] }}"
+          },
+
+        {% endfor %}
+
+      {% endif %}
+        
+
+    ];
+
+    var turnOverData = [
+      {% if terms %}
+       
+        {
+          value: parseInt("{{ terms.lt_5 }}"),
+          color:'#007bff',
+          highlight: '#0474ed',
+          label: "<= 5 years"
+        },
+        {
+          value: parseInt("{{ terms.gt5lt10 }}"),
+          color: '#6610f2',
+          highlight: '#4c08bb',
+          label: "> 5 years, < 10 years"
+        },
+        {
+          value: parseInt("{{ terms.gt10lt15 }}"),
+          color: '#fd7e14',
+          highlight: '#b15305',
+          label: "> 10 years, < 15 years"
+        },
+        {
+          value: parseInt("{{ terms.gt15 }}"),
+          color: '#20c997',
+          highlight: '#158060',
+          label: "> 15 years"
+        }
+        {% endif %}
+      ];
+
+  
+
+    
+
+    window.onload = function(){
+        var pr = '{{ labels }}';
+
+        if(pr != 'None'){
+          var box = document.getElementById('payrollbox').style.display = 'block';
+          document.getElementById('payroll-nill').style.display = 'None';
+
+          var ctx = document.getElementById("payroll").getContext("2d");
+          var myLine = new Chart(ctx).Line(payrollChartData, {
+            responsive: true
+          });
+          document.getElementById('payroll-label').innerHTML = myLine.generateLegend();
+        }else{
+          var box = document.getElementById('payrollbox').style.display = 'none';
+          document.getElementById('payroll-nill').style.display = 'block';
+          document.getElementById('payroll-nill').innerHTML = 'No Process payroll yet!';
+        }       
+
+        /*var perform = '{{ performance }}';
+        if (perform != 'None') {
+          var box = document.getElementById('performancebox').style.display = 'block';
+          var performance = document.getElementById("performance").getContext("2d");
+          var myBar = new Chart(performance).Bar(performanceChartData, {
+              responsive : true
+            });
+
+          
+          var performance_b = document.getElementById("performance_big").getContext("2d");
+          var myBar = new Chart(performance_b).Bar(performanceChartData, {
+              responsive : true
+            });
+
+            document.getElementById('performance-label').innerHTML = myBar.generateLegend();
+        }else{
+          var box = document.getElementById('performancebox').style.display = 'none';
+        }*/
+
+        var gender = '{{ gender }}';
+        if (gender != 'None'){
+          var box = document.getElementById('genderbox').style.display = 'block';
+          var ctx = document.getElementById("gender").getContext("2d");
+          myPie = new Chart(ctx).Pie(genderData, {
+            responsive: true
+          });
+          document.getElementById('gender-label').innerHTML = 'Staff Demography';
+        }else{
+          var box = document.getElementById('genderbox').style.display = 'none';
+        }
+
+        var geolocation = '{{geolocation}}';
+        if (geolocation != 'None') {
+          var box = document.getElementById('geolocationbox').style.display = 'block';
+          var ctx = document.getElementById("geolocation").getContext("2d");
+          var myPolarArea = new Chart(ctx).PolarArea(geoData, {
+            responsive:true
+          });
+
+          /* Big Graph */
+
+          var ctx_b = document.getElementById("geolocation_big").getContext("2d");
+          var myPolarArea = new Chart(ctx_b).PolarArea(geoData, {
+            responsive:true
+          });
+          document.getElementById('geolocation-label').innerHTML = 'Geolocation';
+        }else{
+          var box = document.getElementById('geolocationbox').style.display = 'none';
+        }
+
+        var terms = '{{terms}}';
+        if (terms != 'None') {
+          var box = document.getElementById('turnoverbox').style.display = 'block';
+          var ctx = document.getElementById("chart-area").getContext("2d");
+          var myDoughnut = new Chart(ctx).Doughnut(turnOverData, {
+            responsive : true
+          });
+
+
+          document.getElementById('turnover-label').innerHTML = 'Average Staff Turnover {{ year }}';
+          document.getElementById('inactiveStaff').innerHTML = '{{ terms.perc }} % of Total Staff';
+
+          /*Big Chart*/
+
+          var ctx_big = document.getElementById("turnoverbox_big").getContext("2d");
+          var myDoughnut = new Chart(ctx_big).Doughnut(turnOverData, {
+            responsive : true
+          });
+
+          document.getElementById('turnover-label_big').innerHTML = 'Average Staff Turnover {{ year }}';
+          document.getElementById('inactiveStaff_big').innerHTML = '{{ terms.perc }} % of Total Staff';
+          
+          
+        }else{
+          var box = document.getElementById('turnoverbox').style.display = 'none';
+        }
+
+        
+    }
+
+    function openGraph(id){
+      document.getElementById(id).style.height = '100%';
+    }
+
+    function closeNav(id){
+      document.getElementById(id).style.height = '0%';
+    }
+</script>
+
+<script>
+  $(document).ready(function() {
+    var table = $('#honour').dataTable({
+      'ordering': false
+    });
+    
+
+  })
+</script>

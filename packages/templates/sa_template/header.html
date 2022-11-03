@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>HR System</title>
+    <!-- Tell the browser to be responsive to screen width -->
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <!-- Bootstrap 3.3.7 -->
+  <link rel="stylesheet" href="{{url_for('static', filename='bootstrap/dist/css/bootstrap.min.css')}}">
+    <!-- Font Awesome -->
+  <link rel="stylesheet" href="{{url_for('static', filename='font-awesome/css/font-awesome.min.css')}}">
+    <!-- Ionicons -->
+  <!-- <link rel="stylesheet" href="{{url_for('static', filename='Ionicons/css/ionicons.min.css')}}"> -->
+    <!-- Theme style -->
+  <link rel="stylesheet" href="{{url_for('static', filename='bootstrap/dist/css/AdminLTE.min.css')}}">
+    <!-- DataTables -->
+  <link rel="stylesheet" href="{{url_for('static', filename='datatables.net-bs/css/dataTables.bootstrap.min.css')}}">
+
+  <!-- <link rel="stylesheet" href="{{url_for('static', filename='bootstrap/dist/css/skin-blue.css')}}"> -->
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='bootstrap/dist/css/style.css' ) }}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.7/chosen.min.css" />
+  <!-- Google Font -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+  <!--Chart.js-->
+  <link rel="stylesheet" href="{{ url_for('static', filename='chart.js/Chart.js' ) }}">
+  <!-- FullCalendar -->
+  <link rel="stylesheet" href="{{url_for('static', filename='fullcalendar-5.3.1/lib/main.css')}}">
+
+</head>
+
+
+<!-- jQuery 3 -->
+<script src="{{url_for('static', filename='bootstrap/dist/js/jquery/dist/jquery.min.js')}}"></script>
+<!-- jQuery UI 1.11.4 -->
+<script src="{{url_for('static', filename='bootstrap/dist/js/jquery-ui/jquery-ui.min.js')}}"></script>
+<!-- DataTables -->
+<script src="{{url_for('static', filename='datatables.net/js/jquery.dataTables.min.js')}}"></script>
+<script src="{{url_for('static', filename='datatables.net-bs/js/dataTables.bootstrap.min.js')}}"></script>
+<!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+<script>
+  $.widget.bridge('uibutton', $.ui.button);
+</script>
+
+<script src="{{url_for('static', filename='bootstrap/dist/js/bootstrap.min.js')}}"></script>
+<!-- Chosen -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.8.7/chosen.jquery.min.js"></script>
+<!-- ChartJS -->
+<script src="{{url_for('static', filename='chart.js/Chart.js')}}"></script>
+<!-- Bootstrap WYSIHTML5 -->
+<script src="{{url_for('static', filename='bootstrap/dist/js/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js')}}"></script>
+<!-- Slimscroll -->
+<script src="{{url_for('static', filename='bootstrap/dist/js/jquery-slimscroll/jquery.slimscroll.min.js')}}"></script>
+<!-- AdminLTE App -->
+<script src="{{url_for('static', filename='bootstrap/dist/js/adminlte.min.js')}}"></script>
+<!--SheetJS-->
+<script src="{{url_for('static', filename='bootstrap/dist/js/xlsx.min.js')}}"></script>
+<script src="{{url_for('static', filename='bootstrap/dist/js/FileSaver.min.js')}}"></script>
+<script src="{{url_for('static', filename='fullcalendar-5.3.1/lib/main.js')}}"></script>

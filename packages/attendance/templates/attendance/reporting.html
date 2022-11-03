@@ -1,0 +1,166 @@
+{% extends "layout.html" %}
+{% block content %}
+	
+	<div class="row">
+		<div class="col-xs-12 col-md-12">
+			<h6>Attendance Sheet</h6>
+			<span class="pull-right">
+				<a href="{{url_for('register.home')}}" class="btn btn-sm btn-primary">Back</a>
+				<a class="btn btn-primary btn-sm" id="download_report">Download</a>
+			</span>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-xs-12 col-md-12">
+			<div class="report">
+				
+				{{ dates }} 
+
+				{% if info[1] == 'daily' %}
+				{% set table_id = 'report_id' %} 
+				<table class="table" id="{{table_id}}">
+					<thead>
+						<th>Staff ID</th>
+						<th>Name</th>
+						<th>Department</th>
+						<th>Date</th>
+						<th>Clock In</th>
+						<th>Clock Out</th>
+						<!-- <th>Overtime</th> -->
+						<th>Status</th>
+
+					</thead>
+					<tbody>
+						{% if info[0] %}
+							{% for i in info[0] %}
+							{% set empdet = i[1] | get_register_name('report') %}
+							
+							{% set overtime = i[4] | get_overtime(i[3]) %}
+							<tr>
+								<td>{{empdet[16]}}</td>
+								<td>{{empdet[1]}}</td>
+								<td>{{empdet[5] }}</td>
+								<td>{{i[2]}}</td>
+								<td>{{i[3]}}</td>
+								<td>{{i[4]}}</td>
+								<!-- <td>{{overtime}}</td> -->
+								<td>{{i[10]}}</td>
+							</tr>
+							{% endfor %}
+						{% endif %}
+					</tbody>
+				</table>
+				{% endif %}
+
+				{% if info[1] == 'weekly' %}
+
+				{% set table_id = 'report_id' %}
+				{% set timeDiff = dates[0] | time_diff(dates[1]) %}
+				{% set days_list = dates[0] | dates_list(dates[1] )%}
+
+
+				<table class="table table-bordered table-stripped" id="{{table_id}}" style="width: 100%">
+					<thead>
+						<th>Staff ID</th>
+						<th>Name</th>
+						<th>Department</th>
+						<th>Location</th>
+						<th>Days ({{ timeDiff }}/{{ timeDiff }}) </th>
+						<th>Present</th>
+						<th>Absent</th>
+						<th colspan="{{ timeDiff }}" class="text-center">Clock In / Clock Out <small>({{dates[0]}} <b>:</b> {{dates[1]}} )</small></th>
+					</thead>
+					<thead>
+						<th colspan="6"></th>
+						{% for a in range( timeDiff ) %}
+						<th><small><b>{{ days_list[loop.index - 1] }}</b></small></th>
+						{% endfor %}
+					</thead>
+					<tbody>
+						{% if info[0] %}
+						
+							{% for x in info[0] %}						
+								{% set empdet = x[1] | get_register_name('report') %}
+								{% set pA = '' | get_date_record(x[1], days_list) %}
+
+							<tr>
+								<td>{{empdet[16]}}</td>
+								<td>{{empdet[1]}}</td>
+								<td>{{empdet[5] }}</td>
+								<td>{{x[12]}} ({{x[13]}})</td>
+								<td>{{ timeDiff }}</td>
+								<td>({{pA[0]}}/{{ timeDiff }})</td>
+								<td>({{pA[1]}}/{{ timeDiff }})</td>
+								{% for a in range( timeDiff ) %}
+									{% set c_in_out = days_list[loop.index - 1] | get_date_record(x[1]) %}
+									
+									<td>
+										{% if c_in_out %}
+											{{ c_in_out[3] }}/{% if c_in_out[4] %}{{ c_in_out[4] }}{% endif %}
+										{% else %}
+											{{ '-' }}
+										{% endif %}
+									</td>
+								{% endfor %}
+							</tr>
+							{% endfor %}
+						{% endif %}
+
+					</tbody>
+				</table>
+				{% endif %}
+
+				{% if info[1] == 'monthly' %}
+				{% set table_id = 'report_id' %}
+				<table class="table" id="{{table_id}}">
+					<thead>
+						<th>Staff ID</th>
+						<th>Name</th>
+						<th>Department</th>
+						<th>Days (5/5) </th>
+						<th>Present</th>
+						<th>Absent</th>
+						<th colspan="4">Clock In / Clock Out (startmonth / month end)</th>
+
+					</thead>
+					<tbody>
+						<tr>
+							<td>101</td>
+							<td>Soyemi Olanrewaju</td>
+							<td>Information technology</td>
+							<td>4</td>
+							<td>1</td>
+							<td></td>
+							<td colspan="4">8:10/5:05</td>
+						</tr>
+					</tbody>
+				</table>
+				{% endif %}
+			</div>
+		</div>
+	</div>
+
+{% endblock content %}
+
+{% block script %}
+<script>
+	function s2ab(s){
+    var buf = new ArrayBuffer(s.length);
+    var view = new Uint8Array(buf);
+    for(var i=0; i<s.length; i++) view[i] = s.charCodeAt(i) & 0xFF;
+    return buf;
+  }
+
+
+  $(document).ready(function () {
+    $('#download_report').click(function () {
+      
+      var wb = XLSX.utils.table_to_book(document.getElementById('report_id'), {sheet:'Sheet Js'});
+
+      var wbout = XLSX.write(wb, {bookType: 'xlsx', bookSST:true, type: 'binary' });
+            
+      saveAs(new Blob([s2ab(wbout)], {type: 'application/octet-stream'}), 'Attendance Report.xlsx')
+    })
+  });
+</script>
+{% endblock script %}

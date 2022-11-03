@@ -1,0 +1,66 @@
+{% extends "layout.html" %}
+{% block content %}
+
+				<div class="leaverequest">
+					<h4>Active Leave List</h4>
+					<table id="list" class="table table-sm" width="100%">
+						<thead>
+							<th>Employee Name</th>
+							<th>Department</th>
+							<th>Leave Type</th>
+							<th>Leave Duration</th>
+							<th>Days Left</th>
+							<th>Resumption Date</th>
+							<th>Status</th>
+						</thead>
+						<tbody>
+						{% for lst in active %}
+							{% set daysleft = lst [3] | days_left(lst[4]) %}
+								
+							{% if daysleft %}
+								{% if daysleft > 1 %}
+									{% set dy = 'days' %}
+								{% else %}
+									{% set dy = 'day' %}
+								{% endif %}
+
+
+								{% if daysleft <= 0 %}
+									{% set label = 'Completed' %}
+									{% set class = 'btn-info' %}
+									{% set remain_day = '0 ' + dy %}
+								{% else %}
+									{% set label = 'In Progress' %}
+									{% set class = 'btn-success' %}
+									{% set remain_day = daysleft + dy %}
+								{% endif %}
+
+							{% else %}
+								{% set remain_day = 'Not started yet!' %}
+							{% endif %}
+							<tr>
+								<td>{{lst[8]}}</td>
+								<td>{{lst[6]}}</td>
+								<td>{{lst[2]}}</td>
+								<td>{{lst[5]}}</td>
+								<td>{{ remain_day }} {{ daysleft }}</td>
+								<td>{{lst[7]}}</td>
+								<td>
+									<a class="{{ class }} btn-sm">{{ label }}</a>
+								</td>
+							</tr>
+						{% endfor %}
+						</tbody>
+					</table>
+				</div>
+
+{% endblock content %}
+
+
+{% block script %}
+<script>
+	$(document).ready(function () {
+		$('#list').DataTable();
+	})
+</script>
+{% endblock %}

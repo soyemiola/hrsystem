@@ -1,0 +1,478 @@
+{% extends "layout.html" %}
+{% block content %}
+			<style type="text/css">
+				.prf{
+					background-color: snow
+				}
+			</style>
+			<div class="">
+				<a href="{{url_for('users.employees')}}" class="">
+					<i class="fa fa-arrow-circle-left"></i>
+					Back
+				</a>
+				<hr>
+				<h4 class="pb-0 mb-0">
+					{{ emp_details[1] }} | <small>#{{ emp_details[16] }}</small>
+				</h4>
+			</div>
+				<div class="">
+					<div class="prf p-2">
+						<div class="row">
+							<div class="col-xs-12 col-md-2">
+								<div class="text-center">
+									{% if emp_details[20] %}
+										{% set img = emp_details[20] %}
+									{% else %}
+										{% set img = 'user.png' %}
+									{% endif %}
+									<img src="{{url_for('static', filename='image/'+img)}}" alt="employee-img"
+									style="height: 130px; width: 130px; border-radius: 50%">
+
+									<button class="btn btn-sm btn-primary btn-block">
+										Upload JD
+									</button>
+								</div>
+							</div>
+							<div class="col-xs-12 col-md-10">
+								<div class="det m-2">
+									<div class="row">
+										<div class="col-xs-12 col-md-4">
+											<input type="hidden" id="emp_id" value="{{emp_details[0]}}">
+											<h6 class="m-0 p-1"><b>Email</b></h6>
+											<p class="m-0 p-1">{{ emp_details[7] }}</p>
+										</div>
+										<div class="col-xs-12 col-md-4">
+											<h6 class="m-0 p-1"><b>Role</b></h6>
+											<p class="m-0 p-1"><a href="#" title="view job description" target="_blank">{{ emp_details[18] }}</a></p>
+										</div>
+										<div class="col-xs-12 col-md-4">
+											<h6 class="m-0 p-1"><b>Department</b></h6>
+											<p class="m-0 p-1">{{ emp_details[5] }}</p>
+										</div>
+									</div>
+									<hr>
+									<div class="row">
+										<div class="col-xs-12 col-md-4">
+											<h6 class="m-0 p-1"><b>Level</b></h6>
+											<p class="m-0 p-1">{{ emp_details[6] }}</p>
+										</div>
+										<div class="col-xs-12 col-md-4">
+											<h6 class="m-0 p-1"><b>Branch</b></h6>
+											<p class="m-0 p-1">{{ emp_details[8] }}</p>
+										</div>
+										<div class="col-xs-12 col-md-4">
+											<h6 class="m-0 p-1"><b>Telephone</b></h6>
+											<p class="m-0 p-1">{{ emp_details[4] }}</p>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					{% if alert != '' %}
+						{% set dA = 'disabled' %}
+					
+					<div class="row">
+						<div class="col-xs-12 col-md-12">
+							<div class="actionbox">
+								<div class="alert alert-warning alert-dismissible btn-block">
+									<p class="m-0">
+										<i class="fa fa-info-circle"></i> {{alert}} 
+										<small class="text-right">
+											<a href="{{url_for('payroll.processTax', page='profile', get_id=emp_details[0])}}">
+												Click to Process Tax Profile
+											</a>
+										</small>
+									</p>
+								</div>
+							</div>
+						</div>
+					</div>
+					{% endif %}
+					
+					<ul class="bodymenu">
+						<li>
+							<a href="{{url_for('users.emp_profile', get_id=emp_details[0])}}" class="active">Payroll</a>
+						</li>
+						<li>
+							<a href="{{url_for('users.leave_profile', get_id=emp_details[0])}}">Leave</a>
+						</li>
+						<li>
+							<a href="{{url_for('users.emppermission', get_id=emp_details[0])}}">Settings</a>
+						</li>
+					</ul>
+					<div class="container">
+						<div class="row">
+						<div class="col-xs-12 col-md-6">
+							<button data-toggle="" data-target="#basic" class="btn btn-light btn-block
+									btn-block btn-flat btn-profile" onclick="icon(this);" style="text-align:left">
+									Detailed Information at glance
+								</button>
+							<div id="basic" class="">
+									<br>
+									<h6>Fixed Allowance</h6>
+										<table class="table table-striped table-sm">
+											<thead class="thead-dark">
+												<th width="300px">Pay Item</th>
+												<th>Pay Item Amount</th>
+											</thead>
+											<tbody>
+												<tr>
+													<td>Basic Allowance</td>
+													<td>{{emp_acct[1] | numberFormat}}</td>
+												</tr>
+												<tr>
+													<td>House Allowance</td>
+													<td id="house_a">{{emp_acct[2] | numberFormat}}</td>
+												</tr>
+												<tr>
+													<td>Transport Allowance</td>
+													<td id="transport_a">{{emp_acct[3] | numberFormat}}</td>
+												</tr>
+												<tr>
+													<td>Other Allowance</td>
+													<td id="other_a">{{emp_acct[4] | numberFormat}}</td>
+												</tr>
+											</tbody>
+										</table>
+									<h6>Fixed Deduction</h6>
+										<table class="table table-striped table-sm">
+											<thead class="thead-dark">
+												<th width="300px">Pay Item</th>
+												<th>Pay Item Amount</th>
+											</thead>
+											<tbody>
+												<tr>
+													<td>Loan</td>
+													<td>{{0.0 | numberFormat}}</td>
+												</tr>
+												<tr>
+													<td>GHI CMS Cooperative Loan</td>
+													{% if coop[4] is not none %}
+														{% set coopValue = 0 %}
+													{% else %}
+														{% set coopValue = coop[4] %}
+													{% endif %}
+													<td>{{coopValue | numberFormat }}</td>
+												</tr>
+												<tr>
+													<td>GHI CMS Cooperative Monthly Contribution</td>
+													{% if coop[2] is not none %}
+														{% set coopMonth = 0 %}
+													{% else %}
+														{% set coopMonth = coop[2] %}
+													{% endif %}
+													<td>{{coopMonth | numberFormat }}</td>
+												</tr>
+												<tr>
+													<td>GHI CMS Cooperative Social Welfare</td>
+													{% if coop[3] is not none %}
+														{% set coopsw = 0 %}
+													{% else %}
+														{% set coopsw = coop[3] %}
+													{% endif %}
+													<td>{{coopsw | numberFormat }}</td>
+												</tr>
+											</tbody>
+										</table>
+									<h6>Fixed Tax</h6>
+										<table class="table table-striped table-sm">
+											<thead class="thead-dark">
+												<th width="300px">Pay Item</th>
+												<th>Pay Item Amount</th>
+											</thead>
+											<tbody>
+												<tr>
+													<td>Taxable</td>
+													<td>{{emp_acct[9] | numberFormat}}</td>
+												</tr>
+
+											</tbody>
+										</table>
+								</div>
+							<br>
+							<div id="pension" class="">
+								<br>
+								<h6>Pension Information</h6>
+									<table class="table table-striped table-sm">
+										<thead class="thead-dark">
+											<th width="300px">Pension Company</th>
+											<th>Pension Number</th>
+										</thead>
+										<tbody>
+											<tr>
+												<td id="pen-name">{{emp_pension[2]}}</td>
+												<td id="pen-number">{{emp_pension[3]}}</td>
+											</tr>
+										</tbody>
+									</table>
+							</div>
+						</div>
+						<div class="col-xs-12 col-md-5">
+							<button class="btn btn-light btn-block
+								btn-block btn-flat btn-profile" onclick="icon(this);" style="text-align:left;
+								margin-bottom:20px">
+								Payroll Basic and Tax Info
+							</button>
+
+							<form action="{{ url_for('users.updateprofile') }}" method="post">
+								<input type="hidden" name="emp_id" value="{{ emp_details[0]}}">
+								<div id="modify" class="" style="margin-bottom:10px">
+									<div class="">
+										<label style="text-align:left">Employee Tax Number:</label>
+										<input type="text" name="taxnumber" id="taxnumber" value="{{emp_acct[15]}}"
+											   class="form-control">
+									</div>
+									<div class="">
+										<label style="text-align:left">Annual Basic Pay:</label>
+										<input type="text" name="basicpay" id="basicpay" value="{{emp_acct[1] | numberFormat}}"
+											   class="form-control" readonly>
+									</div>
+									<div class="">
+										<label style="text-align:left">Salary Percentage:</label>
+										<input type="text" name="percent" id="percent" value="{{emp_acct[20]}}"
+											   class="form-control">
+									</div>
+									<div class="">
+										<label style="text-align:left">Bank Account Number:</label>
+										<input type="text" name="acctnumber" id="acctnumber" value="{{emp_acct[11]}}" class="form-control">
+									</div>
+									<div class="">
+										<label style="text-align:left">Bank Account Name:</label>
+										<input type="text" name="acctname" id="acctname" value="{{emp_acct[16]}}" class="form-control">
+									</div>
+									<div class="">
+										<label style="text-align:left">Bank Name:</label>
+										<select name="bankname" id="bankname" class="form-control">
+											<option selected>{{emp_acct[10]}}</option>
+											{% for banklist in bank %}
+											<option>{{banklist[0]}}</option>
+											{% endfor %}
+										</select>
+									</div>
+									<div class="">
+										<br>
+										<button type="submit" class="btn btn-secondary btn-flat btn-sm pull-right" {{dA}} id="">
+											Update Info
+										</button>
+									</div>
+								</div>
+							</form>
+							<br>
+
+							<h6>Fixed Allowance Payments</h6>
+							<form action="{{ url_for('users.updateprofileallowance') }}" method="post">
+								<input type="hidden" name="emp_id" value="{{ emp_details[0]}}">
+								<div id="modifyAllowance" class="">
+									<div class="">
+										<label style="text-align:left">Payitem:</label>
+										<select name="type" id="allowances" class="form-control">
+											<option selected disabled>--Select Allowance--</option>
+											<option data-value="{{emp_acct[2]}}" value="house_a">House Allowance</option>
+											<option data-value="{{emp_acct[3]}}" value="transport_a">Transport Allowance</option>
+											<option data-value="{{emp_acct[4]}}" value="other_a">Other Allowance</option>
+										</select>
+									</div>
+									<div class="">
+										<label for="allowancepay">Payitem Payment:</label>
+										<input type="text" name="allowancepay" id="allowancepay" value="0" class="convert form-control">
+									</div>
+
+									<div class="">
+										<br>
+										<button type="submit" class="btn btn-secondary btn-flat btn-sm pull-right" {{dA}} >
+											Update Info
+										</button>
+									</div>
+								</div>
+							</form>
+
+
+							<h6>Pension Details</h6>
+							<form action="{{ url_for('users.updatepensionprofile') }}" method="post">
+								<input type="hidden" name="emp_id" value="{{ emp_details[0]}}">
+								<div id="" class="" style="margin-bottom:10px">
+									<div class="">
+										<label for="pension-company">Pension Company:</label>
+										<select name="name" id="pension-company" class="form-control">
+											<option selected disabled>--Select Pension company--</option>
+											{% for pen in pension %}
+												<option>{{pen[1]}}</option>
+											{% endfor %}
+										</select>
+									</div>
+									<div class="">
+										<label style="text-align:left">Pension Number:</label>
+										<input type="text" name="number" id="pension_number" class="form-control">
+									</div>
+
+									<div class="">
+										<br>
+										<button type="submit" class="btn btn-secondary btn-flat btn-sm pull-right" {{dA}} >
+											Update Info
+										</button>
+									</div>
+								</div>
+							</form>
+						</div>
+					</div>
+					</div>
+
+					<div class="face" id="alert">
+
+					</div>
+				</div>
+
+{% endblock content %}
+
+
+{% block script %}
+<script>
+	$('#allowances').on('change', function () {
+		var selectedOption = $(this).find('option:selected');
+		document.getElementById('allowancepay').value = selectedOption[0].dataset.value;
+	});
+
+	$(document).ready(function (){
+		$('.btnupdate').click(function(){
+			var taxnumber = document.getElementById('taxnumber').value,
+				basicpay = document.getElementById('basicpay').value,
+				acctnumber = document.getElementById('acctnumber').value,
+				acctname = document.getElementById('acctname').value,
+				bankname = document.getElementById('bankname').value,
+				emp_id = document.getElementById('emp_id').value,
+				perc = document.getElementById('percent').value,
+				alertbox = document.getElementById('alert');
+
+			$.ajax({
+				method: 'post',
+				url: '/updateprofile',
+				data:{emp_id:emp_id, taxnumber:taxnumber, basicpay:basicpay, acctnumber:acctnumber, acctname:acctname,
+				bankname:bankname, percent:perc},
+
+				beforeSend: function(){
+					document.getElementById('btnupdate').innerHTML = '<i class="spinner-border spinner-border-sm"></i> Processing';
+				},
+
+				success: function(data){
+					alertbox.innerHTML = '<i class="fa fa-check-circle"></i><h6>'+data+'</h6>';
+					alertbox.style.display = 'Block';
+					setTimeout(function(){
+						alertbox.style.display = 'none';
+					}, 2000)
+				},
+
+				complete: function(){
+					document.getElementById('btnupdate').innerHTML = 'Update Info';
+				}
+			});
+		});
+
+		$('.allowanceupdate').click(function(){
+			var allowances = document.getElementById('allowances').value,
+				allowancepay = document.getElementById('allowancepay').value,
+				emp_id = document.getElementById('emp_id').value,
+				alertbtn = document.getElementById('alert');
+
+				if(allowances == 'House Allowance'){
+					type = 'house_a';
+				}else if(allowances == 'Transport Allowance'){
+					type = 'transport_a';
+				}else{
+					type = 'other_a';
+				}
+
+				var allowance = document.getElementById(type);
+
+			$.ajax({
+				method: 'post',
+				url: '/updateprofileallowance',
+				data:{emp_id:emp_id, type:type, allowancepay:allowancepay},
+
+				beforeSend: function(){
+					document.getElementById('allowancebtn').innerHTML = '<i class="spinner-border spinner-border-sm"></i> Processing';
+				},
+
+				success: function(data){
+					allowance.innerHTML = allowancepay;
+					alertbtn.innerHTML = '<i class="fa fa-check-circle"></i><h6>'+data+'</h6>';
+					alertbtn.style.display = 'block';
+					setTimeout(function(){
+						alertbtn.style.display = 'none';
+					},2000);
+				},
+
+
+				complete: function(data){
+					document.getElementById('allowancebtn').innerHTML = 'Update Info';
+				}
+			});
+
+		});
+
+		$('.pensionupdate').click(function(){
+			var name = document.getElementById('pension-company').value,
+				number = document.getElementById('pension_number').value,
+				id = document.getElementById('emp_id').value,
+				btn = document.getElementById('pensionupdate'),
+				pen_name = document.getElementById('pen-name'),
+				pen_num = document.getElementById('pen-number'),
+				alertbtn = document.getElementById('alert');
+
+				if(name === '--Select Pension company--'){
+					name = '';
+				}
+				if(!name == '' && !number == ''){
+					$.ajax({
+						method: 'post',
+						url: '/updatepensionprofile',
+						data:{name:name, number:number, id:id},
+
+						beforeSend:function(){
+							btn.innerHTML = '<i class="spinner-border spinner-border-sm"></i> Processing';
+						},
+
+						success: function(data){
+							pen_name.innerHTML = name;
+							pen_num.innerHTML = number;
+							alertbtn.innerHTML = '<i class="fa fa-check-circle"></i><h6>'+data+'</h6>';
+							alertbtn.style.display = 'block';
+							setTimeout(function(){
+								alertbtn.style.display = 'none';
+							},2000);
+						},
+						complete:function(){
+							btn.innerHTML = 'Update Info';
+						}
+					});
+				}
+
+		});
+
+		 $('.convert').on( "keyup", function( event ) {
+            // When user select text in the document, also abort.
+            var selection = window.getSelection().toString();
+            if ( selection !== '' ) {
+                return;
+            }
+            // When the arrow keys are pressed, abort.
+            if ( $.inArray( event.keyCode, [38,40,37,39] ) !== -1 ) {
+                return;
+            }
+            var $this = $( this );
+
+            // Get the value.
+            var input = $this.val();
+
+            var input = input.replace(/[\D\s\._\-]+/g, "");
+                input = input ? parseInt( input, 10 ) : 0;
+
+                $this.val( function() {
+                return /*( input === 0 ) ? "" : */input.toLocaleString( "en-US" );
+                } );
+        });
+	});
+
+</script>
+{% endblock %}

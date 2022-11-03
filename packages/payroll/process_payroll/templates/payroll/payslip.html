@@ -1,0 +1,275 @@
+{% extends "layout.html" %}
+{% block content %}
+
+			<div class="">
+				{% if info %}
+				<span>
+					<a href="{{url_for('payroll.payrun')}}" class="btn btn-sm btn-primary">
+						<i class="fa fa-arrow-circle-left"></i> Back</a>
+				</span>
+				<h3 class="mt-2">{{ info[1] }}</h3>
+				<ul class="bodymenu">
+					<li>
+						<a class="active"><small>Payslips</small></a>
+					</li>
+				</ul>
+				
+				<div class="payInfo mb-5">
+					<div class="container">
+						<div class="row">
+							<div class="col-xs-12 col-md-6">
+								<div class="infoBox">
+									<h6><b>Period</b> <span class="pull-right">{{details.month}}/{{details.year}}</span></h6>
+									<h6><b>Reference</b> <span class="pull-right">{{details.slip_no}}</span></h6>
+									<h6><b>Payslip Name</b> <span class="pull-right">Salary Slip of {{info[1]}} for {{details.month}} {{details.year}}</span></h6>
+								</div>
+							</div>
+							<div class="col-xs-12 col-md-6">
+								<div class="infoBox">
+									<h6><b>Name</b> <span class="pull-right">{{ info[1] }}</span></h6>
+									<h6><b>Department</b><span class="pull-right">{{info[5]}}</span></h6>
+									<h6><b>Salary Class</b> <span class="pull-right">{{info[10]}}</span></h6>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				{% if finalized %}
+		            {% if finalized[3] == 'Yes' %}
+		            	{% set msg = 'Salary finalized' %}
+		            	{% set btn = 'disabled' %}
+		            {% endif %}
+		        {% else %}
+		        	{% set msg = 'Finalize Salary' %}
+		            {% set btn = '' %}
+		        {% endif %}
+				
+				<div class="container">
+					<div class="row">
+						<div class="col-xs-12 col-md-12">
+							<ul class="nav nav-tabs">
+		                        <li class="nav-item mr-1">
+		                          <a class="nav-link active btn btn-primary btn-block" data-toggle="tab" href="#salaryComputation">Salary Computation</a>
+		                        </li>
+		                        <li class="nav-item mr-1">
+		                          <a class="nav-link btn btn-primary btn-block" data-toggle="tab" href="#accountInformation">Account Information</a>
+		                        </li>
+		                        <li class="nav-item mr-1">
+		                          <a class="nav-link btn btn-primary btn-block" data-toggle="tab" href="#workeddays">Worked Days & Inputs</a>
+		                        </li>
+		                        <li class="nav-item mr-1">
+		                          <a class="nav-link btn btn-primary btn-block" data-toggle="tab" href="#salaryDetails">Details by Salary</a>
+		                        </li>
+		                        <li class="nav-item mr-1">
+		                          <a class="nav-link btn btn-primary btn-block {{ btn }}" href="{{url_for('payroll.finalise', get_id=info[0], month=details.month, year=details.year, page='payslip')}}">{{ msg }}</a>
+		                        </li>
+		                    </ul>
+
+		                    <!-- Tab panes -->
+		                    <div class="tab-content">
+		                        <div class="tab-pane container fade" id="accountInformation">
+		                        	
+		                        	<div class="row">
+		                        		<div class="col-xs-12 col-md-6">
+		                        			<table class="table table-stripped table-hover">
+				                        		<thead>
+				                        			<th>Name</th>
+				                        			<th>Value</th>
+				                        		</thead>
+				                        		<tbody>
+				                        			<tr>
+				                        				<td>Basic</td>
+				                        				<td>{{acct[1] | numberFormat}}</td>
+				                        			</tr>
+				                        			<tr>
+				                        				<td>House Allowance</td>
+				                        				<td>{{acct[2] | numberFormat}}</td>
+				                        			</tr>
+				                        			<tr>
+				                        				<td>Transport Allowance</td>
+				                        				<td>{{acct[3] | numberFormat}}</td>
+				                        			</tr>
+				                        			<tr>
+				                        				<td>Other Allowance</td>
+				                        				<td>{{acct[4] | numberFormat}}</td>
+				                        			</tr>
+				                        		</tbody>
+				                        	</table>
+		                        		</div>
+		                        		<div class="col-xs-12 col-md-6">
+		                        			<table class="table table-stripped table-hover">
+				                        		<thead>
+				                        			<th>Name</th>
+				                        			<th>Value</th>
+				                        		</thead>
+				                        		<tbody>
+				                        			<tr>
+				                        				<td>Gross</td>
+				                        				<td>{{ acct[6] | numberFormat }}</td>
+				                        			</tr>
+				                        			<tr>
+				                        				<td>Total Allowance</td>
+				                        				<td>{{acct[12] | numberFormat}}</td>
+				                        			</tr>
+				                        			<tr>
+				                        				<td>CRA</td>
+				                        				<td>{{acct[7] | numberFormat}}</td>
+				                        			</tr>
+				                        			<tr>
+				                        				<td>Total Relief</td>
+				                        				<td>{{acct[8] | numberFormat}}</td>
+				                        			</tr>
+				                        		</tbody>
+				                        	</table>
+		                        		</div>
+		                        	</div>
+		                        </div>
+		                        <div class="tab-pane container fade" id="workeddays">
+		                        	<div class="col-xs-12 col-md-6">
+		                        			<table class="table table-stripped table-hover">
+				                        		<tr>
+				                        			<th>No. of days present</th>
+				                        			<td>{{details.present}}</td>
+				                        		</tr>
+				                        		<tr>
+				                        			<th>No. of days absent</th>
+				                        			<td>{{details.absent}}</td>
+				                        		</tr>
+				                        	</table>
+				                        	<button class="btn btn-primary btn-sm" disabled>View Attedance log</button>
+		                        		</div>
+		                        </div>
+		                        <div class="tab-pane container active" id="salaryComputation">
+		                        	<table class="table table-sm table-stripped table-hover">
+				                        		<thead>
+				                        			<th>Name</th>
+				                        			<th>Code</th>
+				                        			<th>Category</th>
+				                        			<th>Quantity</th>
+				                        			<th>Rate (%)</th>
+				                        			<th>Amount</th>
+
+				                        		</thead>
+				                        		<tbody>
+				                        			<tr>
+				                        				<td>Basic Pay</td>
+				                        				<td>BASIC</td>
+				                        				<td>Basic</td>
+				                        				<td>1.0</td>
+				                        				<td>{{details.percentage}}</td>
+				                        				<td>{{details.basic | numberFormat }}</td>
+				                        			</tr>
+				                        			<tr>
+				                        				<td>Gross Pay</td>
+				                        				<td>GROSS</td>
+				                        				<td>Gross</td>
+				                        				<td>1.0</td>
+				                        				<td>{{details.percentage}}</td>
+				                        				<td>{{details.gross | numberFormat }}</td>
+				                        			</tr>
+				                        			<tr>
+				                        				<td>Pension</td>
+				                        				<td>PEN</td>
+				                        				<td>Deduction</td>
+				                        				<td>1</td>
+				                        				<td>{{details.percentage}}</td>
+				                        				<td>{{details.pension | numberFormat }}</td>
+				                        			</tr>
+				                        			<tr>
+				                        				<td>Loan</td>
+				                        				<td>EMI</td>
+				                        				<td>Deduction</td>
+				                        				<td>1.0</td>
+				                        				<td>{{details.percentage}}</td>
+				                        				<td>{{details.loan | numberFormat }}</td>
+				                        			</tr>
+				                        			<tr>
+				                        				<td>Cooperative Loan</td>
+				                        				<td>COOP</td>
+				                        				<td>Deduction</td>
+				                        				<td>1.0</td>
+				                        				<td>{{details.percentage}}</td>
+				                        				<td>{{details.coop_loan | numberFormat }}</td>
+				                        			</tr>
+				                        			<tr>
+				                        				<td>Social Welfare</td>
+				                        				<td>SW</td>
+				                        				<td>Deduction</td>
+				                        				<td>1</td>
+				                        				<td>{{details.percentage}}</td>
+				                        				<td>{{details.monthly_social | numberFormat }}</td>
+				                        			</tr>
+				                        			<thead>
+				                        				<th>NET Salary</th>
+				                        				<th>NET</th>
+				                        				<th>Net</th>
+				                        				<th>1</th>
+				                        				<th>{{details.percentage}}</th>
+				                        				<th>{{details.netpay | numberFormat }}</th>
+				                        			</thead>
+				                        		</tbody>
+				                        	</table>
+		                        </div>
+		                        <div class="tab-pane container fade" id="salaryDetails">
+		                        	<br>
+		                        	<div class="row">
+		                        		<div class="col-xs-12">
+		                        			<table class="table table-sm table-stripped table-hover">
+				                        		<thead>
+				                        			<th>Item</th>
+				                        			<th>Value</th>
+				                        		</thead>
+				                        		<tbody>
+				                        			<tr>
+				                        				<td>Slip No</td>
+				                        				<td>{{details.slip_no}}</td>
+				                        			</tr>
+				                        			<tr>
+				                        				<td>Percentage</td>
+				                        				<td>{{details.percentage}}</td>
+				                        			</tr>
+				                        			<tr>
+				                        				<td>Worked for</td>
+				                        				<td>{{details.workedfor | numberFormat }}</td>
+				                        			</tr>
+				                        			<tr>
+				                        				<td>Total Loan Deduction</td>
+				                        				<td>{{ (details.loan + details.coop_loan) | numberFormat }}</td>
+				                        			</tr>
+				                        			<tr>
+				                        				<td>Adjustment</td>
+				                        				<td>{{details.adjustment | numberFormat }}</td>
+				                        			</tr>
+				                        			<tr>
+				                        				<td>Total Deduction</td>
+				                        				<td>{{details.deduction | numberFormat }}</td>
+				                        			</tr>
+				                        			<tr>
+				                        				<td>Netpay</td>
+				                        				<td>{{details.netpay | numberFormat }}</td>
+				                        			</tr>
+				                        		</tbody>
+				                        	</table>
+		                        		</div>
+		                        	</div>
+		                        </div>
+		                    </div> 
+						</div>
+					</div>
+				</div>
+							
+				{% endif %}
+			</div>
+
+{% endblock content %}
+
+
+{% block script %}
+<script>
+	$(document).ready(function() {
+		$('#example').DataTable();
+	});
+
+</script>
+{% endblock %}

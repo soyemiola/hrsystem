@@ -1,0 +1,83 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="leaverequest">
+					<h4>Leave Calendar</h4>
+					<div class="container">
+                        <div class="row">
+                            <div class="col-xs-12 col-md-10">
+                                <div id='calendar' style="padding: 20px"></div>
+                            </div>
+                        </div>
+                    </div>
+				</div>
+
+{% include 'leave/activeleavemodal.html' %}
+{% endblock content %}
+
+
+{% block script %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var calendarEl = document.getElementById('calendar');
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+            },
+            /*initialDate: '2020-09-12',*/
+            editable: true,
+            navLinks: true, // can click day/week names to navigate views
+            dayMaxEvents: true, // allow "more" link when too many events
+            events: {
+                url:'/admin/leavecalendar'
+            },
+
+            eventClick:function(e){
+                const id = e.event.id;
+                getRow(id);
+            }
+        });
+
+        calendar.render();
+    });
+
+	function getRow(id){
+		$.ajax({
+			url: '/admin/requestlist',
+			method: 'post',
+			data: {id:id},
+			success: function(data)
+			{
+				console.table(data);
+				document.getElementById('emp_name').innerHTML = data[0];
+				document.getElementById('emp_leave_type').innerHTML = data[1];
+				document.getElementById('emp_leave_days').innerHTML = data[2];
+				document.getElementById('emp_leave_start').innerHTML = data[3];
+				document.getElementById('emp_leave_end').innerHTML = data[4];
+				document.getElementById('emp_leave_address').innerHTML = data[5];
+				document.getElementById('emp_contact_num').innerHTML = data[6];
+				document.getElementById('emp_leave_reporting').innerHTML = data[8];
+				document.getElementById('emp_leave_resume_date').innerHTML = data[15];
+                document.getElementById('emp_dept').innerHTML = data[11];
+                document.getElementById('emp_leave_allowance').innerHTML = '<span class="badge">'+data[22]+'</span>';
+
+                if (data[18]) {
+                    relief2 = ', '+data[18];
+                }else{
+                    relief2 = '';
+                }
+                if (data[20]) {
+                    relief3 = ', '+data[20];
+                }else{
+                    relief3 = '';
+                }
+				document.getElementById('emp_leave_relief').innerHTML = data[7]+relief2+relief3;
+
+                $('#activeleavemodal').modal('show');
+			}
+		});
+	}
+</script>
+{% endblock %}

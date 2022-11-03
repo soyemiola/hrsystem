@@ -1,0 +1,40 @@
+{% extends "layout.html" %}
+{% block content %}
+
+ <div class="">
+				<h6><i class="fa fa-edit"></i> Edit Branch</h6>
+				<ul class="bodymenu">
+					<li>
+						<a href="{{url_for('settings.officebranch')}}" class="active">Branch List</a>
+					</li>
+					<li class="alertText">
+						<small id="alert_msg"></small>
+					</li>
+				</ul>
+				<div class="bodycontent">
+
+					<div class="row">
+						<div class="col-xs-12 col-md-4">
+							<form action="" method="post">
+								<div class="form-group">
+									<label>Branch Name:</label>
+									<input type="text" name="name" id="name" class="form-control" value="{{data[0]}}" required>
+								</div>
+								<div class="form-group">
+									<button type="submit" class="btn btn-primary btn-flat btn-sm "
+										name="submit" id="branchbtn"><i class="fa fa-save fa-sm"></i>
+										Update Office
+									</button>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+
+{% endblock content %} 
+
+
+{% block script %}
+
+{% endblock %}

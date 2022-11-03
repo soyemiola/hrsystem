@@ -1,0 +1,272 @@
+{% extends "layout.html" %}
+{% block content %}
+
+				<style type="text/css">
+					.prf{
+						background-color: snow
+					}
+				</style>
+				<div class="">
+					<a href="{{url_for('users.employees')}}" class="">
+						<i class="fa fa-arrow-circle-left"></i>
+						Back
+					</a>
+					<hr>
+					<h4 class="pb-0 mb-0">
+						{{ emp_details[1] }} | <small>#{{ emp_details[16] }}</small>
+					</h4>
+				</div>
+
+				<div class="">
+					<div class="prf p-2">
+						<div class="row">
+							<div class="col-xs-12 col-md-2">
+								<div class="text-center">
+									{% if emp_details[20] %}
+										{% set img = emp_details[20] %}
+									{% else %}
+										{% set img = 'user.png' %}
+									{% endif %}
+									<img src="{{url_for('static', filename='image/'+img)}}" alt="employee-img"
+									style="height: 130px; width: 130px; border-radius: 50%">
+								</div>
+							</div>
+							<div class="col-xs-12 col-md-10">
+								<div class="det m-2">
+									<div class="row">
+										<div class="col-xs-12 col-md-4">
+											<input type="hidden" id="emp_id" value="{{emp_details[0]}}">
+											<h6 class="m-0 p-1"><b>Email</b></h6>
+											<p class="m-0 p-1">{{ emp_details[7] }}</p>
+										</div>
+										<div class="col-xs-12 col-md-4">
+											<h6 class="m-0 p-1"><b>Role</b></h6>
+											<p class="m-0 p-1">{{ emp_details[18] }}</p>
+										</div>
+										<div class="col-xs-12 col-md-4">
+											<h6 class="m-0 p-1"><b>Department</b></h6>
+											<p class="m-0 p-1">{{ emp_details[5] }}</p>
+										</div>
+									</div>
+									<hr>
+									<div class="row">
+										<div class="col-xs-12 col-md-4">
+											<h6 class="m-0 p-1"><b>Post</b></h6>
+											<p class="m-0 p-1">{{ emp_details[6] }}</p>
+										</div>
+										<div class="col-xs-12 col-md-4">
+											<h6 class="m-0 p-1"><b>Branch</b></h6>
+											<p class="m-0 p-1">{{ emp_details[8] }}</p>
+										</div>
+										<div class="col-xs-12 col-md-4">
+											<h6 class="m-0 p-1"><b>Telephone</b></h6>
+											<p class="m-0 p-1">{{ emp_details[4] }}</p>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					
+					<ul class="bodymenu">
+						<li>
+							<a href="{{url_for('users.emp_profile', get_id=emp_details[0])}}">Payroll</a>
+						</li>
+						<li>
+							<a href="{{url_for('users.leave_profile', get_id=emp_details[0])}}" class="active">Leave</a>
+						</li>
+						<li>
+							<a href="{{url_for('users.emppermission', get_id=emp_details[0])}}">Settings</a>
+						</li>
+					</ul>
+					<div class="row">
+						{% if not leave %}
+						<div class="col-xs-12 col-md-12">
+							<div class="alert alert-warning alert-dismissible btn-block">
+								<p class="m-0">
+									<i class="fa fa-exclamation-circle"></i> Leave Days not Set yet
+												
+									<a class="setdays" style="cursor: pointer;"><small>Click to activate</small></a>
+								</p>
+							</div>
+						</div>		
+						{% else %}
+	                        <div class="col-xs-12 col-md-10">
+								<div class="lbox">
+									<table class="table table-sm table-striped">
+										<tr class="success">
+											<td>Total Leave entitle</td>
+											<td style="text-align: right">
+												{{leave[2]}}
+											</td>
+										</tr>
+										<tr class="danger">
+											<td>Leave days Observed</td>
+											<td style="text-align: right">
+												{{leave[3]}}
+											</td>
+										</tr>
+										<tr class="Active">
+											<td>Outstanding leave days</td>
+											<td style="text-align: right">
+												<span id="_v1" style="display: block;">
+													{{leave[4]}} <i class="fa fa-edit" style="margin-left: 20px;"
+															  onclick="_vm('_m1', '_v1');"> </i>
+												</span>
+												<span id="_m1" style="display: none">
+													<input type="text" id="daysleave" value="{{leave[4]}}" size="2">
+													<input type="hidden" id="userid" value="{{leave[1]}}">
+													<button type="button" class="btn btn-sm leaveupdt">
+														Update</button>
+												</span>
+											</td>
+										</tr>
+										<tr>
+											<td>Enable leave request</td>
+											<td style="text-align: right">
+												{% if leave[5] == 1 %}
+													{% set active = 'checked' %}
+												{% else %}
+													{% set active = '' %}
+												{% endif %}
+												<label class="switch">
+												  <input type="checkbox" class="set_toggle" id="leave_request"
+												  data-label="{{leave[5]}}" data-emp="{{emp_details[0]}}" {{ active }}>
+												  <span class="slider round"></span>
+												</label>
+											</td>
+										</tr>
+									</table>
+								</div>
+							</div>
+						{% endif %}
+                    </div>
+				</div>
+			</div>
+<style>
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: 40px;
+    height: 15px;
+    margin-top: 10px;
+  }
+
+  /* Hide default HTML checkbox */
+  .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  /* The slider */
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
+
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 15px;
+    width: 15px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
+
+  input:checked + .slider {
+    background-color: #367fa9;
+  }
+
+  input:focus + .slider {
+    box-shadow: 0 0 1px #2196F3;
+  }
+
+  input:checked + .slider:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
+  }
+
+  /* Rounded sliders */
+  .slider.round {
+    border-radius: 34px;
+  }
+
+  .slider.round:before {
+    border-radius: 50%;
+  }
+
+</style>
+{% endblock content %}
+
+
+{% block script %}
+<script>
+	function _vm(show, hide) {
+		document.getElementById(show).style.display = 'block';
+		document.getElementById(hide).style.display = 'none';
+	}
+
+	$('.setdays').click(function () {
+		var emp_id = document.getElementById('emp_id').value;
+		$.ajax({
+			url:'/admin/createdays',
+			method: 'post',
+			data:{id:emp_id},
+
+			success: function (data) {
+				window.location.reload();
+			}
+		});
+	});
+
+
+	$('.leaveupdt').click(function () {
+		var days = document.getElementById('daysleave').value,
+			id = document.getElementById('userid').value;
+
+		$.ajax({
+			url: '/admin/updateleavedays',
+			data:{days:days, id:id},
+			method:'post',
+
+			success: function (data){
+				window.location.reload();
+			}
+		})
+	})
+
+	$('#leave_request').on('change', function(){
+        var setting_name = $(this).attr('id'),
+            status = document.getElementById(setting_name).dataset.label,
+        	id = document.getElementById(setting_name).dataset.emp;
+
+        if(status == 1){
+            status = 0
+        }else{
+            status = 1
+        }
+
+        $.ajax({
+            method: 'POST',
+            url: '/admin/activeleave',
+            data: {id:id, status:status},
+
+            success:function(data){
+                console.log(data)
+            }
+        })
+    });
+</script>
+{% endblock %}

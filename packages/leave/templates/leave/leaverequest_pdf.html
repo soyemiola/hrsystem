@@ -1,0 +1,42 @@
+<title>Leave Request Details</title>
+
+<div class="box">
+		<div class="innerbox" style="margin: 2%; margin-top: 10px padding: 20px;">
+			<div class="innertitle" style="text-align: center; border-bottom:1px solid grey">
+				<img src="{{url_for('static', filename='image/logo.png')}}" alt="logo" height="50px">
+				<h4 style="margin-top: 0px; padding-top: 0px">BUSINESS TRAVEL MANAGEMENT</h4>
+				<h5>LEAVE REQUEST DETAILS</h5>
+			</div>
+			<div class="innerinfo" style="padding: 20px">
+				<p><b>Request Staff:</b> <span style="margin-left: 20px">{{emp[0]}}</span></p>
+				<p><b>Department:</b> <span style="margin-left: 20px">{{emp[11]}}</span></p>
+				<p><b>Leave Type:</b> <span style="margin-left: 20px">{{emp[1]}}</span></p>
+				<p><b>Leave Start Date:</b> <span style="margin-left: 20px">{{emp[3]}}</span></p>
+				<p><b>Leave End Date:</b> <span style="margin-left: 20px">{{emp[4]}}</span></p>
+				<p><b>Resumption Date:</b> <span style="margin-left: 20px">{{emp[15]}}</span></p>
+				<p><b>Address during Leave:</b> <span style="margin-left: 20px">{{emp[5]}}</span></p>
+				<p><b>Contact Number:</b> <span style="margin-left: 20px">{{emp[6]}}</span></p>
+
+				<p><b>Relieving Staff:</b> 
+					<span style="margin-left: 20px">
+						<!-- Relief staff 1 -->
+						{% if emp[7] %}
+							{{ emp[7] }}
+						{% endif %}
+						<!-- Relief staff 2 -->
+						{% if emp[18] %}
+							| {{ emp[18] }}
+						{% endif %}
+						<!-- Relief staff 3 -->
+						{% if emp[20] %}
+							| {{ emp[20] }}
+						{% endif %}
+					</span></p>
+
+				<p><b>Supervisor:</b> <span style="margin-left: 20px">{{emp[8]}}</span></p>
+				<p><b>Request Date:</b> <span style="margin-left: 20px">{{emp[9]}}</span></p>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
